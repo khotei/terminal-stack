@@ -22,9 +22,10 @@ link "$REPO/ghostty/config"     "$CFG/ghostty/config"
 # Zellij / Neovim: link the directory only when it carries a real entry file.
 [ -f "$REPO/zellij/config.kdl" ] && link "$REPO/zellij" "$CFG/zellij"
 [ -f "$REPO/nvim/init.lua" ]     && link "$REPO/nvim"   "$CFG/nvim"
-# Shell: repo .zshrc + Starship config, when present.
+# Shell: repo .zshrc + Starship config + the role files (env/aliases/tools/prompt).
 link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
 link "$REPO/zsh/starship.toml"  "$CFG/starship.toml"
+for _zf in "$REPO"/zsh/*.zsh; do [ -e "$_zf" ] && link "$_zf" "$CFG/zsh/$(basename "$_zf")"; done
 
 # Fallback .zshrc so the sandbox has a working prompt before the Shell feature
 # lands: init Starship + zoxide if the repo didn't provide its own .zshrc.
