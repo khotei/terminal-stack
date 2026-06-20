@@ -2,6 +2,12 @@
 description: Validate the stack's config files (Ghostty, Zellij, Neovim, zsh) and report failures
 ---
 
+**Canonical form:** the validators are codified in [`scripts/check.sh`](../../scripts/check.sh) —
+the same script `make check` and CI run, so there is no drift. Prefer running it directly
+(`bash scripts/check.sh`, or `make check` for the Linux-accurate sandbox run); the steps below
+document what it does and how to interpret a failure. The Docker sandbox is in
+[`docs/sandbox.md`](../../docs/sandbox.md).
+
 Run the available config validators and report results concisely. This stack has **no compiler** —
 "check" means *does each config actually load?* Run every validator whose tool is installed; **skip
 and note** any whose tool is missing (degrade gracefully — never fail the whole run because a tool
