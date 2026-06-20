@@ -1,0 +1,80 @@
+// Zellij — multiplexer layer of terminal-stack
+// Installs to ~/.config/zellij/config.kdl
+// Reference + keybinding cheatsheet: ./README.md · upstream: https://zellij.dev/documentation
+// Validate: `zellij --config zellij/config.kdl setup --check` (run by /check + CI)
+
+// ── options ───────────────────────────────────────────────────────────
+theme "catppuccin-mocha"        // defined in the themes block below (self-contained)
+default_layout "compact"        // minimal UI chrome; the dev layout is opt-in (zellij -l dev)
+pane_frames false               // cleaner splits; the active pane is shown by the theme
+copy_on_select true             // select = copy, tmux-like
+scrollback_editor "nvim"        // `Edit scrollback` opens in the stack's editor
+mouse_mode true
+
+// ── keybinds: tmux-style ctrl+a prefix ────────────────────────────────
+// Keep ALL of Zellij's modal defaults, but move the "tmux mode" entry from
+// the default Ctrl+b to Ctrl+a (ex-tmux muscle memory). In tmux mode,
+// Ctrl+a again sends a literal Ctrl+a to the running app (tmux send-prefix).
+// Grounded in `zellij setup --dump-config` (the Ctrl+b binding lives in
+// `shared_except "tmux" "locked"`). The bare ctrl+hjkl keys are deliberately
+// NOT grabbed here — they belong to Neovim; pane nav goes through the prefix
+// (or enable zellij-autolock below for seamless locked-mode passthrough).
+keybinds {
+    shared_except "tmux" "locked" {
+        unbind "Ctrl b"
+        bind "Ctrl a" { SwitchToMode "Tmux"; }
+    }
+    tmux {
+        unbind "Ctrl b"
+        bind "Ctrl a" { Write 1; SwitchToMode "Normal"; }   // send literal Ctrl+a
+    }
+}
+
+// ── zellij-autolock (OPT-IN — disabled so the base config validates) ───
+// Auto-locks Zellij when nvim/git/fzf is focused, so the editor/agent get
+// every key without manual locking. Enable in 2 steps (see README):
+//   1. fetch the wasm → ~/.config/zellij/plugins/zellij-autolock.wasm
+//   2. delete the `/-` slashdash prefixes on the three nodes below.
+// Source: github.com/fresh2dev/zellij-autolock
+/-plugins {
+    autolock location="file:~/.config/zellij/plugins/zellij-autolock.wasm" {
+        is_enabled true
+        triggers "nvim|vim|git|fzf|zoxide|atuin"
+        reaction_seconds "0.3"
+        print_to_log false
+    }
+}
+/-load_plugins {
+    autolock
+}
+/-keybinds {
+    normal {
+        bind "Enter" {
+            WriteChars "\u{000D}";
+            MessagePlugin "autolock" {};
+        }
+    }
+    locked {
+        bind "Alt z" {
+            MessagePlugin "autolock" {payload "disable";};
+            SwitchToMode "Normal";
+        }
+    }
+}
+
+// ── theme: Catppuccin Mocha (official palette — catppuccin/zellij) ─────
+themes {
+    catppuccin-mocha {
+        bg "#585b70"      // Surface2
+        fg "#cdd6f4"      // Text
+        red "#f38ba8"
+        green "#a6e3a1"
+        blue "#89b4fa"
+        yellow "#f9e2af"
+        magenta "#f5c2e7"  // Pink
+        orange "#fab387"   // Peach
+        cyan "#89dceb"     // Sky
+        black "#181825"    // Mantle
+        white "#cdd6f4"    // Text
+    }
+}
