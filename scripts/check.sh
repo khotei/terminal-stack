@@ -64,7 +64,7 @@ else skip "no zsh files yet"; fi
 
 # ── Shell scripts (bash -n syntax check) ──────────────────────────────
 head "Shell scripts (bash -n)"
-sh_scripts=$(ls claude/*.sh scripts/*.sh 2>/dev/null || true)
+sh_scripts=$(ls ./*.sh claude/*.sh scripts/*.sh 2>/dev/null || true)
 if [ -n "$sh_scripts" ]; then
   for f in $sh_scripts; do
     if bash -n "$f" 2>/dev/null; then pass "bash -n $f"; else fault "bash -n $f — syntax error"; fi
