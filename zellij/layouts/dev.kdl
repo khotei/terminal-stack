@@ -1,0 +1,21 @@
+// Zellij dev layout — the editor │ agent workspace for terminal-stack.
+// Use:  zellij --layout dev   (install symlinks layouts/ into ~/.config/zellij/layouts/)
+// Left pane = Neovim (edit), right pane = Claude Code (agent). Panes open a shell
+// by default so the layout works even before nvim/claude are installed; uncomment
+// the `command` lines to auto-launch them.
+layout {
+    pane size=1 borderless=true {
+        plugin location="tab-bar"
+    }
+    pane split_direction="vertical" {
+        pane name="editor" focus=true {
+            // command "nvim"
+        }
+        pane name="agent" size="40%" {
+            // command "claude"
+        }
+    }
+    pane size=1 borderless=true {
+        plugin location="status-bar"
+    }
+}
