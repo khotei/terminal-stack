@@ -58,26 +58,24 @@ not just copying it.
 
 ## ✦ Quickstart
 
-> ⚠️ **Status: bootstrapping.** Configs land feature-by-feature through pull requests (see the
-> [roadmap](#-roadmap)). Until a layer is merged, its directory is a placeholder. The steps below are
-> the shape of the final flow.
-
 ```bash
 # 1. clone
 git clone https://github.com/khotei/terminal-stack.git ~/terminal-stack
 cd ~/terminal-stack
 
-# 2. install the toolchain (Brewfile lands with the Meta feature)
-brew bundle --file=./Brewfile
+# 2. install the toolchain (Ghostty, Zellij, Neovim, Starship, companions, fonts)
+brew bundle
 
-# 3. symlink the configs into place (install script lands with the Meta feature)
-#    ghostty → ~/.config/ghostty   zellij → ~/.config/zellij
-#    nvim    → ~/.config/nvim       zsh    → ~/.zshrc + ~/.config/zsh
+# 3. symlink every config into place — idempotent, backs up anything in the way
+#    (preview first with: ./install.sh --dry-run)
 ./install.sh
 ```
 
-Each config directory carries its **own README** with the per-setting reference once its feature
-ships — so you can adopt one layer at a time.
+Then add the status-line block to `~/.claude/settings.json`, open a new terminal, and run
+`zellij --layout dev`. Full walkthrough: [`docs/install.md`](docs/install.md).
+
+Each config directory carries its **own README** with the per-setting reference — so you can read or
+adopt one layer at a time.
 
 ### Try it without touching your machine
 
@@ -149,12 +147,15 @@ That's why every PR here is a guide: it's a requirement of the process, not an a
 
 Each item is one SDD Feature → one (or a few) reference-guide PR(s).
 
-- [x] **Meta** — repo scaffold, README, `.claude/` toolkit · **Docker sandbox + CI** ✅ · `Brewfile` + `install.sh` (pending)
-- [ ] **Terminal** — Ghostty config (theme, font, opacity/blur, `macos-option-as-alt`, keybinds)
-- [ ] **Multiplexer** — Zellij config + layout + `zellij-autolock`, vim pane nav
-- [ ] **Editor** — Neovim + LazyVim starter, LSP/Treesitter, keymaps tuned for IdeaVim habits
-- [ ] **Shell** — zsh + Starship + zoxide/atuin/fzf/lazygit/yazi
-- [ ] **Agent** — Claude Code statusline, session/worktree workflow, pane integration
+- [x] **Meta** — repo scaffold, README, `.claude/` toolkit · Docker sandbox + CI · `Brewfile` + `install.sh`
+- [x] **Terminal** — Ghostty config (font, Catppuccin Mocha, `macos-option-as-alt`, `ctrl+a` left free)
+- [x] **Multiplexer** — Zellij config + `dev` layout + `ctrl+a` prefix, autolock opt-in
+- [x] **Editor** — Neovim + LazyVim starter, Catppuccin, pinned `lazy-lock.json`
+- [x] **Shell** — zsh + Starship (Catppuccin) + zoxide/atuin/fzf
+- [x] **Agent** — Claude Code statusline + worktree helper + pane workflow
+
+> **v1 complete.** Next (v1.1): `zellij-autolock` wired by default, deeper LSP/DAP, an IdeaVim
+> keymap port, atuin sync, screenshots.
 
 ## ✦ Credits & references
 
