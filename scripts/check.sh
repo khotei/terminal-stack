@@ -62,6 +62,15 @@ if [ -n "$shell_files" ]; then
   else skip "zsh not installed"; fi
 else skip "no zsh files yet"; fi
 
+# ── Shell scripts (bash -n syntax check) ──────────────────────────────
+head "Shell scripts (bash -n)"
+sh_scripts=$(ls claude/*.sh scripts/*.sh 2>/dev/null || true)
+if [ -n "$sh_scripts" ]; then
+  for f in $sh_scripts; do
+    if bash -n "$f" 2>/dev/null; then pass "bash -n $f"; else fault "bash -n $f — syntax error"; fi
+  done
+else skip "no shell scripts"; fi
+
 # ── Style gates (soft — warn, never fail the run) ─────────────────────
 head "Style (soft)"
 if [ -d nvim ] && [ -n "$(find nvim -name '*.lua' 2>/dev/null | head -1)" ]; then
