@@ -1,0 +1,33 @@
+# Ghostty — terminal layer of terminal-stack
+# Installs to ~/.config/ghostty/config · syntax: key = value (repeated keys accumulate)
+# Reference + rationale for every key: ./README.md · upstream: https://ghostty.org/docs/config
+
+# ── font ──────────────────────────────────────────────────────────────
+# Dank Mono is primary; Symbols Nerd Font Mono is a fallback so LazyVim /
+# Starship glyphs render — Dank Mono carries no Nerd-Font icons of its own.
+font-family = "Dank Mono"
+font-family = "Symbols Nerd Font Mono"
+font-size = 14
+
+# ── theme ─────────────────────────────────────────────────────────────
+# Catppuccin Mocha ships bundled with Ghostty; the stack reuses it across
+# Zellij / LazyVim / Starship for one palette. Verify: ghostty +list-themes
+theme = Catppuccin Mocha
+
+# ── window ────────────────────────────────────────────────────────────
+# Opaque by choice (readability over glass). To enable translucency add
+# `background-opacity = 0.95` + `background-blur = true` — see README.
+window-padding-x = 8
+window-padding-y = 8
+
+# ── macOS ─────────────────────────────────────────────────────────────
+# Send Alt on Option so Alt-binds in nvim/zsh fire, instead of composing
+# accented characters.
+macos-option-as-alt = true
+
+# ── keybinds — TERMINAL LAYER ONLY ────────────────────────────────────
+# Invariant: leave ctrl+a unbound — it is Zellij's prefix, and the editor
+# leader is nvim's. Ghostty binds only terminal-scoped actions, never a
+# multiplexer/editor key. (@.claude/rules/config.md — keyboard-layer contract)
+keybind = cmd+shift+r=reload_config
+keybind = global:cmd+backquote=toggle_quick_terminal
