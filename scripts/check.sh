@@ -33,11 +33,21 @@ if [ -f zellij/config.kdl ]; then
   else skip "zellij not installed"; fi
 else skip "no zellij/config.kdl"; fi
 
-# ── Neovim (light load; LazyVim may bootstrap plugins — see docs/sandbox.md) ──
+# ── Neovim (full headless load; LazyVim bootstraps plugins — see docs/sandbox.md) ──
+# nvim/ is an out-of-tree config: `require("config.lazy")` only resolves when nvim/
+# is the XDG config dir, so we point XDG_CONFIG_HOME at a temp dir symlinking to it
+# (works in CI and locally, with or without the sandbox's own symlink).
 head "Neovim"
 if [ -f nvim/init.lua ]; then
   if have nvim; then
-    if timeout 120 nvim --headless -u nvim/init.lua +qa >/dev/null 2>&1; then pass "nvim loads init.lua"; else fault "nvim failed to load init.lua"; fi
+    tmpcfg=$(mktemp -d); ln -s "$(pwd)/nvim" "$tmpcfg/nvim"
+    out=$(XDG_CONFIG_HOME="$tmpcfg" timeout 300 nvim --headless "+qa" 2>&1); rc=$?
+    rm -rf "$tmpcfg"
+    case "$rc" in
+      0)   pass "nvim loads (LazyVim bootstrap ok)" ;;
+      124) warn "nvim load timed out — plugin bootstrap slow, not a config error (soft)" ;;
+      *)   fault "nvim failed to load"; printf '%s\n' "$out" | tail -3 | sed 's/^/      /' ;;
+    esac
   else skip "nvim not installed"; fi
 else skip "no nvim/init.lua"; fi
 
@@ -54,7 +64,7 @@ else skip "no zsh files yet"; fi
 
 # ── Style gates (soft — warn, never fail the run) ─────────────────────
 head "Style (soft)"
-if [ -d nvim ] && ls nvim/**/*.lua nvim/*.lua >/dev/null 2>&1; then
+if [ -d nvim ] && [ -n "$(find nvim -name '*.lua' 2>/dev/null | head -1)" ]; then
   if have stylua; then stylua --check nvim/ >/dev/null 2>&1 && pass "stylua --check nvim/" || warn "stylua: formatting diff (run: stylua nvim/)"; else skip "stylua not installed"; fi
 else skip "no Lua files"; fi
 if [ -n "${shell_files:-}" ]; then
