@@ -1,0 +1,32 @@
+name: check
+
+# Validate every PR and every push to main with the SAME script used locally
+# (scripts/check.sh) — no drift between CI and `make check`. F-META-001 · AC-5.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the in-terminal toolchain
+        run: |
+          set -eux
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends zsh ripgrep fd-find fzf
+          # Neovim (stable release tarball — x86_64 runner)
+          curl -fsSL https://github.com/neovim/neovim/releases/download/stable/nvim-linux-x86_64.tar.gz \
+            | sudo tar -xz -C /opt
+          sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+          # Zellij (latest musl release)
+          curl -fsSL https://github.com/zellij-org/zellij/releases/latest/download/zellij-x86_64-unknown-linux-musl.tar.gz \
+            | sudo tar -xz -C /usr/local/bin zellij
+          # Ghostty is intentionally absent (host-only GUI) — check.sh notes-skips it.
+          # Style gates (stylua/shfmt) are not installed — they skip, never fail CI.
+
+      - name: Run validators
+        run: bash scripts/check.sh

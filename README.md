@@ -79,6 +79,19 @@ brew bundle --file=./Brewfile
 Each config directory carries its **own README** with the per-setting reference once its feature
 ships — so you can adopt one layer at a time.
 
+### Try it without touching your machine
+
+No install required to *test* the in-terminal layers — there's a disposable Docker sandbox:
+
+```bash
+make try      # build + drop into a fully-configured zsh (Zellij + Neovim + Starship)
+make zellij   # jump straight into the multiplexer
+make check    # run the config validators (also runs in CI on every PR)
+```
+
+The repo is mounted live, so edits show up instantly. Ghostty isn't in the sandbox — it's a host
+GUI app — see [`docs/sandbox.md`](docs/sandbox.md).
+
 ## ✦ Repo layout
 
 ```
@@ -136,7 +149,7 @@ That's why every PR here is a guide: it's a requirement of the process, not an a
 
 Each item is one SDD Feature → one (or a few) reference-guide PR(s).
 
-- [ ] **Meta** — repo scaffold, `Brewfile`, `install.sh`, README, `.claude/` toolkit
+- [x] **Meta** — repo scaffold, README, `.claude/` toolkit · **Docker sandbox + CI** ✅ · `Brewfile` + `install.sh` (pending)
 - [ ] **Terminal** — Ghostty config (theme, font, opacity/blur, `macos-option-as-alt`, keybinds)
 - [ ] **Multiplexer** — Zellij config + layout + `zellij-autolock`, vim pane nav
 - [ ] **Editor** — Neovim + LazyVim starter, LSP/Treesitter, keymaps tuned for IdeaVim habits

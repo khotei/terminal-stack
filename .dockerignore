@@ -1,0 +1,5 @@
+# The build context only needs the entrypoint — the repo itself is bind-mounted
+# at /work at run time (see Makefile), not copied into the image. Keep the build
+# context tiny: ignore everything, then un-ignore just the entrypoint.
+*
+!scripts/entrypoint.sh
