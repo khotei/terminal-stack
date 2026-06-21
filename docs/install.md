@@ -63,6 +63,7 @@ brew bundle list         # list the deps
 | `zellij/` | → | `~/.config/zellij` |
 | `nvim/` | → | `~/.config/nvim` |
 | `zsh/.zshrc` · `zsh/*.zsh` · `zsh/starship.toml` | → | `~/.zshrc` · `~/.config/zsh/` · `~/.config/starship.toml` |
+| `git/config` | → | `~/.config/git/config` (additive; never touches `~/.gitconfig`) |
 | `claude/statusline.sh` · `claude/cc-worktree.sh` | → | `~/.claude/statusline.sh` · `~/.local/bin/cc-worktree` |
 | `fonts/*.otf` | ⇒ | `~/Library/Fonts` (macOS) · `~/.local/share/fonts` (Linux) — **copied**, skip-if-present |
 
@@ -71,6 +72,8 @@ It is **idempotent** and **safe**:
 - A real file/dir in the way is backed up to `<path>.bak` before linking.
 - `./install.sh --dry-run` shows what it would do, changing nothing.
 - Fonts are **copied** (not symlinked), so `--prune` never touches them.
+- It also **fetches the `zellij-autolock` plugin wasm** (best-effort) so autolock — on by default —
+  works out of the box; offline, it just stays inert (harmless).
 
 ## 3. Finish
 
