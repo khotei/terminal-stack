@@ -11,6 +11,17 @@
 **Homebrew** if missing, runs `brew bundle`, then `install.sh`. Idempotent — anything already present
 is skipped. Feature: `F-META-005`.
 
+```text
+  ./bootstrap.sh  ──  four stages, in order
+      ①  Xcode CLT     git · compiler · make             (prep · skipped if present)
+      ②  Homebrew      the package manager               (prep · skipped if present)
+      ③  brew bundle   the toolchain — Ghostty · Zellij · Neovim · Starship · CLIs · fonts
+      ④  install.sh    symlink configs → ~/.config · copy fonts · fetch autolock plugin
+```
+
+If you already have Homebrew, you only need stages ③–④ (the
+[two steps](#already-have-homebrew--the-two-steps) below); `bootstrap.sh` just adds the ①–② prep.
+
 ```sh
 git clone https://github.com/khotei/terminal-stack.git ~/terminal-stack
 cd ~/terminal-stack
