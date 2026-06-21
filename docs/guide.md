@@ -18,6 +18,8 @@ to get real work done. Read it top-to-bottom once to get oriented; come back to 
    - [Zellij (multiplexer)](#zellij--multiplexer)
    - [Neovim + LazyVim (editor)](#neovim--lazyvim--editor)
    - [Command line (zsh vi-mode + tools)](#command-line--zsh-vi-mode--tools)
+   - [lazygit (git TUI)](#lazygit--git-tui)
+   - [yazi (file manager)](#yazi--file-manager)
    - [Claude Code (agent)](#claude-code--agent)
 4. [User flows](#user-flows)
    - [1. Start a project session](#1-start-a-project-session)
@@ -153,26 +155,96 @@ noted; full list: <https://www.lazyvim.org/keymaps>):
 
 ### Command line — zsh vi-mode + tools
 
-**Vi editing** at the prompt (zsh-vi-mode):
+**Vi editing** at the prompt ([zsh-vi-mode](https://github.com/jeffreytse/zsh-vi-mode); classic
+surround mode):
 
 | Keys | Action |
 |---|---|
-| `Esc` | Normal mode (then `i`/`a`/`I`/`A` back to insert, `v` visual) |
-| `b` `w` `0` `$` | Word back / forward, line start / end |
-| `ci"` `daw` `dd` | Change-in-quotes, delete-a-word, delete line |
-| `S"` `cs'"` `ds(` | Surround: add / change / delete |
+| `Esc` | Normal mode (block cursor); `i` `a` `I` `A` `o` back to insert |
+| `h` `l` · `w` `b` `e` | Char · word motions |
+| `0` `^` `$` | Line start · first non-blank · end |
+| `f{c}` `t{c}` · `;` `,` | Jump to / before a char on the line · repeat / reverse |
+| `x` `r{c}` `~` | Delete char · replace char · toggle case |
+| `dd` `cc` `D` `C` `s` | Delete line · change line · to end of line · substitute |
+| `ciw` `ci"` `ci(` `dt/` | Change inner word / quotes / parens · delete up to `/` |
+| `yy` `p` `P` | Yank line · paste after / before |
+| `u` `⌃R` | Undo · redo |
+| `v` `V` | Visual / visual-line select |
+| `ys"` `cs"'` `ds"` | **Surround**: add `"` · change `"`→`'` · delete `"` |
 
-**Navigation & tools:**
+**Navigation & history:**
 
 | Keys / cmd | Action |
 |---|---|
-| `⌃R` | Search shell history (atuin) |
-| `⌃T` | Insert a file path (fzf) |
-| `⌥C` | `cd` into a fuzzy-picked dir (fzf) |
-| `z <part-of-dir>` | Jump to a dir by frecency (zoxide) · `zi` to pick |
-| `ll` / `la` | `ls -lah` / `ls -A` |
-| `gs` / `gd` / `gl` | git status / diff / log-graph |
-| `lg` | Lazygit (full git TUI) · `y` Yazi (file manager) |
+| `⌃R` | Fuzzy-search shell history (atuin) |
+| `⌃T` | Pick a file path into the current command (fzf) |
+| `⌥C` | `cd` into a fuzzy-picked subdir (fzf) |
+| `vim **<Tab>` | fzf path completion — type `**` then `Tab` after any command |
+| `z foo` / `z foo bar` / `zi` | Jump to a dir by frecency / by keywords / pick interactively (zoxide) |
+| `cd -` | Back to the previous dir |
+| `ll` `la` · `..` `...` | `ls -lah` / `ls -A` · up one / up two dirs |
+| `gs` `gd` `gl` | git status / diff / log --graph (aliases) |
+| `lg` · `y` | Open lazygit ([below](#lazygit--git-tui)) · yazi ([below](#yazi--file-manager)) |
+
+**Search & find, the modern way** (real flags you'll reuse):
+
+```sh
+fd auth                 # find files/dirs whose name matches "auth" (fast, respects .gitignore)
+fd -e ts -e tsx login   # only .ts/.tsx files matching "login"
+fd -H -t d node_modules # include Hidden, only Directories named node_modules
+rg "createUser"         # grep the repo for a string (ripgrep — fast, .gitignore-aware)
+rg -n -t ts "TODO"      # line Numbers, only TypeScript files
+rg -l "parseToken"      # just the file names that match
+rg -o 'v\d+\.\d+'       # print Only the matched part (a regex)
+atuin search -i         # full-screen history search (same engine as ⌃R)
+```
+
+### lazygit — git TUI
+
+Launch with **`lg`** (alias) or **`<Space>gg`** in Neovim. Panels on the left, diff on the right.
+`?` shows every key; `q` quits. (Keys are lazygit defaults — full list:
+<https://github.com/jesseduffield/lazygit/blob/master/docs/keybindings/Keybindings_en.md>.)
+
+| Keys | Action |
+|---|---|
+| `1`–`5` · `Tab` · `h`/`l` | Jump to panel: status · files · branches · commits · stash |
+| `↑`/`↓` or `k`/`j` | Move within a panel |
+| **Files:** `<Space>` | Stage / unstage the selected file |
+| `a` | Stage / unstage **all** |
+| `<Enter>` | Drill into a file → stage **hunks / lines** |
+| `c` · `C` · `A` | Commit · commit with `$EDITOR` · amend last commit |
+| `d` · `s` / `S` | Discard / unstage · stash all / stash options |
+| `p` · `P` | Pull · push |
+| **Line-staging:** `<Space>` · `v` · `a` · `<Tab>` | Stage line · range-select · toggle hunk mode · switch staged/unstaged |
+| **Branches:** `<Space>` · `n` · `c` · `-` | Checkout · new branch · checkout by name · previous branch |
+| **Commits:** `s` · `f` · `r` · `d` · `e` | Squash · fixup · reword · drop · edit (interactive rebase) |
+| `z` / `Z` | Undo / redo (via the reflog) |
+| `?` · `q` | Keybindings menu · quit |
+
+### yazi — file manager
+
+Launch with **`y`** (alias). Vim-keyed. `q` quits; `~` or `?` shows help. (Keys are yazi defaults —
+full keymap: <https://yazi-rs.github.io/docs/quick-start>.)
+
+| Keys | Action |
+|---|---|
+| `h` `j` `k` `l` | Parent dir · down · up · enter dir / open file |
+| `gg` / `G` · `⌃u` / `⌃d` | Top / bottom · half-page up / down |
+| `<Space>` · `v` · `⌃a` · `⌃r` | Toggle-select file · visual select · select all · invert |
+| `y` · `x` · `p` / `P` | Yank (copy) · cut · paste / paste-overwrite |
+| `d` · `D` | Move to trash · delete permanently |
+| `a` · `r` | Create (end with `/` for a dir) · rename |
+| `.` | Toggle hidden files |
+| `o` / `<Enter>` · `O` | Open · open-with (choose app) |
+| `s` / `S` | Search by name (fd) / by content (ripgrep) |
+| `z` / `Z` | Jump via fzf / via zoxide |
+| `f` · `/` · `n` / `N` | Filter · find · next / previous match |
+| `tt` · `1`–`9` · `[` / `]` | New tab · switch tab · previous / next tab |
+| `;` / `:` | Run a shell command (`:` blocks until it finishes) |
+| `q` · `<Esc>` | Quit · cancel / clear selection |
+
+> **Tip:** to make `yazi` change your *shell's* directory on quit, use its `y` wrapper function from
+> the docs instead of the bare alias — then `q` drops you in the folder you navigated to.
 
 ### Claude Code — agent
 
