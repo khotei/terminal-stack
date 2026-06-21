@@ -110,7 +110,8 @@ setting is reversible; see [`macos/README.md`](../macos/README.md).
 
 **First, run `make doctor`** — a read-only health-check that tells you, line by line, whether each
 tool is installed, each config is symlinked, and the fonts/plugin/`$PATH` are right (with the fix for
-anything that isn't). Then, if needed:
+anything that isn't). It's a [Bun](https://bun.sh) script (`scripts/doctor.ts`), so it needs `bun` —
+installed by `brew bundle` (the Brewfile's Development section). Then, if needed:
 
 | Symptom | Fix |
 |---|---|

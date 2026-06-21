@@ -120,7 +120,7 @@ terminal-stack/
 ├── git/            # delta diffs + sane git defaults         — see git/README.md
 ├── macos/          # opt-in macOS system defaults script     — see macos/README.md
 ├── docs/           # guide.md · install.md · sandbox.md      — see docs/README.md
-├── scripts/        # check.sh + entrypoint.sh (sandbox/CI)
+├── scripts/        # doctor.ts (Bun) · check.sh, entrypoint.sh (sh)  — see scripts/README.md
 ├── .claude/        # the SDD toolkit that builds this repo (see below)
 ├── bootstrap.sh    # fresh-Mac one-shot: CLT + Homebrew → brew bundle → install.sh
 ├── install.sh      # symlink every config into ~/.config etc. (idempotent)
