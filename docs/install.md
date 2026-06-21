@@ -13,9 +13,11 @@ brew bundle          # 1. install the toolchain (see ./Brewfile)
 
 ## 1. `brew bundle` — the toolchain
 
-[`Brewfile`](../Brewfile) pins every tool: Ghostty (cask), Zellij, Neovim, Starship, the companion
-CLIs (zoxide · atuin · fzf · fd · ripgrep · lazygit · yazi · jq), the validators (stylua · shfmt),
-and Nerd Fonts. All names are verified against Homebrew.
+[`Brewfile`](../Brewfile) is organised in three sections: **The stack** (Ghostty, Zellij, Neovim,
+Starship, **Claude Code**, the companion CLIs, validators, `gh`, Docker, Nerd Fonts), **Personal**
+(the GUI apps that drive the machine — Arc, Notion, Raycast, …), and **Development** (bun, nvm, …).
+Tools the stack **retires** (`intellij-idea` → Neovim, `warp` → Ghostty) are kept **commented** for
+reference, not installed. All names are verified against Homebrew. Trim the Personal section to taste.
 
 ```sh
 brew bundle              # install everything
