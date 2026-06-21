@@ -5,9 +5,9 @@ pager — syntax-highlighted, side-by-side-capable diffs with line numbers and n
 layer never touches your identity: git reads `~/.config/git/config` **in addition to** `~/.gitconfig`,
 so your name/email/signing config in `~/.gitconfig` stays exactly as it is.
 
-- **Files:** [`config`](./config) → `~/.config/git/config`
+- **Files:** [`config`](./config) → `~/.config/git/config` · [`setup.sh`](./setup.sh) — set your identity
 - **Validate:** `git config --file git/config --list` (parses; lists every key)
-- **Feature:** `F-SHELL-003` · **Upstream:** <https://github.com/dandavison/delta>
+- **Feature:** `F-SHELL-003` (defaults) · `F-SHELL-004` (identity) · **Upstream:** <https://github.com/dandavison/delta>
 
 ---
 
@@ -31,6 +31,25 @@ Git layers config: it reads the system file, then `~/.config/git/config`, then `
 home file wins on any conflict). This layer only sets the keys above; it sets **no** `[user]` block,
 so your name, email, and signing config in `~/.gitconfig` are never read or overwritten. Remove the
 symlink (or `./install.sh --prune`) and these defaults simply fall away.
+
+## Set your identity — `git/setup.sh`
+
+The `[user]` block this layer leaves out — your **name, email, and optional signing key** — is
+machine-local and must never be committed to a public repo. Set it on a fresh box, or change it
+later, with the helper:
+
+```sh
+make git-setup                                # interactive — Enter keeps each current value
+./git/setup.sh --show                         # print the current identity, change nothing
+./git/setup.sh --dry-run --name "You" --email you@example.com   # preview the commands
+./git/setup.sh --name "You" --email you@example.com             # set non-interactively
+./git/setup.sh --signing-key KEY              # + user.signingkey & commit.gpgsign=true
+```
+
+It writes **only** to `~/.gitconfig` — pinned via `git config --file`, never `--global`, so it can
+never land in the symlinked `~/.config/git/config` (which would leak your identity into this public
+repo). It's idempotent (re-run to change), and previews with `--dry-run`. Identity and shared
+defaults compose: git reads both files, with `~/.gitconfig` winning on any conflict.
 
 ## Reload & verify
 
