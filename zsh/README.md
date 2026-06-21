@@ -81,3 +81,7 @@ ln -sf  "$PWD/zsh/.zshrc"        ~/.zshrc
 mkdir -p ~/.config/zsh && ln -sf "$PWD"/zsh/*.zsh ~/.config/zsh/
 ln -sf  "$PWD/zsh/starship.toml" ~/.config/starship.toml
 ```
+
+---
+
+> Part of [terminal-stack](../README.md) · usage [guide](../docs/guide.md) · setup [install](../docs/install.md).

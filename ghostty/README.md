@@ -84,3 +84,7 @@ fallback comes from the Brewfile (`brew bundle`).
 ```sh
 brew install --cask font-symbols-only-nerd-font
 ```
+
+---
+
+> Part of [terminal-stack](../README.md) · usage [guide](../docs/guide.md) · setup [install](../docs/install.md).

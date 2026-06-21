@@ -72,3 +72,7 @@ Full reference: <https://www.lazyvim.org/keymaps>.
 ```sh
 ln -sfn "$PWD/nvim" ~/.config/nvim && nvim   # first launch installs plugins
 ```
+
+---
+
+> Part of [terminal-stack](../README.md) · usage [guide](../docs/guide.md) · setup [install](../docs/install.md).
