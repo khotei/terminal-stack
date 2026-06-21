@@ -103,11 +103,28 @@ install_fonts() {
   return 0
 }
 
+# Fetch the zellij-autolock plugin wasm (best-effort) so autolock works out of
+# the box. ~/.config/zellij is a symlink to the repo's zellij/, so this lands in
+# zellij/plugins/ (git-ignored). If it fails (offline), autolock just stays
+# inert — the keybinds remain harmless. Skipped on --dry-run.
+install_autolock() {
+  local dir="$CONFIG/zellij/plugins" f="$CONFIG/zellij/plugins/zellij-autolock.wasm"
+  [ -f "$f" ] && { note "ok: zellij-autolock.wasm already present"; return 0; }
+  if $DRY_RUN; then note "would fetch: zellij-autolock.wasm → ~/.config/zellij/plugins/"; return 0; fi
+  mkdir -p "$dir"
+  if command -v curl >/dev/null 2>&1 && curl -fsSL -o "$f" \
+      https://github.com/fresh2dev/zellij-autolock/releases/latest/download/zellij-autolock.wasm; then
+    note "fetched: zellij-autolock.wasm (autolock enabled)"
+  else
+    note "skipped: zellij-autolock.wasm fetch failed (autolock stays inert; harmless)"
+  fi
+}
+
 echo "terminal-stack → installing from $REPO"
 $DRY_RUN && echo "(dry run — no changes)"
 
 echo "• Ghostty";    link "$REPO/ghostty/config"     "$CONFIG/ghostty/config"
-echo "• Zellij";     link "$REPO/zellij"             "$CONFIG/zellij"
+echo "• Zellij";     link "$REPO/zellij"             "$CONFIG/zellij"; install_autolock
 echo "• Neovim";     link "$REPO/nvim"               "$CONFIG/nvim"
 echo "• Shell";      link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
                      link "$REPO/zsh/starship.toml"  "$CONFIG/starship.toml"

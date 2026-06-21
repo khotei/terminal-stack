@@ -11,6 +11,9 @@
 .claude/telemetry/
 .claude/.last-cleanup
 
+# ── Zellij plugin binaries (fetched by install.sh) ─────────
+zellij/plugins/*.wasm
+
 # ── Neovim / LazyVim generated state ────────────────────────
 nvim/lazy-lock.json.bak
 nvim/.luarc.json

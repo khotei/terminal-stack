@@ -30,13 +30,14 @@ keybinds {
     }
 }
 
-// ── zellij-autolock (OPT-IN — disabled so the base config validates) ───
-// Auto-locks Zellij when nvim/git/fzf is focused, so the editor/agent get
-// every key without manual locking. Enable in 2 steps (see README):
-//   1. fetch the wasm → ~/.config/zellij/plugins/zellij-autolock.wasm
-//   2. delete the `/-` slashdash prefixes on the three nodes below.
+// ── zellij-autolock (ON by default) ───────────────────────────────────
+// Auto-locks Zellij when nvim/vim/git/fzf/zoxide/atuin is focused, so the
+// editor and Claude Code get every keystroke without manual locking. Needs the
+// plugin wasm at ~/.config/zellij/plugins/zellij-autolock.wasm — `install.sh`
+// fetches it. If the wasm is absent the keybinds below stay harmless (Enter
+// still types; the MessagePlugin is a no-op), so the config is safe regardless.
 // Source: github.com/fresh2dev/zellij-autolock
-/-plugins {
+plugins {
     autolock location="file:~/.config/zellij/plugins/zellij-autolock.wasm" {
         is_enabled true
         triggers "nvim|vim|git|fzf|zoxide|atuin"
@@ -44,10 +45,10 @@ keybinds {
         print_to_log false
     }
 }
-/-load_plugins {
+load_plugins {
     autolock
 }
-/-keybinds {
+keybinds {
     normal {
         bind "Enter" {
             WriteChars "\u{000D}";
