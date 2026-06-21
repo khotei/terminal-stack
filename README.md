@@ -72,7 +72,8 @@ brew bundle
 ```
 
 Then add the status-line block to `~/.claude/settings.json`, open a new terminal, and run
-`zellij --layout dev`. Full walkthrough: [`docs/install.md`](docs/install.md).
+`zellij --layout dev`. **Update later** with `make update` (pull + upgrade tools + prune stale links).
+Full walkthrough: [`docs/install.md`](docs/install.md).
 
 Each config directory carries its **own README** with the per-setting reference — so you can read or
 adopt one layer at a time.
