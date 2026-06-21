@@ -1,8 +1,17 @@
 # Aliases. Conservative — we do NOT shadow standard tools (grep/find) so scripts
 # and muscle memory keep working; the modern CLIs get their own short names.
 
-alias ll='ls -lah'
-alias la='ls -A'
+# ls — eza when installed (icons, git status, tree); plain ls otherwise.
+if command -v eza >/dev/null; then
+  alias ls='eza --group-directories-first'
+  alias ll='eza -lah --group-directories-first --git'
+  alias la='eza -a --group-directories-first'
+  alias lt='eza --tree --level=2'
+else
+  alias ll='ls -lah'
+  alias la='ls -A'
+fi
+
 alias ..='cd ..'
 alias ...='cd ../..'
 

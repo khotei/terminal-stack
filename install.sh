@@ -59,6 +59,7 @@ MANAGED=(
   "$CONFIG/nvim"
   "$HOME/.zshrc"
   "$CONFIG/starship.toml"
+  "$CONFIG/git/config"
   "$HOME/.claude/statusline.sh"
   "$HOME/.local/bin/cc-worktree"
 )
@@ -111,6 +112,7 @@ echo "• Neovim";     link "$REPO/nvim"               "$CONFIG/nvim"
 echo "• Shell";      link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
                      link "$REPO/zsh/starship.toml"  "$CONFIG/starship.toml"
                      for f in "$REPO"/zsh/*.zsh; do link "$f" "$CONFIG/zsh/$(basename "$f")"; done
+echo "• Git";        link "$REPO/git/config"          "$CONFIG/git/config"
 echo "• Claude Code"; link "$REPO/claude/statusline.sh" "$HOME/.claude/statusline.sh"
                       link "$REPO/claude/cc-worktree.sh" "$HOME/.local/bin/cc-worktree"
 

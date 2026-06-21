@@ -26,6 +26,8 @@ link "$REPO/ghostty/config"     "$CFG/ghostty/config"
 link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
 link "$REPO/zsh/starship.toml"  "$CFG/starship.toml"
 for _zf in "$REPO"/zsh/*.zsh; do [ -e "$_zf" ] && link "$_zf" "$CFG/zsh/$(basename "$_zf")"; done
+# Git: additive ~/.config/git/config (delta pager + defaults; never touches identity).
+link "$REPO/git/config"         "$CFG/git/config"
 
 # Fallback .zshrc so the sandbox has a working prompt before the Shell feature
 # lands: init Starship + zoxide if the repo didn't provide its own .zshrc.

@@ -12,3 +12,10 @@ command -v atuin >/dev/null && eval "$(atuin init zsh)"
 if command -v fzf >/dev/null; then
   source <(fzf --zsh 2>/dev/null) 2>/dev/null
 fi
+
+# bat — syntax-highlighted pager. Used as the man pager only; we do NOT alias `cat`
+# (that breaks `cat > file` and piping into programs that expect plain output).
+if command -v bat >/dev/null; then
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"   # colourful man pages via bat
+  export MANROFFOPT="-c"
+fi

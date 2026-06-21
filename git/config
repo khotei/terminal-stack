@@ -1,0 +1,27 @@
+# terminal-stack git config (~/.config/git/config) — additive; your identity in
+# ~/.gitconfig is untouched. Needs git-delta (Brewfile).
+
+[core]
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true       # n / N jump between diff hunks in the pager
+	line-numbers = true
+
+[merge]
+	conflictStyle = zdiff3
+
+[diff]
+	colorMoved = default
+
+[init]
+	defaultBranch = main
+
+[push]
+	autoSetupRemote = true
+
+[pull]
+	ff = only
