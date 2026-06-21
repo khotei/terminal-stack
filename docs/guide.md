@@ -88,6 +88,10 @@ zellij --layout dev        # opens the editor │ agent split (40% agent on the 
 
 That's enough to be productive. The rest is muscle memory you'll build through the [flows](#user-flows).
 
+> **Tune macOS for this workflow (optional):** `make macos` applies opinionated system defaults
+> (Dock auto-hide, fast Vim key-repeat, …) — opt-in, not run by install. See
+> [macos/README.md](../macos/README.md).
+
 ---
 
 ## Cheat sheets
@@ -184,9 +188,18 @@ surround mode):
 | `vim **<Tab>` | fzf path completion — type `**` then `Tab` after any command |
 | `z foo` / `z foo bar` / `zi` | Jump to a dir by frecency (frequency + recency) / by keywords / pick interactively (zoxide) |
 | `cd -` | Back to the previous dir |
-| `ll` `la` · `..` `...` | `ls -lah` / `ls -A` · up one / up two dirs |
+| `ll` `la` `lt` · `..` `...` | **eza** long+icons+git / all / tree · up one / up two dirs |
+| `man <cmd>` | Syntax-coloured man page (**bat** is the `MANPAGER`; `cat` is *not* aliased) |
 | `gs` `gd` `gl` | git status / diff / log --graph (aliases) |
 | `lg` · `y` | Open lazygit ([below](#lazygit--git-tui)) · yazi ([below](#yazi--file-manager)) |
+
+**Power-ups** (load last, from `zsh/plugins.zsh`):
+
+| Feature | What it does |
+|---|---|
+| Autosuggestions | A grey suggestion from history appears as you type — `→` (right-arrow) accepts it |
+| Syntax-highlighting | The command line is coloured live as you type (valid command = green, bad = red) |
+| fzf-tab | `Tab` completion becomes a fuzzy fzf picker — type, filter, Enter |
 
 **Search & find, the modern way** (real flags you'll reuse):
 
@@ -373,10 +386,10 @@ keys (`gd`/`gr`/`cr`) replace "go to / find usages / rename". Hands stay on the 
 4. Big task with many parallel pieces? Hand it off to a worktree → [flow 5](#5-run-agents-in-parallel-worktrees).
 
 **Why this way:** the agent and the editor are *peers in adjacent panes* — lower RAM and a tighter
-loop than an embedded IDE agent, and you stay in control of the diff. Enabling
-[`zellij-autolock`](../zellij/README.md#autolock-opt-in--seamless-editoragent-passthrough) makes the
-hand-off seamless (no manual locking when the focused pane runs one of autolock's watched apps — see
-[autolock](../zellij/README.md#autolock-opt-in--seamless-editoragent-passthrough)).
+loop than an embedded IDE agent, and you stay in control of the diff.
+[`zellij-autolock`](../zellij/README.md) (on by default) passes every key straight to the focused
+editor/agent — no manual locking when the focused pane runs one of its watched apps (nvim/vim/git/fzf/
+zoxide/atuin); `Alt z` disables it if you need the prefix.
 
 ### 4. Git, the fast way
 *You're ready to review and commit.*
@@ -385,6 +398,9 @@ hand-off seamless (no manual locking when the focused pane runs one of autolock'
 - Full TUI: `lg` (or `<Space>gg` inside Neovim) → **lazygit**. Stage hunks with `Space`, commit with
   `c`, push with `P`, browse branches with `b`. It's the fastest staging UI there is.
 - Per-line history: `<Space>gb` (git blame) in Neovim.
+- Plain `git diff` / `git show` now flow through **delta** — pretty, line-numbered diffs; `n`/`N` move
+  between hunks. Wired by the **additive** `~/.config/git/config` (it never touches your `~/.gitconfig`
+  identity — see [`git/README.md`](../git/README.md)).
 
 **Why this way:** lazygit turns "stage exactly these hunks, write a message, push" into a few
 keystrokes without leaving the terminal; `<Space>gg` opens it docked to the file you're on.
@@ -485,6 +501,7 @@ The *why* behind the combos — the reasons this stack is fast once it's yours:
 
 | Symptom / want | Do this |
 |---|---|
+| "Is my setup healthy?" | `make doctor` — checks tools, symlinks, fonts, `$PATH` (read-only) |
 | Changed Ghostty config, no effect | `⌘⇧R` (reload), or restart Ghostty for font changes |
 | Changed an nvim plugin spec | `:Lazy sync` (or restart nvim) |
 | Changed a shell file | `source ~/.zshrc` or open a new shell |

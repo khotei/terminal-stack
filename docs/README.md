@@ -11,6 +11,10 @@ can actually live in. Three docs, by intent:
 
 **Per-layer references** (one README per tool, with the per-setting rationale):
 [ghostty](../ghostty/README.md) · [zellij](../zellij/README.md) · [nvim](../nvim/README.md) ·
-[zsh](../zsh/README.md) · [claude](../claude/README.md) · [fonts](../fonts/README.md).
+[zsh](../zsh/README.md) · [git](../git/README.md) · [claude](../claude/README.md) ·
+[fonts](../fonts/README.md) · [macos](../macos/README.md).
+
+> **System:** macOS defaults via `make macos` (opt-in — not run by bootstrap/install); see
+> [macos](../macos/README.md).
 
 > New here? Start with [guide.md → First five minutes](guide.md#first-five-minutes).

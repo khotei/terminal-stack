@@ -41,7 +41,7 @@ top-to-bottom and come out knowing the stack — not just copying it.
 | **Terminal** | [**Ghostty**](https://ghostty.org) | GPU-accelerated, native, single-file config. The fastest, lowest-friction emulator on macOS right now. |
 | **Multiplexer** | [**Zellij**](https://zellij.dev) | Modern tmux alternative — sane defaults, discoverable UI, KDL config, sessions-as-workspaces. |
 | **Editor** | [**Neovim**](https://neovim.io) + [**LazyVim**](https://lazyvim.org) | The "IDE in the terminal." LazyVim brings LSP, Telescope, which-key, Treesitter, git — the JetBrains muscle memory survives. |
-| **Shell** | **zsh** + [**Starship**](https://starship.rs) | Fast prompt, sensible completions, plus `zoxide` · `atuin` · `fzf` · `fd` · `ripgrep` · `lazygit` · `yazi`. |
+| **Shell** | **zsh** + [**Starship**](https://starship.rs) | Fast prompt, plus power-ups: autosuggestions · syntax-highlighting · fzf-tab, and `eza`/`bat`/`delta` · `zoxide` · `atuin` · `fzf` · `fd` · `ripgrep` · `lazygit` · `yazi`. |
 | **Agent** | [**Claude Code**](https://docs.claude.com/en/docs/claude-code) | Lives in a multiplexer pane beside Neovim. Less RAM, tighter feedback loop, better agentic flow than embedded IDE versions. |
 
 > **The pattern:** one Zellij session per project → split into **Neovim** (edit) ∣ **Claude Code**
@@ -82,6 +82,11 @@ Then add the status-line block to `~/.claude/settings.json`, open a new terminal
 `zellij --layout dev`. **Update later** with `make update` (pull + upgrade tools + prune stale links);
 `make help` lists every target. Full walkthrough: [`docs/install.md`](docs/install.md).
 
+> **Optional:** `make macos` applies opinionated macOS system defaults (Dock auto-hide, Vim
+> key-repeat, …) — it's **not** run by `bootstrap.sh`/`install.sh`; preview with
+> `./macos/defaults.sh --dry-run`.
+> Check your setup any time with `make doctor`.
+
 > **Safe by default:** `install.sh` backs up any existing config it replaces to `*.bak`; preview with
 > `--dry-run`. To revert: remove the symlinks and restore the `.bak` files (see
 > [`docs/install.md`](docs/install.md#uninstall)).
@@ -112,6 +117,7 @@ terminal-stack/
 ├── zsh/            # .zshrc, Starship, shell integrations    — see zsh/README.md
 ├── claude/         # Claude Code status line + cc-worktree   — see claude/README.md
 ├── fonts/          # bundled Dank Mono (.otf)                — see fonts/README.md
+├── git/            # delta diffs + sane git defaults         — see git/README.md
 ├── macos/          # opt-in macOS system defaults script     — see macos/README.md
 ├── docs/           # guide.md · install.md · sandbox.md      — see docs/README.md
 ├── scripts/        # check.sh + entrypoint.sh (sandbox/CI)
@@ -141,7 +147,7 @@ Claude Code is a TUI, so it lives **in a multiplexer pane** — not an IDE sideb
 - **The panes start as shells** — type `nvim` (left) and `claude` (right) to fill them, or uncomment
   the `dev` layout's `command` lines to auto-launch them.
 - **Switch editor ↔ agent** with vim-style pane nav (`Ctrl-hjkl`).
-- **`zellij-autolock`** keeps Zellij keys from colliding with Neovim / Claude Code.
+- **`zellij-autolock`** (on by default) keeps Zellij keys from colliding with Neovim / Claude Code.
 - **One session per project / task**; git **worktrees** for parallel agents.
 
 ## ✦ How this repo is built
