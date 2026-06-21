@@ -248,19 +248,82 @@ full keymap: <https://yazi-rs.github.io/docs/quick-start>.)
 
 ### Claude Code — agent
 
-Runs in its own pane. The status line shows **model · dir · git · context% · cost**. Worktrees for
-parallel agents (see [flow 5](#5-run-agents-in-parallel-worktrees)). The most-used in-app keys:
+Runs in its own pane; the status line shows **model · dir · git · context% · cost**. Keys/flags below
+are from the official docs — [CLI](https://code.claude.com/docs/en/cli-reference) ·
+[commands](https://code.claude.com/docs/en/commands) ·
+[interactive mode](https://code.claude.com/docs/en/interactive-mode).
 
-| Keys / prefix | Action |
+**Start & resume (from the shell):**
+
+| Command | Action |
 |---|---|
-| `⇧Tab` | Cycle permission mode (Normal → Auto-Accept → Plan) |
-| `Esc` | Stop generating · `Esc Esc` rewind the conversation |
-| `/` | Slash command (`/clear`, `/compact`, `/cost`, `/model`, `/resume`) |
-| `!` / `@` | Run a bash command / autocomplete a file path |
-| `⌃G` | Edit the prompt in `$EDITOR` (nvim) |
+| `claude` | Start an interactive session |
+| `claude "fix the login bug"` | Start with an initial prompt |
+| `claude -c` (`--continue`) | Continue the most recent conversation |
+| `claude -r` (`--resume`) | Pick a past session to resume |
+| `claude -p "…"` (`--print`) | Print mode — non-interactive, for pipes/scripts |
+| `cat err.log \| claude -p "explain"` | Pipe content into a one-shot query |
+| `claude --model claude-sonnet-4-6` | Start on a specific model |
+| `claude --add-dir ../lib` | Add extra working directories to the session |
+| `claude mcp` | Manage MCP servers |
 
-> Full Claude Code shortcut reference: [`claude/README.md`](../claude/README.md) and the upstream
-> [keyboard shortcuts](https://code.claude.com/docs/en/interactive-mode).
+**In-session shortcuts:**
+
+| Keys | Action |
+|---|---|
+| `Esc` | Interrupt Claude mid-turn (keeps the work so far) |
+| `Esc` `Esc` | Clear the input draft, or — when empty — open the **rewind** menu |
+| `⇧Tab` | Cycle permission mode (`default` → `acceptEdits` → `plan` → …) |
+| `⌃O` | Toggle the transcript viewer (full tool output) |
+| `⌃R` | Reverse-search input history (`⌃S` cycles scope) |
+| `⌃B` | Background the running bash command / agent |
+| `⌃T` | Toggle the task list |
+| `⌃G` | Edit the prompt in `$EDITOR` (**nvim**) |
+| `⌥P` / `⌥T` / `⌥O` | Switch model / toggle extended thinking / toggle fast mode |
+| `⇧⏎` or `\`+`⏎` | New line (multiline input) |
+| `⌃V` | Paste an image from the clipboard |
+| `⌃C` / `⌃D` | Interrupt or clear input / exit the session |
+
+**Quick prefixes (start of the line):**
+
+| Prefix | Action |
+|---|---|
+| `/` | Slash command or skill |
+| `!` | Shell mode — run a command, add its output to the context |
+| `@` | Mention a file path (autocomplete) |
+| `#` | Add a line to `CLAUDE.md` memory |
+
+**Useful slash commands** (type `/` to see all):
+
+| Command | Action |
+|---|---|
+| `/init` · `/memory` | Generate a starter `CLAUDE.md` · edit memory files |
+| `/clear` · `/compact` · `/context` | New session · summarize context down · show where the window is spent |
+| `/cost` · `/model` · `/effort` | Token cost · switch model · adjust reasoning effort |
+| `/plan` | Enter plan mode before a big change |
+| `/agents` · `/tasks` | Manage subagents · list background tasks |
+| `/review` · `/security-review` | Review a PR · security review |
+| `/resume` · `/rewind` | Resume a session · rewind to a checkpoint |
+| `/mcp` · `/permissions` | Manage MCP servers · approval rules |
+| `/vim` · `/terminal-setup` · `/keybindings` | Toggle vim editing · install `Shift+Enter` · edit keybindings |
+| `/config` · `/statusline` · `/help` | Settings · status line · list everything |
+
+> **Vim editing in the prompt:** enable via `/config` → *Editor mode* for `Esc`/`i`/`a`, `hjkl`, `dw`,
+> `ciw`, text objects — the same modal model as Neovim and the zsh prompt.
+
+**How the stack already smooths Claude Code:**
+
+- **`⇧⏎` just works** — Ghostty is one of the terminals with native `Shift+Enter`, so multiline needs
+  no `/terminal-setup`.
+- **`⌃G` opens Neovim** — `$EDITOR=nvim` (set in `zsh/env.zsh`), so long prompts get full Vim editing.
+- **Option shortcuts work** — `ghostty/config` sets `macos-option-as-alt`, which is exactly what
+  `⌥P`/`⌥T`/`⌥O` need on macOS.
+- **The PR badge is live** — `gh` (in the Brewfile) powers Claude Code's clickable PR status in the
+  footer.
+- **No prefix clash** — Claude's `⌃B` (background) is free because the Zellij prefix is `⌃a`, not `⌃b`.
+
+> Worktrees for parallel agents: [flow 5](#5-run-agents-in-parallel-worktrees) +
+> [`claude/README.md`](../claude/README.md).
 
 ---
 
