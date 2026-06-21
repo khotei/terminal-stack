@@ -92,6 +92,17 @@ launching `claude` — the line appears at the bottom. (More detail in
 - Open a new terminal (zsh + Starship loads), then `zellij --layout dev` for the editor │ agent split.
 - First `nvim` launch installs the LazyVim plugins.
 
+### Git identity
+
+The repo's `git/config` is **additive** — delta + sane defaults, but **no `[user]` block**, so your
+name/email never live in this public repo. Set them on this machine (or change them later):
+
+```sh
+make git-setup        # interactive; or: ./git/setup.sh --show · --dry-run · --name/--email
+```
+
+It writes only to `~/.gitconfig` (never the shared config). See [`git/README.md`](../git/README.md).
+
 ### Optional: macOS system defaults
 
 Want the OS itself tuned for this keyboard-first workflow (Dock auto-hide, full trackpad gestures,
