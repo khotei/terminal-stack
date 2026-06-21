@@ -70,7 +70,7 @@ mas  "OS Cleaner Pro", id: 1084211765
 # ══════════════════════════════════════════════════════════════════════
 # DEVELOPMENT — tooling beyond the terminal stack
 # ══════════════════════════════════════════════════════════════════════
-tap "oven-sh/bun"
+tap "oven-sh/bun"                       # third-party tap — if brew bundle errors here: brew trust oven-sh/bun
 brew "bun"                              # JS runtime / package manager
 brew "nvm"                              # node version manager
 # cask "figma"                          # design (enable if needed)

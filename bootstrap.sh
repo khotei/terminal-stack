@@ -44,7 +44,13 @@ command -v brew >/dev/null 2>&1 || { echo "brew still not on PATH — open a new
 # 3. The toolchain.
 step "brew update + bundle"
 brew update
-brew bundle --file="$REPO/Brewfile"
+# brew bundle is best-effort: one optional entry failing (an App Store app that
+# needs sign-in, a third-party tap) must NOT abort bootstrap before the configs
+# get linked. Warn and continue instead of dying under `set -e`.
+if ! brew bundle --file="$REPO/Brewfile"; then
+  echo "  ! some Brewfile entries failed above — review them, re-run 'brew bundle' later;"
+  echo "    continuing so install.sh still links your configs."
+fi
 
 # 4. The configs (+ fonts). Forward any flags (e.g. --dry-run).
 step "Linking configs"
