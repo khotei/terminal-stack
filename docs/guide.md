@@ -31,6 +31,7 @@ to get real work done. Read it top-to-bottom once to get oriented; come back to 
 5. [A day in the life](#a-day-in-the-life)
 6. [Ergonomic principles](#ergonomic-principles)
 7. [Reload & troubleshoot](#reload--troubleshoot)
+8. [Further reading](#further-reading)
 
 ---
 
@@ -361,6 +362,57 @@ The *why* behind the combos — the reasons this stack is fast once it's yours:
 | `zellij --config zellij/config.kdl setup --check` | Zellij config loads |
 | `nvim --headless +qa` | Neovim + plugins load |
 | `zsh -n <file>` | a shell file is syntactically valid |
+
+---
+
+## Further reading
+
+### Official docs — the authoritative reference per tool
+
+When the cheat sheet isn't enough, go to the source (and remember the repo rule: **never invent a
+config key — cite these**).
+
+| Layer / tool | Docs | Reach for it when |
+|---|---|---|
+| **Ghostty** | <https://ghostty.org/docs> · [config ref](https://ghostty.org/docs/config/reference) · [keybinds](https://ghostty.org/docs/config/keybind/reference) | a new key, a theme, font/cursor options |
+| **Zellij** | <https://zellij.dev/documentation> | layouts, keybindings, plugins, options |
+| **Neovim** | <https://neovim.io/doc/> · in-editor `:help` | core editor, Lua API, `:help lua-guide` |
+| **LazyVim** | <https://www.lazyvim.org> · [keymaps](https://www.lazyvim.org/keymaps) · [extras](https://www.lazyvim.org/extras) | enabling language/feature extras, default keys |
+| **lazy.nvim** | <https://github.com/folke/lazy.nvim> | the plugin-spec format, lazy-loading |
+| **Starship** | <https://starship.rs/config> | prompt modules, palettes, format strings |
+| **zsh-vi-mode** | <https://github.com/jeffreytse/zsh-vi-mode> | ZVM options, surround, `zvm_after_init` |
+| **zoxide** | <https://github.com/ajeetdsouza/zoxide> | `z`/`zi` usage, init flags |
+| **atuin** | <https://docs.atuin.sh> | history search, optional sync, key bindings |
+| **fzf** | <https://github.com/junegunn/fzf> | shell integration, `FZF_DEFAULT_*` env, previews |
+| **lazygit** | <https://github.com/jesseduffield/lazygit> | staging/rebase keys, custom commands |
+| **yazi** | <https://yazi-rs.github.io> | the file-manager keymap + plugins |
+| **Claude Code** | <https://code.claude.com/docs> · [interactive mode](https://code.claude.com/docs/en/interactive-mode) · [statusline](https://code.claude.com/docs/en/statusline) | slash commands, shortcuts, settings, hooks |
+| **Homebrew** | <https://brew.sh> · [bundle](https://github.com/Homebrew/homebrew-bundle) | the package manager + `brew bundle` |
+| **Catppuccin** | <https://catppuccin.com> | the shared palette + ports for other apps |
+
+### Video intros (community)
+
+Optional, for learning passively — **community-made, so quality and recency vary** (the official docs
+above stay the source of truth). Pick one that fits; skim, don't memorize.
+
+- **Neovim / LazyVim**
+  - [Zero to IDE with LazyVim](https://www.youtube.com/watch?v=N93cTbtLCIM) — getting started from the starter.
+  - [typecraft — configure Neovim, complete tutorial](https://www.youtube.com/watch?v=J9yqSdvAKXY) — how the config fits together.
+  - [How I set up Neovim to make it amazing (2024 guide)](https://www.youtube.com/watch?v=6pAG3BHurdM) — a from-scratch walkthrough.
+- **Zellij**
+  - [Master terminal multiplexing with Zellij in minutes](https://www.youtube.com/watch?v=ZndhImXIGlg) — the core model fast.
+  - [Is Zellij the perfect multiplexer? (vs tmux)](https://www.youtube.com/watch?v=BjfMWqy1hnw) — why Zellij, compared to tmux.
+
+> Searching YouTube for "**LazyVim 2026**", "**Zellij workflow**", or "**Neovim Claude Code**" surfaces
+> fresher material than any fixed link — treat the above as a starting point.
+
+### Going deeper in this repo
+
+- Per-layer references: [ghostty](../ghostty/README.md) · [zellij](../zellij/README.md) ·
+  [nvim](../nvim/README.md) · [zsh](../zsh/README.md) · [claude](../claude/README.md) ·
+  [fonts](../fonts/README.md)
+- Setup + ops: [install](install.md) · [sandbox](sandbox.md)
+- How the repo is built (the SDD loop + commands): [`.claude/commands/README.md`](../.claude/commands/README.md)
 
 ---
 
