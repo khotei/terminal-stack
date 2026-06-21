@@ -16,7 +16,7 @@ deliberate order, so each concern lives in one place.
 ```
 zsh/
 ├── .zshrc            # thin entrypoint → sources the role files below, in order
-├── env.zsh           # exports ($EDITOR=nvim), history, completion, options
+├── env.zsh           # XDG base dirs + redirects, exports ($EDITOR), history, completion
 ├── vi-mode.zsh       # zsh-vi-mode — Vim editing on the command line
 ├── aliases.zsh       # ll/la, git shortcuts, lg/y (guarded) — no shadowing grep/find
 ├── tools.zsh         # zoxide · atuin · fzf · bat man-pager (each guarded)
@@ -84,6 +84,39 @@ syntax-highlighted man pages — we do **not** alias `cat` (it breaks `cat > fil
 [catppuccin/starship](https://github.com/catppuccin/starship) mapping) and a compact two-line format:
 directory · git branch/status · command duration, then the `❯` character (green ok / red error). The
 git-branch glyph needs a Nerd Font (the stack assumes one).
+
+## Keeping `$HOME` tidy — XDG base directories
+
+`env.zsh` exports the [XDG base dirs](https://specifications.freedesktop.org/basedir/latest/)
+(`XDG_CONFIG_HOME` · `XDG_DATA_HOME` · `XDG_STATE_HOME` · `XDG_CACHE_HOME`), so XDG-aware tools
+(Neovim, atuin, bat, fd, gh, zoxide, …) keep their files under `~/.config` / `~/.local` / `~/.cache`
+instead of scattering dotfiles across `$HOME`. It also redirects four common offenders that **don't**
+follow XDG on their own — each via the tool's own documented variable (these are regenerable
+history/cache, so a fresh path is safe):
+
+| Was in `$HOME` | Now | Variable |
+|---|---|---|
+| `~/.zsh_history` | `~/.local/state/zsh/history` — existing history is **moved** over once | `HISTFILE` |
+| `~/.lesshst` | `~/.local/state/less/history` | `LESSHISTFILE` |
+| `~/.node_repl_history` | `~/.local/state/node/repl_history` | `NODE_REPL_HISTORY` |
+| `~/.python_history` | `~/.local/state/python/history` | `PYTHON_HISTORY` (Python ≥ 3.13) |
+| `~/.npm` (cache) | `~/.cache/npm` | `NPM_CONFIG_CACHE` |
+
+**What we deliberately leave alone.** Tools whose `$HOME` dir holds real **state or secrets** are not
+auto-redirected: repointing the variable doesn't move existing data, so it would hide your current
+auth/config behind an empty path. Move the directory first, then export the var yourself in
+`~/.zshrc.local`:
+
+| Tool | Var → target | Why it's opt-in |
+|---|---|---|
+| Docker | `DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"` | `config.json` holds registry auth — `mv ~/.docker …` first |
+| Rust | `CARGO_HOME="$XDG_DATA_HOME/cargo"` · `RUSTUP_HOME="$XDG_DATA_HOME/rustup"` | large toolchain dirs — move before re-pointing |
+| AWS | `AWS_CONFIG_FILE` · `AWS_SHARED_CREDENTIALS_FILE` | credentials are secret — move the files or auth breaks |
+| GnuPG | `GNUPGHOME` | 0700 perms + agent sockets make relocation fragile — best left at `~/.gnupg` |
+
+A few `$HOME` entries can't move from the shell at all and stay put: `~/.zshrc` (zsh must read one
+file from `$HOME`), `~/.gitconfig` (your identity — [git/](../git/README.md)), `~/.claude/`, and
+Finder's `.DS_Store`.
 
 ## Reload & verify
 

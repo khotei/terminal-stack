@@ -91,6 +91,9 @@ launching `claude` — the line appears at the bottom. (More detail in
 
 - Open a new terminal (zsh + Starship loads), then `zellij --layout dev` for the editor │ agent split.
 - First `nvim` launch installs the LazyVim plugins.
+- The shell keeps `$HOME` tidy — tool histories/caches go under `~/.local/state` · `~/.cache` (XDG),
+  not scattered dotfiles; an existing `~/.zsh_history` is moved over once. See
+  [`zsh/README.md`](../zsh/README.md).
 
 ### Git identity
 
