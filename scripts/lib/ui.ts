@@ -1,12 +1,14 @@
 // Shared presentation layer for the Bun scripts — colours, status glyphs, sections.
 // One owner for how every script looks, so doctor/check/(later)install read alike.
 //
-// Colour is on unless NO_COLOR is set (https://no-color.org). We gate it ourselves
-// rather than relying on TTY detection, matching the shell scripts (which always
-// colour) while still honouring the one universal opt-out.
+// Gating is Bun-native: `Bun.enableANSIColors` already folds in TTY detection,
+// NO_COLOR (https://no-color.org) and FORCE_COLOR, so colour never leaks into a
+// pipe/file and the user's environment is honoured — no hand-rolled check.
+// We still apply styles with node:util `styleText`: Bun.color emits colour codes
+// only (it returns null for `bold`/`dim` modifiers), and Bun has no styleText.
 import { styleText } from "node:util";
 
-const enabled = !("NO_COLOR" in process.env);
+const enabled = Bun.enableANSIColors;
 type Format = Parameters<typeof styleText>[0];
 const paint = (style: Format, s: string) => (enabled ? styleText(style, s) : s);
 
