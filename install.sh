@@ -81,6 +81,27 @@ prune() {
   return 0
 }
 
+# Fonts are COPIED (not symlinked) into the OS font dir — macOS Font Book and many
+# tools don't follow symlinks, and a moved repo shouldn't break installed fonts.
+# So --prune does not manage them. Skips a font already present (idempotent).
+install_fonts() {
+  echo "• Fonts (Dank Mono)"
+  local dest; case "$(uname -s)" in
+    Darwin) dest="$HOME/Library/Fonts" ;;
+    *)      dest="${XDG_DATA_HOME:-$HOME/.local/share}/fonts" ;;
+  esac
+  local did=false
+  for f in "$REPO"/fonts/*.otf "$REPO"/fonts/*.ttf; do
+    [ -e "$f" ] || continue
+    local base; base=$(basename "$f")
+    if [ -e "$dest/$base" ]; then note "ok: $base already installed"; continue; fi
+    if $DRY_RUN; then note "would install font: $base → $(short "$dest")/"; continue; fi
+    mkdir -p "$dest"; cp "$f" "$dest/$base"; note "installed font: $base"; did=true
+  done
+  $did && command -v fc-cache >/dev/null 2>&1 && fc-cache -f "$dest" >/dev/null 2>&1
+  return 0
+}
+
 echo "terminal-stack → installing from $REPO"
 $DRY_RUN && echo "(dry run — no changes)"
 
@@ -93,6 +114,7 @@ echo "• Shell";      link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
 echo "• Claude Code"; link "$REPO/claude/statusline.sh" "$HOME/.claude/statusline.sh"
                       link "$REPO/claude/cc-worktree.sh" "$HOME/.local/bin/cc-worktree"
 
+install_fonts
 $PRUNE && prune
 
 cat <<'DONE'

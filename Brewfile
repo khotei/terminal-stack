@@ -26,6 +26,6 @@ brew "shfmt"                            # shell formatter
 
 # ── fonts ─────────────────────────────────────────────────────────────
 cask "font-symbols-only-nerd-font"      # icon fallback for Ghostty / Starship / LazyVim
-cask "font-jetbrains-mono-nerd-font"    # a full Nerd Font (if you don't use Dank Mono)
-# Note: Dank Mono (the primary Ghostty font) is not on Homebrew — install it
-# yourself, or switch Ghostty's font-family to JetBrainsMono Nerd Font.
+cask "font-jetbrains-mono-nerd-font"    # a full Nerd Font (fallback / free alternative)
+# Dank Mono (the primary Ghostty font) is not on Homebrew — it's bundled under
+# fonts/ and installed by ./install.sh (see fonts/README.md for its license).
