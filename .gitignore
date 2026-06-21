@@ -19,6 +19,10 @@ nvim/lazy-lock.json.bak
 nvim/.luarc.json
 nvim/spell/
 
+# ── Bun / TypeScript (scripts are RUN, not built; deps are dev-only) ────
+node_modules/
+*.tsbuildinfo
+
 # ── Secrets / local overrides ───────────────────────────────
 *.local
 .env

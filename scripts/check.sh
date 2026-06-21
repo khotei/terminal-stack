@@ -80,6 +80,19 @@ if [ -n "${shell_files:-}" ]; then
   if have shfmt; then shfmt -d zsh/ >/dev/null 2>&1 && pass "shfmt -d zsh/" || warn "shfmt: formatting diff (zsh syntax may not be fully supported)"; else skip "shfmt not installed"; fi
 else skip "no shell files"; fi
 
+# ── Bun scripts (parse + import-resolve via `bun build`; skips without bun) ──
+# Like `zsh -n`, this is a LOAD check (catches syntax + bad imports), not a type
+# check — that's `make typecheck` (tsc). bun is absent in CI, so this skips there.
+head "Bun scripts"
+ts_files=$(ls scripts/*.ts scripts/lib/*.ts 2>/dev/null || true)
+if [ -n "$ts_files" ]; then
+  if have bun; then
+    for f in $ts_files; do
+      if bun build "$f" --target=bun >/dev/null 2>&1; then pass "bun build $f"; else fault "bun build $f — failed to load"; fi
+    done
+  else skip "bun not installed — TS scripts validated where bun is present"; fi
+else skip "no TS scripts"; fi
+
 # ── Verdict ───────────────────────────────────────────────────────────
 if [ "$fail" -eq 0 ]; then printf '\n\033[32m✓ check: all present configs valid\033[0m\n'; else printf '\n\033[31m✗ check: a validator failed\033[0m\n'; fi
 exit "$fail"

@@ -3,7 +3,7 @@
 # host GUI app and is not in the image. See docs/sandbox.md.
 IMAGE ?= terminal-stack:dev
 
-.PHONY: help build try zellij check check-local bootstrap install update macos clean
+.PHONY: help build try zellij check check-local bootstrap install update macos doctor typecheck clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -31,7 +31,10 @@ install: ## Symlink the configs into place (idempotent; --prune-aware via `make 
 	./install.sh
 
 doctor: ## Health-check: tools installed, configs symlinked, assets present (read-only)
-	@bash scripts/doctor.sh
+	@bun scripts/doctor.ts
+
+typecheck: ## Type-check the Bun scripts (needs: bun install — dev-only)
+	bun run typecheck
 
 macos: ## Apply opinionated macOS system defaults (opt-in; preview: ./macos/defaults.sh --dry-run)
 	./macos/defaults.sh
