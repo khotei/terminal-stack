@@ -43,22 +43,26 @@ hands feel at home:
 
 > All of Zellij's other modal defaults are **kept** — only the prefix key changed. The bare
 > `ctrl+hjkl` keys are deliberately **not** grabbed globally: they belong to Neovim. Pane navigation
-> goes through the prefix, or enable autolock below for seamless passthrough.
+> goes through the prefix; **autolock** (below) makes the editor/agent panes seamless.
 
-## Autolock (opt-in) — seamless editor/agent passthrough
+## Autolock (on by default) — seamless editor/agent passthrough
 
 [`zellij-autolock`](https://github.com/fresh2dev/zellij-autolock) auto-enters **locked** mode (every
-key passes through to the running app) when it sees `nvim`/`vim`/`git`/`fzf`/`zoxide`/`atuin` focused — so Zellij never
-eats a Neovim or Claude Code keystroke. It's shipped **disabled** (slashdash-commented `/-`) so the
-base config validates without the binary. To enable:
+key passes straight through to the running app) when it sees `nvim`/`vim`/`git`/`fzf`/`zoxide`/`atuin`
+focused — so Zellij never eats a Neovim or Claude Code keystroke, and you don't lock/unlock by hand.
+
+It's **enabled in `config.kdl`**, and `install.sh` fetches the plugin binary to
+`~/.config/zellij/plugins/zellij-autolock.wasm` automatically. **No wasm = no problem:** if the fetch
+is skipped (offline) the keybinds stay harmless (Enter still types; the plugin message is a no-op),
+so the config is valid either way. To fetch it manually:
 
 ```sh
-# 1. fetch the plugin binary
 mkdir -p ~/.config/zellij/plugins
 curl -fsSL -o ~/.config/zellij/plugins/zellij-autolock.wasm \
   https://github.com/fresh2dev/zellij-autolock/releases/latest/download/zellij-autolock.wasm
-# 2. in config.kdl, delete the `/-` prefix on the `plugins`, `load_plugins`, and `keybinds` nodes
 ```
+
+`Alt z` unlocks/disables it manually if you ever need the prefix while an editor is focused.
 
 ## The `dev` layout
 
