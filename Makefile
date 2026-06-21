@@ -3,7 +3,7 @@
 # host GUI app and is not in the image. See docs/sandbox.md.
 IMAGE ?= terminal-stack:dev
 
-.PHONY: help build try zellij check check-local bootstrap install update clean
+.PHONY: help build try zellij check check-local bootstrap install update macos clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -29,6 +29,9 @@ bootstrap: ## Fresh Mac → working stack (CLT + Homebrew + brew bundle + instal
 
 install: ## Symlink the configs into place (idempotent; --prune-aware via `make update`)
 	./install.sh
+
+macos: ## Apply opinionated macOS system defaults (opt-in; preview: ./macos/defaults.sh --dry-run)
+	./macos/defaults.sh
 
 update: ## Update everything: pull configs, install/upgrade tools, prune stale links
 	git pull --ff-only

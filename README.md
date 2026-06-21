@@ -112,6 +112,7 @@ terminal-stack/
 ├── zsh/            # .zshrc, Starship, shell integrations    — see zsh/README.md
 ├── claude/         # Claude Code status line + cc-worktree   — see claude/README.md
 ├── fonts/          # bundled Dank Mono (.otf)                — see fonts/README.md
+├── macos/          # opt-in macOS system defaults script     — see macos/README.md
 ├── docs/           # guide.md · install.md · sandbox.md      — see docs/README.md
 ├── scripts/        # check.sh + entrypoint.sh (sandbox/CI)
 ├── .claude/        # the SDD toolkit that builds this repo (see below)
