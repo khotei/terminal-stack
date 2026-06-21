@@ -35,7 +35,7 @@ it); the prompt initialises last over a ready shell. Anything machine-local or s
 (`brew install zsh-vi-mode`, in the Brewfile) — so the prompt has the same modal editing as Neovim:
 
 - **`Esc`** → normal mode; `i`/`a`/`I`/`A` back to insert; `v` visual.
-- Motions + text objects (`ci"`, `daw`, `0`/`$`/`w`/`b`), and **surround** (`S"`, `cs'"`, `ds(`).
+- Motions + text objects (`ci"`, `daw`, `0`/`$`/`w`/`b`), and **surround** (`ys"` add, `cs"'` change `"`→`'`, `ds"` delete).
 - A **mode indicator** + cursor-shape change (beam in insert, block in normal).
 - `dd`/`yy` use the system clipboard register where available.
 
@@ -75,7 +75,7 @@ git-branch glyph needs a Nerd Font (the stack assumes one).
 
 ## Install
 
-Until `install.sh` lands (Meta):
+`./install.sh` (or `make install`) links all of these. By hand:
 ```sh
 ln -sf  "$PWD/zsh/.zshrc"        ~/.zshrc
 mkdir -p ~/.config/zsh && ln -sf "$PWD"/zsh/*.zsh ~/.config/zsh/

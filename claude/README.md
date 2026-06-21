@@ -41,7 +41,7 @@ Fields consumed: `.model.display_name`, `.workspace.current_dir`, `.context_wind
 `.cost.total_cost_usd` ([schema](https://code.claude.com/docs/en/statusline)). Test it:
 
 ```sh
-echo '{"model":{"display_name":"Opus"},"workspace":{"current_dir":"'"$PWD"'"},"context_window":{"used_percentage":25}}' \
+echo '{"model":{"display_name":"Opus"},"workspace":{"current_dir":"'"$PWD"'"},"context_window":{"used_percentage":25},"cost":{"total_cost_usd":0.04}}' \
   | ./statusline.sh
 ```
 

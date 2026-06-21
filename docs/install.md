@@ -62,7 +62,18 @@ It is **idempotent** and **safe**:
 
 ## 3. Finish
 
-- Add the status-line block to `~/.claude/settings.json` (see [`claude/README.md`](../claude/README.md)).
+### Status line
+
+```json
+// ~/.claude/settings.json — create the file if it doesn't exist; otherwise merge this key in
+{ "statusLine": { "type": "command", "command": "~/.claude/statusline.sh", "padding": 0 } }
+```
+
+If the file already exists, add only the `statusLine` key — don't replace the whole file (invalid JSON
+silently disables the status line). It needs `jq` (in the Brewfile) and a Nerd Font. Verify by
+launching `claude` — the line appears at the bottom. (More detail in
+[`claude/README.md`](../claude/README.md).)
+
 - Open a new terminal (zsh + Starship loads), then `zellij --layout dev` for the editor │ agent split.
 - First `nvim` launch installs the LazyVim plugins.
 

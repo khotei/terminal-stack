@@ -263,7 +263,7 @@ are from the official docs — [CLI](https://code.claude.com/docs/en/cli-referen
 | `claude -r` (`--resume`) | Pick a past session to resume |
 | `claude -p "…"` (`--print`) | Print mode — non-interactive, for pipes/scripts |
 | `cat err.log \| claude -p "explain"` | Pipe content into a one-shot query |
-| `claude --model claude-sonnet-4-6` | Start on a specific model |
+| `claude --model <name>` | Start on a specific model (see `/model` or the CLI docs for current ids) |
 | `claude --add-dir ../lib` | Add extra working directories to the session |
 | `claude mcp` | Manage MCP servers |
 
@@ -373,7 +373,8 @@ keys (`gd`/`gr`/`cr`) replace "go to / find usages / rename". Hands stay on the 
 **Why this way:** the agent and the editor are *peers in adjacent panes* — lower RAM and a tighter
 loop than an embedded IDE agent, and you stay in control of the diff. Enabling
 [`zellij-autolock`](../zellij/README.md#autolock-opt-in--seamless-editoragent-passthrough) makes the
-hand-off seamless (no manual locking when a pane has nvim/claude focused).
+hand-off seamless (no manual locking when the focused pane runs one of autolock's watched apps — see
+[autolock](../zellij/README.md#autolock-opt-in--seamless-editoragent-passthrough)).
 
 ### 4. Git, the fast way
 *You're ready to review and commit.*
@@ -419,8 +420,8 @@ fuzzy search away.
 *You typed a 200-char `ffmpeg`/`curl` line and need to fix a flag in the middle.*
 
 1. `Esc` → normal mode (the cursor block tells you).
-2. `b`/`w` to hop by word, `0`/`$` to jump to start/end, `ci"` to replace a quoted value, `cs'"` to
-   swap quote style.
+2. `b`/`w` to hop by word, `0`/`$` to jump to start/end, `ci"` to replace a quoted value, `cs"'` to
+   swap the quote style.
 3. `i`/`a` back to insert, or just `Enter` to run.
 
 **Why this way:** the command line now has the *same* modal editing as Neovim — no reaching for arrow

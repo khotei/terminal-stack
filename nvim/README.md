@@ -61,12 +61,13 @@ Full reference: <https://www.lazyvim.org/keymaps>.
 - **Plugins:** edit a spec, then `:Lazy sync` (or restart). `lazy-lock.json` pins versions — commit it
   after a deliberate `:Lazy update`.
 - **Validate:** `nvim --headless +qa` exits 0 after bootstrapping. Verified in the Docker sandbox on
-  **Neovim 0.12 / LazyVim 16** — 32 plugins install clean. `make check` runs it; so does CI.
+  **Neovim 0.12 / LazyVim 16** — 32 plugins install clean. `make check` (Docker, Linux-accurate) or
+  `make check-local` (this machine) runs it; so does CI.
 - **Try it now:** `make try` in the sandbox, then `nvim`.
 
 ## Install
 
-Until `install.sh` lands (Meta), symlink:
+`./install.sh` (or `make install`) symlinks `nvim/` into `~/.config/nvim`. By hand:
 
 ```sh
 ln -sfn "$PWD/nvim" ~/.config/nvim && nvim   # first launch installs plugins

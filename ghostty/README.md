@@ -64,22 +64,22 @@ Ghostty's built-in macOS defaults still apply on top (e.g. `⌘=` / `⌘-` / `�
   unknown keys surface as errors.
 - **List valid themes:** `ghostty +list-themes`.
 
-> ℹ️ This config was authored on a machine without Ghostty installed, so `ghostty +show-config` was
-> **noted-skipped** by [`/check`](../.claude/commands/check.md) (graceful degradation). Run it once
-> on a machine with Ghostty to close AC-1 end-to-end.
+> ℹ️ Run `ghostty +show-config` once on a machine with Ghostty installed to confirm the config parses.
 
 ---
 
 ## Install
 
-Until the **Meta** feature lands `install.sh`, symlink manually:
+Install with `./install.sh` (or `make install`) — it symlinks `config` into `~/.config/ghostty/` and
+installs the bundled fonts. To do just this layer by hand:
 
 ```sh
 mkdir -p ~/.config/ghostty
 ln -sf "$PWD/ghostty/config" ~/.config/ghostty/config
 ```
 
-Then install the fonts: **Dank Mono** (you supply the files) and **Symbols Nerd Font** via Homebrew:
+Fonts: **Dank Mono** ships in [`../fonts/`](../fonts/) and is installed by `install.sh`; the Nerd Font
+fallback comes from the Brewfile (`brew bundle`).
 
 ```sh
 brew install --cask font-symbols-only-nerd-font

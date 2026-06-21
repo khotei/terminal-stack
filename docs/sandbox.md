@@ -35,10 +35,10 @@ config, re-run, see the result. Nothing is installed on your machine.
 | **zsh** + **Starship** | apt + install script | shell + prompt |
 | ripgrep · fd · fzf · zoxide | apt | companion CLIs |
 
+The sandbox now includes **Zellij**, **Neovim**, and **zsh + Starship** (plus the companion CLIs).
 On start, [`scripts/entrypoint.sh`](../scripts/entrypoint.sh) symlinks whatever config layers the
-repo currently has into `~/.config` — and **skips the ones that don't exist yet**. The sandbox landed
-before most layers; as each feature (Zellij, Neovim, Shell) merges, `make try` automatically picks it
-up. Until then you get a working shell with a fallback Starship/zoxide prompt.
+repo has into `~/.config`, **skipping any that are absent**. Ghostty is host-only — the terminal
+itself isn't run inside the container.
 
 ## Validation — `scripts/check.sh`
 
