@@ -32,6 +32,9 @@ as a self-contained reference guide: *what* changed, *why* each setting exists, 
 the keybindings it gives you. You can read this repo top-to-bottom and come out knowing the stack —
 not just copying it.
 
+> 🧭 **New to the stack? Start with the [Developer's Guide](docs/guide.md)** — the mental model, cheat
+> sheets, and scenario-by-scenario walkthroughs of how a developer actually works in it.
+
 <div align="center">
 <sub>📸 <i>screenshot goes here once the first configs land — see</i> <code>docs/assets/</code></sub>
 </div>
@@ -102,7 +105,7 @@ terminal-stack/
 ├── zellij/         # Zellij KDL config, layouts, plugin setup (zellij-autolock)
 ├── nvim/           # Neovim + LazyVim starter, plugin specs, keymaps (Lua)
 ├── zsh/            # .zshrc, Starship, shell integrations
-├── docs/           # guides, cheatsheets, screenshots
+├── docs/           # guide.md (usage), install.md, sandbox.md, cheatsheets
 ├── .claude/        # the SDD toolkit that builds this repo (see below)
 ├── CLAUDE.md       # always-loaded guidance for Claude Code
 └── README.md       # you are here
