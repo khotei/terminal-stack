@@ -2,6 +2,12 @@
 
 The primary typeface for the stack: **[Dank Mono](https://dank.sh)** — Regular, Italic, Bold.
 
+- **Files:** [`*.otf`](.) → copied to `~/Library/Fonts` (macOS) · `~/.local/share/fonts` (Linux)
+- **Validate:** open Font Book (macOS) and confirm *Dank Mono* is listed after install
+- **Feature:** `F-TERM-002` · **Upstream:** <https://dank.sh>
+
+---
+
 `install.sh` copies these into the OS font directory on setup (`~/Library/Fonts` on macOS,
 `~/.local/share/fonts` on Linux), **skipping any already installed**. They're *copied*, not symlinked,
 so Font Book and other tools pick them up and a moved repo won't break them — which also means
@@ -17,3 +23,7 @@ Dank Mono is a **commercial font** by Phil Pluckthun, purchased from <https://da
 is the repository owner's licensed copy, kept for personal convenience. **Do not redistribute** — if
 you want Dank Mono, buy your own license. Prefer a free typeface? Switch `ghostty/config`'s
 `font-family` to `JetBrainsMono Nerd Font` (installed by the Brewfile) and skip this folder.
+
+---
+
+> Part of [terminal-stack](../README.md) · usage [guide](../docs/guide.md) · setup [install](../docs/install.md).

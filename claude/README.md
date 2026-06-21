@@ -80,3 +80,7 @@ ln -sf "$PWD/claude/cc-worktree.sh" ~/.local/bin/cc-worktree
 - `bash -n claude/*.sh` — syntax clean (run by `/check` + CI).
 - Status line renders from mock JSON (verified: model · dir · git · context% · cost).
 - Try the layout live in the sandbox: `make zellij`.
+
+---
+
+> Part of [terminal-stack](../README.md) · usage [guide](../docs/guide.md) · setup [install](../docs/install.md).

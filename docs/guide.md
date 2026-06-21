@@ -78,7 +78,9 @@ cd ~/my-project
 zellij --layout dev        # opens the editor │ agent split (40% agent on the right)
 ```
 
-- Left pane is a shell — type `nvim` to edit. Right pane — type `claude` to start the agent.
+- Both panes **start as shells** (the layout doesn't auto-launch the apps — so a fresh prompt is
+  expected, not a failure). Left pane — type `nvim` to edit. Right pane — type `claude` to start the
+  agent.
 - **Switch panes:** `⌃a` then `h`/`l` (left/right). **New tab:** `⌃a c`. **Detach (leave it
   running):** `⌃a d` — reattach later with `zellij attach`.
 - In Neovim, press **`<Space>`** and *wait* — a menu (which-key) shows every command. That's your
@@ -180,7 +182,7 @@ surround mode):
 | `⌃T` | Pick a file path into the current command (fzf) |
 | `⌥C` | `cd` into a fuzzy-picked subdir (fzf) |
 | `vim **<Tab>` | fzf path completion — type `**` then `Tab` after any command |
-| `z foo` / `z foo bar` / `zi` | Jump to a dir by frecency / by keywords / pick interactively (zoxide) |
+| `z foo` / `z foo bar` / `zi` | Jump to a dir by frecency (frequency + recency) / by keywords / pick interactively (zoxide) |
 | `cd -` | Back to the previous dir |
 | `ll` `la` · `..` `...` | `ls -lah` / `ls -A` · up one / up two dirs |
 | `gs` `gd` `gl` | git status / diff / log --graph (aliases) |

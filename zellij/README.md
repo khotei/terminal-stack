@@ -77,3 +77,11 @@ lines to auto-launch `nvim` and `claude`.
 - **Validate:** `zellij --config zellij/config.kdl setup --check` → `[CONFIG FILE]: Well defined.`
   (verified in the sandbox on zellij 0.44.3).
 - **Try it now:** `make zellij` (the Docker sandbox) drops you straight into Zellij with this config.
+
+## Install
+
+`./install.sh` (or `make install`) symlinks `zellij/` into `~/.config/zellij/`.
+
+---
+
+> Part of [terminal-stack](../README.md) · usage [guide](../docs/guide.md) · setup [install](../docs/install.md).
