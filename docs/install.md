@@ -140,7 +140,7 @@ anything that isn't). Then, if needed:
 | Symptom | Fix |
 |---|---|
 | Install stalls early on a fresh Mac | The **Xcode Command Line Tools** dialog is waiting — accept it, then re-run. |
-| `cc-worktree: command not found` | `~/.local/bin` must be on `$PATH` (that's where `install.sh` links it). Add it to `zsh/env.zsh` or `~/.zshrc.local`. |
+| `cc-worktree: command not found` | `~/.local/bin` must be on `$PATH` — `zsh/env.zsh` adds it, so **open a new shell**. (Using a different shell? Add `~/.local/bin` to its `$PATH`.) |
 | Icons show as boxes (□) | Fonts need a **terminal restart** to be picked up after `install.sh` copies them. Restart Ghostty. |
 | Status line is blank | Check `jq` is installed (Brewfile), that `~/.claude/settings.json` is **valid JSON** (a syntax error silently disables it), and that you're using a **Nerd Font**. |
 | "Did install even do anything?" | `./install.sh --dry-run` shows what it would do, changing nothing. |

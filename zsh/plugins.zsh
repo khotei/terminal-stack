@@ -12,8 +12,17 @@ _load() { local f="$1"; shift; local b; for b in "$@"; do [ -r "$b/$f" ] && { so
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 _load zsh-autosuggestions.zsh "$_share/zsh-autosuggestions" "$_pdir/zsh-autosuggestions"
 
-# 2. fzf-tab — Tab completion becomes an fzf picker.
-_load fzf-tab.plugin.zsh "$_share/fzf-tab" "$_pdir/fzf-tab"
+# 2. fzf-tab — Tab completion becomes an fzf picker. Homebrew installs it as
+#    opt/fzf-tab/share/fzf-tab/fzf-tab.zsh (NOT under share/, and named *.zsh,
+#    not *.plugin.zsh); a manual clone keeps the upstream *.plugin.zsh name.
+for _ft in \
+  /opt/homebrew/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh \
+  /usr/local/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh \
+  "$_share/fzf-tab/fzf-tab.zsh" \
+  "$_pdir/fzf-tab/fzf-tab.plugin.zsh"; do
+  [ -r "$_ft" ] && { source "$_ft"; break; }
+done
+unset _ft
 
 # 3. Syntax highlighting — MUST be last; colours the command line as you type.
 _load zsh-syntax-highlighting.zsh "$_share/zsh-syntax-highlighting" "$_pdir/zsh-syntax-highlighting"
