@@ -19,15 +19,17 @@ zsh/
 ├── env.zsh           # exports ($EDITOR=nvim), history, completion, options
 ├── vi-mode.zsh       # zsh-vi-mode — Vim editing on the command line
 ├── aliases.zsh       # ll/la, git shortcuts, lg/y (guarded) — no shadowing grep/find
-├── tools.zsh         # zoxide · atuin · fzf integrations (each guarded)
-├── prompt.zsh        # starship init (sourced last)
+├── tools.zsh         # zoxide · atuin · fzf · bat man-pager (each guarded)
+├── prompt.zsh        # starship init
+├── plugins.zsh       # autosuggestions · fzf-tab · syntax-highlighting (sourced LAST)
 └── starship.toml     # Catppuccin Mocha prompt
 ```
 
-`.zshrc` sources `env → vi-mode → aliases → tools → prompt`. Order matters: env sets `$EDITOR` before
-tools read it; **vi-mode loads before tools** (it rebinds the keymaps, so fzf/atuin must bind *after*
-it); the prompt initialises last over a ready shell. Anything machine-local or secret goes in
-`~/.zshrc.local` (git-ignored), sourced at the end.
+`.zshrc` sources `env → vi-mode → aliases → tools → prompt → plugins`. Order matters: env sets
+`$EDITOR` before tools read it; **vi-mode loads before tools** (it rebinds the keymaps, so fzf/atuin
+must bind *after* it); the prompt initialises over a ready shell; **plugins load last** because
+zsh-syntax-highlighting must be the final thing sourced to wrap every other line-editor widget.
+Anything machine-local or secret goes in `~/.zshrc.local` (git-ignored), sourced at the end.
 
 ## Vi mode on the command line
 
@@ -57,6 +59,24 @@ startup — same graceful-degradation rule as the rest of the stack.
 
 `ll`, `la`, `gs`/`gd`/`gl`, and (if installed) `lg` (lazygit) / `y` (yazi) round it out. We
 deliberately **don't** alias over `grep`/`find` so scripts and habits keep working.
+
+## Plugins & power-ups
+
+[`plugins.zsh`](./plugins.zsh) is sourced **last** from `.zshrc` and loads three zsh enhancements
+(all from the Brewfile, each a silent skip if missing). Order is load-bearing:
+**autosuggestions → fzf-tab → syntax-highlighting**, with syntax-highlighting strictly last so it
+wraps every other line-editor widget.
+
+| Plugin / tool | Gives you |
+|---|---|
+| [**zsh-autosuggestions**](https://github.com/zsh-users/zsh-autosuggestions) | grey inline suggestion from history as you type — **→** (right arrow) accepts it |
+| [**fzf-tab**](https://github.com/Aloxaf/fzf-tab) | **Tab** completion becomes a fuzzy fzf menu |
+| [**zsh-syntax-highlighting**](https://github.com/zsh-users/zsh-syntax-highlighting) | colours the command line live (valid command green, error red) — loaded last |
+
+Two more power-ups live in the other role files: **[eza](https://github.com/eza-community/eza)** backs
+`ls`/`ll`/`la`/`lt` when installed (icons, `--git` status, `--tree`), falling back to plain `ls`
+otherwise (`aliases.zsh`); **[bat](https://github.com/sharkdp/bat)** is wired as the `MANPAGER` for
+syntax-highlighted man pages — we do **not** alias `cat` (it breaks `cat > file`) (`tools.zsh`).
 
 ## The prompt
 
