@@ -89,6 +89,20 @@ launching `claude` — the line appears at the bottom. (More detail in
 - Open a new terminal (zsh + Starship loads), then `zellij --layout dev` for the editor │ agent split.
 - First `nvim` launch installs the LazyVim plugins.
 
+### Optional: macOS system defaults
+
+Want the OS itself tuned for this keyboard-first workflow (Dock auto-hide, full trackpad gestures,
+**fast key-repeat for Vim**, and the `⌘⇧/` Help / man-page shortcuts disabled)? Run the opt-in
+[`macos/defaults.sh`](../macos/README.md):
+
+```sh
+./macos/defaults.sh --dry-run   # preview every change
+make macos                      # apply (then log out/in for key-repeat + shortcuts)
+```
+
+It's **not** run by `bootstrap.sh`/`install.sh` — it changes system settings, so you opt in. Every
+setting is reversible; see [`macos/README.md`](../macos/README.md).
+
 ## Troubleshooting
 
 If something didn't work, it's almost always one of these:
