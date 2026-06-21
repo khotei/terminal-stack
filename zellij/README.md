@@ -48,7 +48,7 @@ hands feel at home:
 ## Autolock (opt-in) — seamless editor/agent passthrough
 
 [`zellij-autolock`](https://github.com/fresh2dev/zellij-autolock) auto-enters **locked** mode (every
-key passes through to the running app) when it sees `nvim`/`git`/`fzf` focused — so Zellij never
+key passes through to the running app) when it sees `nvim`/`vim`/`git`/`fzf`/`zoxide`/`atuin` focused — so Zellij never
 eats a Neovim or Claude Code keystroke. It's shipped **disabled** (slashdash-commented `/-`) so the
 base config validates without the binary. To enable:
 
