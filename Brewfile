@@ -14,6 +14,7 @@ cask "ghostty"                          # GPU terminal emulator (host GUI)
 brew "zellij"
 brew "neovim"
 brew "starship"
+brew "zsh-vi-mode"                       # Vim editing on the command line (zsh/vi-mode.zsh)
 
 # ── agent ─────────────────────────────────────────────────────────────
 cask "claude-code"                      # the whole point — Claude Code, runs in a Zellij pane

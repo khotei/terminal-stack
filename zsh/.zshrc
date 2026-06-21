@@ -6,9 +6,10 @@
 
 ZSH_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 
-# Order matters: env (exports, options) → aliases → tools (integrations that may
-# read $EDITOR etc.) → prompt (starship, last so it wraps a ready shell).
-for _f in env aliases tools prompt; do
+# Order matters: env (exports, options) → vi-mode (rebinds keymaps, so it must
+# precede anything that binds keys) → aliases → tools (fzf/atuin bind AFTER vi-mode
+# so they survive) → prompt (starship, last so it wraps a ready shell).
+for _f in env vi-mode aliases tools prompt; do
   [ -r "$ZSH_DIR/$_f.zsh" ] && source "$ZSH_DIR/$_f.zsh"
 done
 unset _f

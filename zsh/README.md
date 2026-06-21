@@ -17,15 +17,32 @@ deliberate order, so each concern lives in one place.
 zsh/
 ├── .zshrc            # thin entrypoint → sources the role files below, in order
 ├── env.zsh           # exports ($EDITOR=nvim), history, completion, options
+├── vi-mode.zsh       # zsh-vi-mode — Vim editing on the command line
 ├── aliases.zsh       # ll/la, git shortcuts, lg/y (guarded) — no shadowing grep/find
 ├── tools.zsh         # zoxide · atuin · fzf integrations (each guarded)
 ├── prompt.zsh        # starship init (sourced last)
 └── starship.toml     # Catppuccin Mocha prompt
 ```
 
-`.zshrc` sources `env → aliases → tools → prompt`. Order matters: env sets `$EDITOR` before tools
-read it; the prompt initialises last over a ready shell. Anything machine-local or secret goes in
+`.zshrc` sources `env → vi-mode → aliases → tools → prompt`. Order matters: env sets `$EDITOR` before
+tools read it; **vi-mode loads before tools** (it rebinds the keymaps, so fzf/atuin must bind *after*
+it); the prompt initialises last over a ready shell. Anything machine-local or secret goes in
 `~/.zshrc.local` (git-ignored), sourced at the end.
+
+## Vi mode on the command line
+
+[`vi-mode.zsh`](./vi-mode.zsh) loads [**zsh-vi-mode**](https://github.com/jeffreytse/zsh-vi-mode)
+(`brew install zsh-vi-mode`, in the Brewfile) — so the prompt has the same modal editing as Neovim:
+
+- **`Esc`** → normal mode; `i`/`a`/`I`/`A` back to insert; `v` visual.
+- Motions + text objects (`ci"`, `daw`, `0`/`$`/`w`/`b`), and **surround** (`S"`, `cs'"`, `ds(`).
+- A **mode indicator** + cursor-shape change (beam in insert, block in normal).
+- `dd`/`yy` use the system clipboard register where available.
+
+**Keybinding survival:** zsh-vi-mode rebinds the keymaps when it initialises, which would otherwise
+wipe fzf's `Ctrl-R`/`Ctrl-T` and atuin's `Ctrl-R`. We set `ZVM_INIT_MODE=sourcing` and load it
+**before** `tools.zsh`, so those integrations bind *after* zvm and win. A missing plugin is a silent
+skip (it never breaks startup); the plugin is found via the Homebrew path or `$ZVM_PLUGIN`.
 
 ## Companion CLIs (each guarded)
 
