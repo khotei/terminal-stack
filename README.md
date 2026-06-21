@@ -61,35 +61,57 @@ top-to-bottom and come out knowing the stack — not just copying it.
 
 ## ✦ Quickstart
 
-On a **fresh Mac**, one command does everything — Command Line Tools, Homebrew, the toolchain, and
-the config symlinks:
+### What actually runs
+
+`bootstrap.sh` is the **one command** for a fresh Mac. It runs four stages in order — idempotent, so
+re-running just skips anything already there:
+
+```text
+  ./bootstrap.sh  ──  one command, four stages
+      │
+      ①  Xcode CLT     git · compiler · make             (prep · skipped if present)
+      ②  Homebrew      the package manager               (prep · skipped if present)
+      ③  brew bundle   the toolchain:  Ghostty · Zellij · Neovim · Starship · CLIs · fonts
+      ④  install.sh    symlink configs → ~/.config · copy fonts · fetch autolock plugin
+      │
+      ▼
+   stack installed
+```
 
 ```bash
 git clone https://github.com/khotei/terminal-stack.git ~/terminal-stack
-cd ~/terminal-stack
-./bootstrap.sh        # CLT + Homebrew → brew bundle → install.sh   (idempotent)
+cd ~/terminal-stack && ./bootstrap.sh
 ```
 
-Already have Homebrew? You can run the steps directly instead:
+**Already have Homebrew?** Stages ③–④ are all `bootstrap` does after the prep — run them yourself:
 
 ```bash
-brew bundle           # install the toolchain (Ghostty, Zellij, Neovim, Starship, fonts, …)
-./install.sh          # symlink every config (idempotent; --dry-run to preview)
-# Linux: install Homebrew first, then the same two lines above (bootstrap.sh is macOS-only)
+brew bundle     # ③ the toolchain   · trim the Brewfile's Personal section first if you want
+./install.sh    # ④ symlink configs · --dry-run previews; anything replaced is backed up to .bak
+# Linux: install Homebrew yourself first (bootstrap.sh is macOS-only), then the two lines above.
 ```
 
-Then add the status-line block to `~/.claude/settings.json`, open a new terminal, and run
-`zellij --layout dev`. **Update later** with `make update` (pull + upgrade tools + prune stale links);
-`make help` lists every target. Full walkthrough: [`docs/install.md`](docs/install.md).
+### Then — what to run after
 
-> **Optional:** `make macos` applies opinionated macOS system defaults (Dock auto-hide, Vim
-> key-repeat, …) — it's **not** run by `bootstrap.sh`/`install.sh`; preview with
-> `./macos/defaults.sh --dry-run`.
-> Check your setup any time with `make doctor`.
+The stack is installed. These finish and personalise it; only the first two are needed to *use* it:
 
-> **Safe by default:** `install.sh` backs up any existing config it replaces to `*.bak`; preview with
-> `--dry-run`. To revert: remove the symlinks and restore the `.bak` files (see
-> [`docs/install.md`](docs/install.md#uninstall)).
+| | Run | What it does |
+|---|---|---|
+| **required** | open a new terminal | loads zsh + Starship — your shell is ready |
+| **required** | `zellij --layout dev` | the **Neovim │ Claude Code** split — the actual workflow |
+| for Claude's status line | add the `statusLine` block to `~/.claude/settings.json` | the model · dir · git · cost line ([how](docs/install.md#status-line)) |
+| recommended | `make git-setup` | set your git name/email in `~/.gitconfig` (never committed) |
+| optional | `make macos` | opinionated macOS defaults — Dock, Vim key-repeat, trackpad (**opt-in**; `--dry-run` previews) |
+| anytime | `make doctor` | read-only health check — is every tool + symlink in place? |
+| anytime | `make update` | pull configs + upgrade tools + prune stale links |
+
+`make help` lists every target. Full walkthrough with the per-setting detail:
+[`docs/install.md`](docs/install.md).
+
+> **Safe by default:** `install.sh` backs up anything it replaces to `*.bak` and previews with
+> `--dry-run`; `make macos` / `make git-setup` never run unless you call them. The first `nvim` launch
+> installs the LazyVim plugins. To revert: remove the symlinks and restore the `.bak` files
+> ([uninstall](docs/install.md#uninstall)).
 
 Each config directory carries its **own README** with the per-setting reference — so you can read or
 adopt one layer at a time.
