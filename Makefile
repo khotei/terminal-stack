@@ -3,7 +3,7 @@
 # host GUI app and is not in the image. See docs/sandbox.md.
 IMAGE ?= terminal-stack:dev
 
-.PHONY: help build try zellij check check-local install update clean
+.PHONY: help build try zellij check check-local bootstrap install update clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -23,6 +23,9 @@ check: build ## Run the validators inside the sandbox (Linux-accurate)
 
 check-local: ## Run the validators on this machine (no Docker)
 	bash scripts/check.sh
+
+bootstrap: ## Fresh Mac → working stack (CLT + Homebrew + brew bundle + install)
+	./bootstrap.sh
 
 install: ## Symlink the configs into place (idempotent; --prune-aware via `make update`)
 	./install.sh

@@ -1,12 +1,24 @@
 # 📦 Install
 
-Provision the whole stack on a fresh macOS machine in two steps: install the toolchain with
-Homebrew, then symlink the configs into place. Feature: `F-META-002`.
+## Fresh Mac — one command
+
+`bootstrap.sh` takes a clean machine from zero: it ensures the **Xcode Command Line Tools**, installs
+**Homebrew** if missing, runs `brew bundle`, then `install.sh`. Idempotent — anything already present
+is skipped. Feature: `F-META-005`.
 
 ```sh
 git clone https://github.com/khotei/terminal-stack.git ~/terminal-stack
 cd ~/terminal-stack
+./bootstrap.sh        # or: make bootstrap
+```
 
+> The Homebrew installer also installs the Command Line Tools (git/cc) if they're missing — a dialog
+> may appear; accept it. On **Linux**, install Homebrew yourself first, then run `brew bundle &&
+> ./install.sh` (`bootstrap.sh` is macOS-only and will say so).
+
+## Already have Homebrew — the two steps
+
+```sh
 brew bundle          # 1. install the toolchain (see ./Brewfile)
 ./install.sh         # 2. symlink the configs into ~/.config etc.
 ```

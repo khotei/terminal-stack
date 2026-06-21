@@ -53,22 +53,25 @@ not just copying it.
 ## ✦ Requirements
 
 - **macOS** (primary) or **Linux**
-- [**Homebrew**](https://brew.sh) — everything installs through it
-- A [**Nerd Font**](https://www.nerdfonts.com/) for icons (the configs assume one)
+- That's it — `bootstrap.sh` installs the Xcode Command Line Tools + [Homebrew](https://brew.sh) for
+  you. (On Linux, install Homebrew first, then run `brew bundle && ./install.sh`.)
 
 ## ✦ Quickstart
 
+On a **fresh Mac**, one command does everything — Command Line Tools, Homebrew, the toolchain, and
+the config symlinks:
+
 ```bash
-# 1. clone
 git clone https://github.com/khotei/terminal-stack.git ~/terminal-stack
 cd ~/terminal-stack
+./bootstrap.sh        # CLT + Homebrew → brew bundle → install.sh   (idempotent)
+```
 
-# 2. install the toolchain (Ghostty, Zellij, Neovim, Starship, companions, fonts)
-brew bundle
+Already have Homebrew? You can run the steps directly instead:
 
-# 3. symlink every config into place — idempotent, backs up anything in the way
-#    (preview first with: ./install.sh --dry-run)
-./install.sh
+```bash
+brew bundle           # install the toolchain (Ghostty, Zellij, Neovim, Starship, fonts, …)
+./install.sh          # symlink every config (idempotent; --dry-run to preview)
 ```
 
 Then add the status-line block to `~/.claude/settings.json`, open a new terminal, and run
