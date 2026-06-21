@@ -30,6 +30,9 @@ bootstrap: ## Fresh Mac → working stack (CLT + Homebrew + brew bundle + instal
 install: ## Symlink the configs into place (idempotent; --prune-aware via `make update`)
 	./install.sh
 
+doctor: ## Health-check: tools installed, configs symlinked, assets present (read-only)
+	@bash scripts/doctor.sh
+
 macos: ## Apply opinionated macOS system defaults (opt-in; preview: ./macos/defaults.sh --dry-run)
 	./macos/defaults.sh
 
