@@ -105,7 +105,9 @@ setting is reversible; see [`macos/README.md`](../macos/README.md).
 
 ## Troubleshooting
 
-If something didn't work, it's almost always one of these:
+**First, run `make doctor`** — a read-only health-check that tells you, line by line, whether each
+tool is installed, each config is symlinked, and the fonts/plugin/`$PATH` are right (with the fix for
+anything that isn't). Then, if needed:
 
 | Symptom | Fix |
 |---|---|
