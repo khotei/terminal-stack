@@ -23,8 +23,9 @@ brew bundle check        # is everything installed?
 brew bundle list         # list the deps
 ```
 
-> **Dank Mono** (Ghostty's primary font) isn't on Homebrew — install it yourself, or switch
-> `ghostty/config`'s `font-family` to `JetBrainsMono Nerd Font` (installed by the Brewfile).
+> **Dank Mono** (Ghostty's primary font) isn't on Homebrew — it's **bundled under `fonts/`** and
+> installed by `install.sh` (step 2). Prefer a free font? Switch `ghostty/config`'s `font-family` to
+> `JetBrainsMono Nerd Font` (installed by the Brewfile). See [`fonts/README.md`](../fonts/README.md).
 
 ## 2. `install.sh` — symlink the configs
 
@@ -37,11 +38,13 @@ brew bundle list         # list the deps
 | `nvim/` | → | `~/.config/nvim` |
 | `zsh/.zshrc` · `zsh/*.zsh` · `zsh/starship.toml` | → | `~/.zshrc` · `~/.config/zsh/` · `~/.config/starship.toml` |
 | `claude/statusline.sh` · `claude/cc-worktree.sh` | → | `~/.claude/statusline.sh` · `~/.local/bin/cc-worktree` |
+| `fonts/*.otf` | ⇒ | `~/Library/Fonts` (macOS) · `~/.local/share/fonts` (Linux) — **copied**, skip-if-present |
 
 It is **idempotent** and **safe**:
-- Re-running relinks nothing already correct (reports `ok`).
+- Re-running relinks nothing already correct (reports `ok`); a font already installed is skipped.
 - A real file/dir in the way is backed up to `<path>.bak` before linking.
 - `./install.sh --dry-run` shows what it would do, changing nothing.
+- Fonts are **copied** (not symlinked), so `--prune` never touches them.
 
 ## 3. Finish
 
