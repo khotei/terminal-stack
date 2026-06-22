@@ -80,7 +80,7 @@ brew bundle list         # list the deps
 | `nvim/` | → | `~/.config/nvim` |
 | `zsh/.zshrc` · `zsh/*.zsh` · `zsh/starship.toml` | → | `~/.zshrc` · `~/.config/zsh/` · `~/.config/starship.toml` |
 | `git/config` | → | `~/.config/git/config` (additive; never touches `~/.gitconfig`) |
-| `claude/statusline.sh` · `claude/CLAUDE.md` · `claude/cc-worktree.sh` | → | `~/.claude/statusline.sh` · `~/.claude/CLAUDE.md` · `~/.local/bin/cc-worktree` |
+| `claude/statusline.sh` · `claude/rules/*.md` · `claude/cc-worktree.sh` | → | `~/.claude/statusline.sh` · `~/.claude/rules/` (one link per file) · `~/.local/bin/cc-worktree` |
 | `fonts/*.otf` | ⇒ | `~/Library/Fonts` (macOS) · `~/.local/share/fonts` (Linux) — **copied**, skip-if-present |
 
 It is **idempotent** and **safe**:
@@ -157,7 +157,7 @@ There's no uninstall script — the install is just symlinks plus copied fonts, 
 
 - **Remove the symlinks** `install.sh` created (`~/.config/ghostty/config`, `~/.config/zellij`,
   `~/.config/nvim`, `~/.zshrc`, `~/.config/zsh/`, `~/.config/starship.toml`, `~/.claude/statusline.sh`,
-  `~/.claude/CLAUDE.md`, `~/.local/bin/cc-worktree`).
+  `~/.claude/rules/`, `~/.local/bin/cc-worktree`).
 - **Restore your originals:** each path `install.sh` replaced was backed up to `<path>.bak` — move it
   back.
 - **Fonts** were *copied* to `~/Library/Fonts` (macOS) / `~/.local/share/fonts` (Linux) — delete the
@@ -181,7 +181,8 @@ this repo and are broken; a valid link, or any symlink pointing elsewhere, is le
 `./install.sh --dry-run --prune`.
 
 > `nvim/` and `zellij/` are whole-directory symlinks, so files added *inside* them appear
-> automatically — no re-install. The per-file `zsh/*.zsh` links are where `--prune` earns its keep.
+> automatically — no re-install. The per-file `zsh/*.zsh` and `claude/rules/*.md` links are where
+> `--prune` earns its keep — add a file there and re-run `./install.sh` to link it.
 
 ### `make update` — the one-command update
 ```sh
