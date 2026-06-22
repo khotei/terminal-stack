@@ -17,8 +17,8 @@ row: *I used to press X in the IDE — what do I do here?*
 | Mark | Meaning |
 |---|---|
 | ✅ | **built-in** — works in stock LazyVim today |
-| 🔵 | **needs TS-extra** — lit up by `lang.typescript` (F-EDIT-002) |
-| 🧩 | **needs plugin** — added by F-EDIT-002 (diffview / glance / dropbar / mini.surround) |
+| 🔵 | **needs an extra** — `lang.typescript` (F-EDIT-002) or `editor.inc-rename` (F-EDIT-003) |
+| 🧩 | **needs plugin** — diffview / dropbar / mini.surround (F-EDIT-002) |
 | 🤖 | **→ Claude** — delegate to the agent in a Zellij pane |
 | ⛔ | **no direct equivalent** — known gap |
 
@@ -30,8 +30,8 @@ row: *I used to press X in the IDE — what do I do here?*
 |---|---|---|---|
 | Quick Documentation ⌥⇧D | `K` | Hover: docs + type + signature | 🔵 |
 | Parameter Info ⌘P | `gK` | Signature help | 🔵 |
-| Quick Definition ⌥D | `gpd` | Peek definition (popup) | 🧩 glance |
-| Quick Type Definition ⌥T | `gy` / `gpt` | Goto / peek type definition | 🔵 / 🧩 |
+| Quick Definition ⌥D | `gd` | Goto definition (the snacks picker previews when there are several) | 🔵 |
+| Quick Type Definition ⌥T | `gy` | Goto type definition | 🔵 |
 
 ## Navigation — move around
 
@@ -47,9 +47,9 @@ row: *I used to press X in the IDE — what do I do here?*
 
 | JetBrains | Keys | Action | Status |
 |---|---|---|---|
-| Find / Show Usages ⌥⇧S | `gr` / `gpr` | References (list / peek) | 🔵 / 🧩 |
+| Find / Show Usages ⌥⇧S | `gr` / `<leader>cS` | References (snacks list w/ preview · or the Trouble panel) | 🔵 |
 | Next / Prev Highlighted Usage ⌃⌥↕ | `]]` / `[[` | Jump between references | 🔵 |
-| Go to Implementation | `gI` / `gpi` | Implementations (goto / peek) | 🔵 / 🧩 |
+| Go to Implementation | `gI` | Implementations | 🔵 |
 | Goto Source Definition | `gD` | Past type aliases to the source | 🔵 |
 | File References | `gR` | References within the file | 🔵 |
 
@@ -76,7 +76,7 @@ row: *I used to press X in the IDE — what do I do here?*
 
 | JetBrains | Keys | Action | Status |
 |---|---|---|---|
-| Rename ⇧F6 | `<leader>cr` | LSP rename | 🔵 |
+| Rename ⇧F6 | `<leader>cr` | LSP rename with live preview (inc-rename) | 🔵 |
 | Organize / Add imports | `<leader>co` / `<leader>cM` | Imports | 🔵 |
 | Comment ⌘/ | `gcc` / `gc` | Toggle line / motion comment | ✅ |
 | Surround With ⌃⌥T | `gsa` | Add surround (mini.surround) | 🧩 |
