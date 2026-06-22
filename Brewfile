@@ -27,6 +27,7 @@ brew "fd"                               # fast find
 brew "ripgrep"                          # fast grep
 brew "lazygit"                          # git TUI
 brew "yazi"                             # file manager TUI
+brew "node"                             # node runtime for the Neovim TS LSP — mason installs/runs vtsls via npm (lazyvim.json lang.typescript)
 brew "jq"                               # JSON (Claude Code statusline)
 brew "eza"                              # modern ls (zsh/aliases.zsh)
 brew "bat"                              # better cat / man pager (zsh/tools.zsh)
