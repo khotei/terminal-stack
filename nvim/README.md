@@ -35,6 +35,10 @@ nvim/
 | `lua/config/lazy.lua` | `install.colorscheme = { "catppuccin", … }` | Use the real theme during install, not the default tokyonight. |
 | `lua/config/options.lua` | `relativenumber`, `scrolloff=8`, `confirm` | Small comfort defaults on top of LazyVim's. |
 | `lua/config/keymaps.lua` | `jk` → `<Esc>` | One universal comfort bind; this file is where you port your IdeaVim maps. |
+| `lazyvim.json` | enable `lang.typescript` (vtsls) + `coding.mini-surround` extras | TS LSP semantics (`gd`/`gr`/`K`/`gy`) + `gs` surround. The [LazyVim extras](https://www.lazyvim.org/extras) manifest; `.ts` had no language server before. |
+| `lua/plugins/diffview.lua` | add `sindrets/diffview.nvim` + `<leader>gv`/`gh`/`gH` | Side-by-side diff + file history for reviewing changes (Claude's especially). [diffview.nvim](https://github.com/sindrets/diffview.nvim). |
+| `lua/plugins/glance.lua` | add `dnlhc/glance.nvim` + `gpd`/`gpr`/`gpt`/`gpi` | JetBrains-style peek (Quick Definition/Usages); `gp` avoids the TS extra's `gD`/`gR`. [glance.nvim](https://github.com/DNLHC/glance.nvim). |
+| `lua/plugins/dropbar.lua` | add `Bekaboo/dropbar.nvim` | Breadcrumb winbar (the "Context Info" view). Requires **Neovim ≥ 0.11** — an editor version floor the stack now depends on. [dropbar.nvim](https://github.com/Bekaboo/dropbar.nvim). |
 
 > **Porting IdeaVim:** `lua/config/keymaps.lua` is the single home for editor maps, so collisions with
 > the Zellij prefix (`ctrl+a`) and Ghostty stay auditable
