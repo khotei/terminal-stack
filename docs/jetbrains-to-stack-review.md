@@ -113,6 +113,28 @@ Pick the row that matches what you're debugging:
 | **A VS Code-style config** | drop `.vscode/launch.json` in the project | js-debug configs are auto-read — they show up in the `<leader>dc` picker, zero setup |
 | **Anything already running** (any runtime/PM) | start it with `node --inspect-brk <entry>` in a Zellij pane → `<leader>dc` → **Attach** | the universal escape hatch when no launch config fits |
 
+### How it works — the `--inspect` server ↔ client
+
+Node ships its own debugger; there's **no extra utility to install**. Starting a process with
+`--inspect` (or `--inspect-brk` to pause on line 1) raises an **Inspector** — a debug server on a
+port (default `127.0.0.1:9229`) speaking the **Chrome DevTools Protocol (CDP)**. Any CDP client
+attaches to it: nvim-dap's `js-debug`, a browser's `chrome://inspect`, or VS Code.
+
+```
+ node --inspect-brk app.js        ◀── CDP over WebSocket ──▶   nvim-dap + js-debug
+   raises the Inspector @ :9229                                 (your "interface")
+```
+
+- **Launch** — the editor starts node for you (`Launch file`, `Debug npm script`); nothing to raise by hand.
+- **Attach** — you raise the process with `--inspect`, the editor connects; the universal path.
+- **Dev servers** (Next, Vite, Nest, …) are node underneath — run the dev script with the flag, then Attach:
+  ```sh
+  NODE_OPTIONS='--inspect' npm run dev    # in a Zellij pane → <leader>dc → Attach
+  ```
+- `js-debug` adds source-maps (TS→JS) and child-process auto-attach on top of raw CDP — which is why
+  it beats `chrome://inspect` for real work. (Exception: **Bun**'s `--inspect` speaks the WebKit
+  protocol, not CDP — see the Bun row below.)
+
 ### Reliability & prerequisites
 
 - **Node must be on `PATH`.** The debugger launches `node`; the stack puts it there via fnm
