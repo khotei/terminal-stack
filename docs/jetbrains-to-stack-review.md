@@ -17,7 +17,7 @@ row: *I used to press X in the IDE — what do I do here?*
 | Mark | Meaning |
 |---|---|
 | ✅ | **built-in** — works in stock LazyVim today |
-| 🔵 | **needs an extra** — `lang.typescript` (F-EDIT-002) or `editor.inc-rename` (F-EDIT-003) |
+| 🔵 | **needs an extra** — `lang.typescript` (F-EDIT-002) · `editor.inc-rename` (F-EDIT-003) · `editor.outline` / `dap.core` / `test.core` (F-EDIT-004) |
 | 🧩 | **needs plugin** — diffview / dropbar / mini.surround (F-EDIT-002) |
 | 🤖 | **→ Claude** — delegate to the agent in a Zellij pane |
 | ⛔ | **no direct equivalent** — known gap |
@@ -57,8 +57,9 @@ row: *I used to press X in the IDE — what do I do here?*
 
 | JetBrains | Keys | Action | Status |
 |---|---|---|---|
-| File Structure ⌘F12 | `<leader>ss` | Document symbols picker | 🔵 |
-| Structure + diagnostics | `<leader>cs` / `<leader>xx` | Symbols / Trouble panel | ✅ |
+| File Structure ⌘F12 | `<leader>ss` | Document symbols picker (quick jump) | 🔵 |
+| Structure panel ⌘7 | `<leader>cs` | outline.nvim pinned tree (follows cursor) | 🔵 |
+| Problems / diagnostics | `<leader>xx` | Trouble diagnostics panel | ✅ |
 | Context Info / Breadcrumbs ⌃⇧Q | — | dropbar winbar (symbol path at cursor) | 🧩 dropbar |
 | Type Hierarchy ⌃H | — | — | ⛔ |
 
@@ -92,8 +93,8 @@ row: *I used to press X in the IDE — what do I do here?*
 |---|---|---|---|
 | Run / Debug a script | `<C-/>` then `bun run …` | snacks terminal, or a Zellij pane | ✅ |
 | Run configurations | — | A Zellij pane per long-running process | ✅ |
-| Step debugger | — | `nvim-dap` (not installed — out of scope) | ⛔ |
-| Test runner | — | `neotest` (not installed — out of scope) | ⛔ |
+| Step debugger ⇧F9 | `<leader>db` · `<leader>dc` · `<leader>du` | Breakpoint · continue · dap-ui (nvim-dap; TS `js-debug` adapter auto-wired) | 🔵 |
+| Test runner ⇧F10 | `<leader>tr` · `<leader>ts` · `<leader>tw` | Run nearest · summary · watch (neotest; vitest + jest) | 🔵 |
 
 ---
 
@@ -101,8 +102,9 @@ row: *I used to press X in the IDE — what do I do here?*
 
 - **Type Hierarchy** and a **Recent-Locations picker** have no out-of-box equivalent. The jumplist
   (`<C-o>`/`<C-i>`) covers most of Recent Locations in practice.
-- **Step debugging** (`nvim-dap`) and **test running** (`neotest`) are deliberately out of scope —
-  editing/running is delegated to Claude. Candidate future features.
+- **Step debugging** (`nvim-dap`) and **test running** (`neotest`) are now wired in (F-EDIT-004) —
+  debug under `<leader>d*`, tests under `<leader>t*`. Editing still defaults to Claude; these are for
+  when you want the interactive IDE loop.
 
 ## See also
 
