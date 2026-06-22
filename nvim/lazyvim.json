@@ -1,0 +1,7 @@
+{
+  "extras": [
+    "lazyvim.plugins.extras.lang.typescript"
+  ],
+  "news": {},
+  "version": 8
+}
