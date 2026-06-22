@@ -113,6 +113,18 @@ Pick the row that matches what you're debugging:
 | **A VS Code-style config** | drop `.vscode/launch.json` in the project | js-debug configs are auto-read — they show up in the `<leader>dc` picker, zero setup |
 | **Anything already running** (any runtime/PM) | start it with `node --inspect-brk <entry>` in a Zellij pane → `<leader>dc` → **Attach** | the universal escape hatch when no launch config fits |
 
+### Reliability & prerequisites
+
+- **Node must be on `PATH`.** The debugger launches `node`; the stack puts it there via fnm
+  (`zsh/tools.zsh`), so a normal shell is fine. If Neovim was started without the shell env, run
+  `fnm use default` first.
+- **"Green" ≠ "works".** `/check` and a headless load only prove the dap config *parses and
+  registers* — a debug session is proven **only when a breakpoint is actually hit**. Verify
+  interactively, not from validators.
+- **If `<leader>dc` fails with `ECONNREFUSED 127.0.0.1:<port>`** — that's a known `js-debug` handshake
+  flake ([LazyVim #5913](https://github.com/LazyVim/LazyVim/issues/5913)), not your config.
+  Terminate (`<leader>dt`) and start again (`<leader>dc`); it usually connects on the retry.
+
 ### Known gaps & workarounds
 
 - **Node's built-in runner (`node:test` / `node --test`)** — no mature neotest adapter, so no
