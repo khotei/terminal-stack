@@ -2,7 +2,7 @@
 
 The "IDE in the terminal." [LazyVim](https://lazyvim.org) is a curated [Neovim](https://neovim.io)
 distribution on the [lazy.nvim](https://github.com/folke/lazy.nvim) plugin manager — LSP, Treesitter,
-Telescope, which-key, git, and a discoverable `<Space>`-leader keymap, out of the box. This layer is
+the snacks picker, which-key, git, and a discoverable `<Space>`-leader keymap, out of the box. This layer is
 the official **starter** plus a few opinionated overrides.
 
 - **Dir:** [`nvim/`](.) → `~/.config/nvim/`
@@ -51,7 +51,7 @@ The leader is **`<Space>`**. Press it and **which-key** shows every branch. The 
 | Keys | Action |
 |---|---|
 | `<Space>` then wait | which-key menu (discovery) |
-| `<Space>ff` / `<Space>fg` | Find files / live grep (Telescope) |
+| `<Space>ff` / `<Space>fg` | Find files / live grep (snacks picker) |
 | `<Space>e` | File explorer (neo-tree) |
 | `<Space>gg` | Lazygit |
 | `gd` / `gr` / `K` | LSP: definition / references / hover |

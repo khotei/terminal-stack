@@ -46,7 +46,7 @@ Five layers, each owning one job, nested inside each other:
 │ ┌─ Zellij ───────────────────────────────────────────┐ │   sessions · tabs · panes  (prefix ⌃a)
 │ │ ┌─ pane: Neovim ─────────┐ ┌─ pane: Claude Code ──┐ │ │   edit  ││  the agent
 │ │ │  <Space> leader        │ │  statusline, /cmds   │ │ │
-│ │ │  LSP · Telescope · git │ │  cc-worktree         │ │ │
+│ │ │  LSP · snacks · git    │ │  cc-worktree         │ │ │
 │ │ └────────────────────────┘ └──────────────────────┘ │ │
 │ │  zsh + Starship + vi-mode  (the shell every pane runs)│ │
 │ └──────────────────────────────────────────────────────┘ │
@@ -147,7 +147,7 @@ noted; full list: <https://www.lazyvim.org/keymaps>):
 | Keys | Action |
 |---|---|
 | `<Space>` (wait) | which-key menu — discover everything |
-| `<Space>ff` / `<Space>fg` | Find **f**iles / live **g**rep (Telescope) |
+| `<Space>ff` / `<Space>fg` | Find **f**iles / live **g**rep (snacks picker) |
 | `<Space>fr` / `<Space>,` | Recent files / switch buffer |
 | `<Space>e` | File explorer (neo-tree) |
 | `<Space>gg` / `<Space>gb` | Lazygit / git blame |
@@ -371,7 +371,7 @@ never lose context, and a reboot-free week of work lives in detached sessions.
 4. `K` for hover docs, `]d` to hop to the next error, `<Space>ca` to apply a quick-fix.
 5. `<Space>ff` to open a sibling file by name; `⌃h`/`⌃l` to move between editor splits.
 
-**Why this way:** Telescope (`<Space>ff`/`fg`) replaces the JetBrains "search everywhere"; the LSP
+**Why this way:** The snacks picker (`<Space>ff`/`fg`) replaces the JetBrains "search everywhere"; the LSP
 keys (`gd`/`gr`/`cr`) replace "go to / find usages / rename". Hands stay on the home row.
 
 ### 3. Pair with Claude Code
