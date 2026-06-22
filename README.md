@@ -43,7 +43,7 @@ top-to-bottom and come out knowing the stack — not just copying it.
 |------|------|---------------|
 | **Terminal** | [**Ghostty**](https://ghostty.org) | GPU-accelerated, native, single-file config. The fastest, lowest-friction emulator on macOS right now. |
 | **Multiplexer** | [**Zellij**](https://zellij.dev) | Modern tmux alternative — sane defaults, discoverable UI, KDL config, sessions-as-workspaces. |
-| **Editor** | [**Neovim**](https://neovim.io) + [**LazyVim**](https://lazyvim.org) | The "IDE in the terminal." LazyVim brings LSP, Telescope, which-key, Treesitter, git — the JetBrains muscle memory survives. |
+| **Editor** | [**Neovim**](https://neovim.io) + [**LazyVim**](https://lazyvim.org) | The "IDE in the terminal." LazyVim brings LSP, the snacks picker, which-key, Treesitter, git — the JetBrains muscle memory survives. |
 | **Shell** | **zsh** + [**Starship**](https://starship.rs) | Fast prompt, plus power-ups: autosuggestions · syntax-highlighting · fzf-tab, and `eza`/`bat`/`delta` · `zoxide` · `atuin` · `fzf` · `fd` · `ripgrep` · `lazygit` · `yazi`. |
 | **Agent** | [**Claude Code**](https://docs.claude.com/en/docs/claude-code) | Lives in a multiplexer pane beside Neovim. Less RAM, tighter feedback loop, better agentic flow than embedded IDE versions. |
 
