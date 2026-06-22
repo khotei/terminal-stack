@@ -27,7 +27,6 @@ brew "fd"                               # fast find
 brew "ripgrep"                          # fast grep
 brew "lazygit"                          # git TUI
 brew "yazi"                             # file manager TUI
-brew "node"                             # node runtime for the Neovim TS LSP — mason installs/runs vtsls via npm (lazyvim.json lang.typescript)
 brew "jq"                               # JSON (Claude Code statusline)
 brew "eza"                              # modern ls (zsh/aliases.zsh)
 brew "bat"                              # better cat / man pager (zsh/tools.zsh)
@@ -73,7 +72,7 @@ mas  "OS Cleaner Pro", id: 1084211765
 # ══════════════════════════════════════════════════════════════════════
 tap "oven-sh/bun"                       # third-party tap — if brew bundle errors here: brew trust oven-sh/bun
 brew "bun"                              # JS runtime / package manager
-brew "nvm"                              # node version manager
+brew "fnm"                              # fast Node version manager — wired in zsh/tools.zsh; bootstrap installs an LTS. Provides node for the Neovim TS LSP (mason → vtsls).
 # cask "figma"                          # design (enable if needed)
 
 # ── retired by the terminal stack (kept for reference, NOT installed) ──
