@@ -8,10 +8,10 @@ a **worktree** helper for running several agents in parallel.
 > that *builds* this repo. Two different things, deliberately separate.
 
 - **Files:** [`statusline.sh`](./statusline.sh) → `~/.claude/statusline.sh`,
-  [`CLAUDE.md`](./CLAUDE.md) → `~/.claude/CLAUDE.md`,
+  [`rules/*.md`](./rules/) → `~/.claude/rules/` (one link per file),
   [`cc-worktree.sh`](./cc-worktree.sh) → a `$PATH` dir
 - **Validate:** `bash -n` (syntax) + a mock-input render — run by `/check` + CI
-- **Feature:** `F-AGENT-001`, `F-AGENT-002` · **Upstream:** <https://code.claude.com/docs/en/statusline> · <https://code.claude.com/docs/en/memory>
+- **Feature:** `F-AGENT-001`, `F-AGENT-002`, `F-AGENT-003` · **Upstream:** <https://code.claude.com/docs/en/statusline> · <https://code.claude.com/docs/en/memory>
 
 ---
 
@@ -76,19 +76,24 @@ It creates `../<repo>-<branch>/`, checks out the branch there, and (if Zellij is
 ln -sf "$PWD/claude/cc-worktree.sh" ~/.local/bin/cc-worktree
 ```
 
-## Global rule — `CLAUDE.md`
+## Global rules — `rules/`
 
-`CLAUDE.md` installs to `~/.claude/CLAUDE.md`, Claude Code's **user-level memory** — loaded into
-every session, in every project ([docs](https://code.claude.com/docs/en/memory)). It carries the
-**communication-style "dials"**: the persona Claude adopts (language, register, tone, lexicon).
-Versioning it here means a fresh machine gets the same Claude voice as the rest of the stack.
+Each file in [`rules/`](./rules/) installs to `~/.claude/rules/<file>`, Claude Code's **user-level
+rules** — loaded into every session, in every project ([docs](https://code.claude.com/docs/en/memory)).
+A rule with **no `paths:` frontmatter loads always** (same priority as `~/.claude/CLAUDE.md`); add a
+`paths:` glob list and it loads only when Claude touches matching files. Versioning rules here means a
+fresh machine gets the same Claude behavior as the rest of the stack.
 
-- **Switch the style:** edit one dial line in [`CLAUDE.md`](./CLAUDE.md) — e.g. `Тон → дружелюбно,
-  на «ты»`, `Язык → English`, `Эмодзи → отключить`. The framework survives; only the value changes.
-- **Add more rules:** for global-but-topic-specific guidance, drop a file in `~/.claude/rules/`
-  (path-scoped or always-on) rather than growing `CLAUDE.md` past ~200 lines — see the upstream
-  [memory docs](https://code.claude.com/docs/en/memory). `install.sh` backs up any existing real
-  `~/.claude/CLAUDE.md` to `.bak` before linking, so installing is non-destructive.
+The first rule shipped is [`communication-style.md`](./rules/communication-style.md) — the persona's
+**"dials"** (language, register, tone, lexicon).
+
+- **Switch the style:** edit one dial line in [`communication-style.md`](./rules/communication-style.md)
+  — e.g. `Тон → дружелюбно, на «ты»`, `Язык → English`, `Эмодзи → отключить`. The framework survives;
+  only the value changes.
+- **Add a rule:** drop a new `.md` in [`rules/`](./rules/) and re-run `./install.sh` — it links each
+  file on its own (like `zsh/*.zsh`), so machine-local rules you keep directly in `~/.claude/rules/`
+  coexist, and `./install.sh --prune` only ever removes *our* stale links. Keep each rule focused;
+  prefer a new file over growing one past ~200 lines (the upstream size guidance).
 
 ## Verify
 
