@@ -1,0 +1,8 @@
+{
+  "extras": [
+    "lazyvim.plugins.extras.coding.mini-surround",
+    "lazyvim.plugins.extras.lang.typescript"
+  ],
+  "news": {},
+  "version": 8
+}

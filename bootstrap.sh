@@ -52,6 +52,22 @@ if ! brew bundle --file="$REPO/Brewfile"; then
   echo "    continuing so install.sh still links your configs."
 fi
 
+# 3b. Node version (fnm). The editor's TypeScript LSP (mason → vtsls) needs a Node
+#     on PATH; ensure an LTS is installed and set as the fnm default. Skipped on --dry-run.
+step "Node (fnm default LTS)"
+case " $* " in
+  *" --dry-run "*) echo "  (dry run — skipped)" ;;
+  *)
+    if command -v fnm >/dev/null 2>&1; then
+      eval "$(fnm env)"
+      fnm install --lts && fnm default lts-latest
+      echo "  ok: default node $(fnm exec --using=default node --version 2>/dev/null)"
+    else
+      echo "  ! fnm not found — re-run after 'brew bundle' so the TS LSP has a Node runtime"
+    fi
+    ;;
+esac
+
 # 4. The configs (+ fonts). Forward any flags (e.g. --dry-run).
 step "Linking configs"
 "$REPO/install.sh" "$@"

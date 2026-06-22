@@ -43,7 +43,7 @@ brew bundle          # 1. install the toolchain (see ./Brewfile)
 
 [`Brewfile`](../Brewfile) is organised in three sections: **The stack** (Ghostty, Zellij, Neovim,
 Starship, **Claude Code**, the companion CLIs, validators, `gh`, Docker, Nerd Fonts), **Personal**
-(the GUI apps that drive the machine — Arc, Notion, Raycast, …), and **Development** (bun, nvm, …).
+(the GUI apps that drive the machine — Arc, Notion, Raycast, …), and **Development** (bun, fnm, …).
 Tools the stack **retires** (`intellij-idea` → Neovim, `warp` → Ghostty) are kept **commented** for
 reference, not installed. All names are verified against Homebrew.
 
@@ -63,6 +63,11 @@ brew bundle list         # list the deps
 > **Dank Mono** (Ghostty's primary font) isn't on Homebrew — it's **bundled under `fonts/`** and
 > installed by `install.sh` (step 2). Prefer a free font? Switch `ghostty/config`'s `font-family` to
 > `JetBrainsMono Nerd Font` (installed by the Brewfile). See [`fonts/README.md`](../fonts/README.md).
+
+> **Node for the editor's TypeScript LSP.** Neovim's TS support (vtsls, installed by mason) needs a
+> Node runtime. The Brewfile installs **fnm**, `bootstrap.sh` installs a default LTS, and
+> `zsh/tools.zsh` puts it on `PATH`. Installing by hand (no `bootstrap.sh`)? Run it once:
+> `fnm install --lts && fnm default lts-latest`.
 
 ## 2. `install.sh` — symlink the configs
 
@@ -188,6 +193,26 @@ reminding you to run **`:Lazy update`** in Neovim and commit the refreshed `nvim
 pin the new plugin versions.
 
 > `make update` upgrades only the tools the Brewfile lists — it won't touch the rest of your Homebrew.
+
+## Experimenting without disturbing your setup
+
+The flip side of symlinks: editing a repo file changes your **live** setup the moment the tool
+re-reads it (the next `nvim` launch / `:Lazy sync`, a new shell, a Ghostty reload). Great for daily
+use, awkward for tinkering. Two ways to experiment safely:
+
+- **Docker sandbox — zero risk.** `make try` runs the in-terminal layers against a throwaway profile;
+  nothing on your machine changes, and the repo is mounted live so edits show up inside the container.
+  See [`sandbox.md`](sandbox.md).
+- **A scratch clone + isolated profile** — when you want it native, not in Docker. Clone elsewhere and
+  point Neovim at it via [`NVIM_APPNAME`](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME),
+  so it reads `~/.config/<name>/` instead of your real `~/.config/nvim`:
+  ```sh
+  git clone https://github.com/khotei/terminal-stack.git ~/ts-scratch
+  ln -s ~/ts-scratch/nvim ~/.config/ts-scratch
+  NVIM_APPNAME=ts-scratch nvim        # isolated; your daily nvim is untouched
+  ```
+  Tinker there, then copy what you like back into the linked repo. (For a throwaway *branch* of your
+  real setup, `claude/cc-worktree.sh` makes a git worktree in one step.)
 
 ## Verify without installing
 

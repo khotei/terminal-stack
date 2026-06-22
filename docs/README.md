@@ -1,13 +1,14 @@
 # 📚 docs
 
 The written half of terminal-stack — the reference guides that turn the configs into a workflow you
-can actually live in. Three docs, by intent:
+can actually live in. Four docs, by intent:
 
 | Doc | Read it to… |
 |---|---|
 | **[guide.md](guide.md)** | **Learn the stack** — the mental model, per-tool cheat sheets, and scenario-by-scenario walkthroughs of how a developer works in it. |
 | **[install.md](install.md)** | **Set it up** — `bootstrap.sh` → `brew bundle` → `install.sh`, updating, troubleshooting, uninstall. |
 | **[sandbox.md](sandbox.md)** | **Try it first** — `make try` runs the in-terminal layers in a disposable Docker container, no install. |
+| **[jetbrains-to-stack-review.md](jetbrains-to-stack-review.md)** | **Migrate from JetBrains** — the IDE-hotkey → stack map for reading, navigating, and reviewing code. |
 
 **Per-layer references** (one README per tool, with the per-setting rationale):
 [ghostty](../ghostty/README.md) · [zellij](../zellij/README.md) · [nvim](../nvim/README.md) ·
