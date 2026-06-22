@@ -61,6 +61,7 @@ MANAGED=(
   "$CONFIG/starship.toml"
   "$CONFIG/git/config"
   "$HOME/.claude/statusline.sh"
+  "$HOME/.claude/CLAUDE.md"
   "$HOME/.local/bin/cc-worktree"
 )
 
@@ -131,6 +132,7 @@ echo "• Shell";      link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
                      for f in "$REPO"/zsh/*.zsh; do link "$f" "$CONFIG/zsh/$(basename "$f")"; done
 echo "• Git";        link "$REPO/git/config"          "$CONFIG/git/config"
 echo "• Claude Code"; link "$REPO/claude/statusline.sh" "$HOME/.claude/statusline.sh"
+                      link "$REPO/claude/CLAUDE.md"      "$HOME/.claude/CLAUDE.md"
                       link "$REPO/claude/cc-worktree.sh" "$HOME/.local/bin/cc-worktree"
 
 install_fonts
