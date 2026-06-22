@@ -60,7 +60,8 @@ The leader is **`<Space>`**. Press it and **which-key** shows every branch. The 
 | `<Space>tr` / `<Space>ts` | Test: run nearest / summary (neotest) |
 | `jk` (insert) | Exit insert mode |
 
-Full reference: <https://www.lazyvim.org/keymaps>.
+Full reference: <https://www.lazyvim.org/keymaps>. Debugging tests / scripts / attach (and the
+`node:test` + Bun gaps) — see [Debugging your code](../docs/jetbrains-to-stack-review.md#debugging-your-code).
 
 ## Reload & verify
 

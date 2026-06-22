@@ -98,6 +98,46 @@ row: *I used to press X in the IDE — what do I do here?*
 
 ---
 
+## Debugging your code
+
+Debugging runs on **nvim-dap** (`<leader>d*`) with the `js-debug` adapter, wired for TS/JS by the
+`lang.typescript` + `dap.core` extras. The loop: breakpoint `<leader>db` → start with `<leader>dc`
+(shows a config picker) → step `<leader>di`/`dO`/`do` → inspect in the dap-ui panels (`<leader>du`).
+Pick the row that matches what you're debugging:
+
+| Debug target | How | Notes |
+|---|---|---|
+| **A test** (Vitest · Jest · @effect/vitest) | cursor in the test → `<leader>td` | neotest runs it under dap; @effect/vitest rides the Vitest path |
+| **The current file** | `<leader>dc` → **Launch file** | from `lang.typescript`; runs `${file}` under node |
+| **An npm / pnpm script** | `<leader>dc` → **Debug npm script** / **Debug pnpm script** → type the script | runs `npm`/`pnpm run <script>` under the debugger (added by this stack) |
+| **A VS Code-style config** | drop `.vscode/launch.json` in the project | js-debug configs are auto-read — they show up in the `<leader>dc` picker, zero setup |
+| **Anything already running** (any runtime/PM) | start it with `node --inspect-brk <entry>` in a Zellij pane → `<leader>dc` → **Attach** | the universal escape hatch when no launch config fits |
+
+### Reliability & prerequisites
+
+- **Node must be on `PATH`.** The debugger launches `node`; the stack puts it there via fnm
+  (`zsh/tools.zsh`), so a normal shell is fine. If Neovim was started without the shell env, run
+  `fnm use default` first.
+- **"Green" ≠ "works".** `/check` and a headless load only prove the dap config *parses and
+  registers* — a debug session is proven **only when a breakpoint is actually hit**. Verify
+  interactively, not from validators.
+- **If `<leader>dc` fails with `ECONNREFUSED 127.0.0.1:<port>`** — that's a known `js-debug` handshake
+  flake ([LazyVim #5913](https://github.com/LazyVim/LazyVim/issues/5913)), not your config.
+  Terminate (`<leader>dt`) and start again (`<leader>dc`); it usually connects on the retry.
+
+### Known gaps & workarounds
+
+- **Node's built-in runner (`node:test` / `node --test`)** — no mature neotest adapter, so no
+  `<leader>td`. Run it in a Zellij pane (`node --test`), or use **Vitest** for suites you want to
+  debug in-editor. To step through: `node --inspect-brk --test <file>` in a pane → **Attach**.
+- **Bun (`bun test` / `bun run`)** — not debuggable from nvim today: Bun speaks the WebKit inspector
+  protocol, not the V8/CDP one `js-debug` uses, and Bun isn't in this stack. Run it in a Zellij pane
+  (`bun test`); for stepping, `bun --inspect` opens **Bun's own web debugger** in the browser; or run
+  the code under **node** and use the rows above. (Revisit if Bun lands in the stack as a runtime.)
+
+The in-editor debugger covers the well-supported path (node/TS, Vitest/Jest); the rest goes to a fast
+terminal pane rather than a half-working plugin.
+
 ## Known gaps (⛔)
 
 - **Type Hierarchy** and a **Recent-Locations picker** have no out-of-box equivalent. The jumplist
