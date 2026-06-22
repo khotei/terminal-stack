@@ -8,9 +8,10 @@ a **worktree** helper for running several agents in parallel.
 > that *builds* this repo. Two different things, deliberately separate.
 
 - **Files:** [`statusline.sh`](./statusline.sh) → `~/.claude/statusline.sh`,
+  [`CLAUDE.md`](./CLAUDE.md) → `~/.claude/CLAUDE.md`,
   [`cc-worktree.sh`](./cc-worktree.sh) → a `$PATH` dir
 - **Validate:** `bash -n` (syntax) + a mock-input render — run by `/check` + CI
-- **Feature:** `F-AGENT-001` · **Upstream:** <https://code.claude.com/docs/en/statusline>
+- **Feature:** `F-AGENT-001`, `F-AGENT-002` · **Upstream:** <https://code.claude.com/docs/en/statusline> · <https://code.claude.com/docs/en/memory>
 
 ---
 
@@ -74,6 +75,20 @@ It creates `../<repo>-<branch>/`, checks out the branch there, and (if Zellij is
 ```sh
 ln -sf "$PWD/claude/cc-worktree.sh" ~/.local/bin/cc-worktree
 ```
+
+## Global rule — `CLAUDE.md`
+
+`CLAUDE.md` installs to `~/.claude/CLAUDE.md`, Claude Code's **user-level memory** — loaded into
+every session, in every project ([docs](https://code.claude.com/docs/en/memory)). It carries the
+**communication-style "dials"**: the persona Claude adopts (language, register, tone, lexicon).
+Versioning it here means a fresh machine gets the same Claude voice as the rest of the stack.
+
+- **Switch the style:** edit one dial line in [`CLAUDE.md`](./CLAUDE.md) — e.g. `Тон → дружелюбно,
+  на «ты»`, `Язык → English`, `Эмодзи → отключить`. The framework survives; only the value changes.
+- **Add more rules:** for global-but-topic-specific guidance, drop a file in `~/.claude/rules/`
+  (path-scoped or always-on) rather than growing `CLAUDE.md` past ~200 lines — see the upstream
+  [memory docs](https://code.claude.com/docs/en/memory). `install.sh` backs up any existing real
+  `~/.claude/CLAUDE.md` to `.bak` before linking, so installing is non-destructive.
 
 ## Verify
 
