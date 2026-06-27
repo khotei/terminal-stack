@@ -3,7 +3,7 @@
 # host GUI app and is not in the image. See docs/sandbox.md.
 IMAGE ?= terminal-stack:dev
 
-.PHONY: help build try zellij check check-local bootstrap install update macos git-setup clean
+.PHONY: help build try zellij check check-local bootstrap install update macos jetbrains git-setup clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -35,6 +35,9 @@ doctor: ## Health-check: tools installed, configs symlinked, assets present (rea
 
 macos: ## Apply opinionated macOS system defaults (opt-in; preview: ./macos/defaults.sh --dry-run)
 	./macos/defaults.sh
+
+jetbrains: ## Link IdeaVim config + import bundle for a JetBrains IDE (opt-in; --dry-run)
+	./jetbrains/install.sh
 
 git-setup: ## Set your git identity (name/email) in ~/.gitconfig (interactive; --show/--dry-run)
 	./git/setup.sh

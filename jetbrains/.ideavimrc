@@ -1,0 +1,298 @@
+" ═══════════════════════════════════════════
+" SETTINGS
+" ═══════════════════════════════════════════
+
+set showmode
+set clipboard^=unnamed,unnamedplus
+set matchpairs+=<:>
+set hlsearch
+set ignorecase
+set smartcase
+set incsearch
+set visualbell
+set scrolloff=50
+set timeoutlen=3000
+set ideajoin
+set ideamarks
+set notimeout
+
+let mapleader = ' '
+
+xnoremap p P
+noremap \ "_
+
+" ═══════════════════════════════════════════
+" PLUGINS
+" ═══════════════════════════════════════════
+
+set surround
+set easymotion
+set peekaboo
+set anyobject
+set which-key
+set NERDTree
+
+" ═══════════════════════════════════════════
+" WHICH-KEY CONFIG
+" ═══════════════════════════════════════════
+
+let g:WhichKey_DefaultDelay = 0
+let g:WhichKey_SortOrder = "by_key_prefix_first"
+let g:WhichKey_FontSize = 16
+let g:WhichKey_ShowVimActions = "true"
+let g:WhichKey_ShowTypedSequence = "true"
+let g:WhichKey_Divider = " → "
+
+" Root Namespaces
+let g:WhichKeyDesc_f = "<Space>f Find"
+let g:WhichKeyDesc_g = "<Space>g Git"
+let g:WhichKeyDesc_r = "<Space>r Refactor"
+let g:WhichKeyDesc_c = "<Space>c Code"
+let g:WhichKeyDesc_R = "<Space>R Run"
+let g:WhichKeyDesc_D = "<Space>D Debug"
+let g:WhichKeyDesc_t = "<Space>t Tools"
+let g:WhichKeyDesc_w = "<Space>w Windows"
+let g:WhichKeyDesc_b = "<Space>b Bookmarks"
+let g:WhichKeyDesc_S = "<Space>S Settings"
+let g:WhichKeyDesc_q = "<Space>q Close"
+
+" FIND
+let g:WhichKeyDesc_ff = "<Space>ff Goto File"
+let g:WhichKeyDesc_ft = "<Space>ft Text Search"
+let g:WhichKeyDesc_fa = "<Space>fa Goto Action"
+let g:WhichKeyDesc_fc = "<Space>fc Goto Class"
+let g:WhichKeyDesc_fs = "<Space>fs Goto Symbol"
+let g:WhichKeyDesc_fr = "<Space>fr Recent Files"
+let g:WhichKeyDesc_fS = "<Space>fS File Structure"
+
+" GIT
+let g:WhichKeyDesc_gb = "<Space>gb Branches"
+let g:WhichKeyDesc_gc = "<Space>gc Commit"
+let g:WhichKeyDesc_gP = "<Space>gP Push"
+let g:WhichKeyDesc_gp = "<Space>gp Commit & Push"
+let g:WhichKeyDesc_gl = "<Space>gl VCS Quick List"
+let g:WhichKeyDesc_gk = "<Space>gk File History"
+let g:WhichKeyDesc_ga = "<Space>ga Annotate"
+let g:WhichKeyDesc_gr = "<Space>gr Rollback Lines"
+let g:WhichKeyDesc_gv = "<Space>gv Version Control"
+
+" REFACTOR
+let g:WhichKeyDesc_rr = "<Space>rr Refactor Menu"
+let g:WhichKeyDesc_rn = "<Space>rn Rename"
+let g:WhichKeyDesc_rf = "<Space>rf Rename File"
+let g:WhichKeyDesc_rs = "<Space>rs Change Signature"
+let g:WhichKeyDesc_rm = "<Space>rm Move"
+let g:WhichKeyDesc_ri = "<Space>ri Inline"
+let g:WhichKeyDesc_rv = "<Space>rv Introduce Variable"
+let g:WhichKeyDesc_rc = "<Space>rc Introduce Constant"
+let g:WhichKeyDesc_re = "<Space>re Extract Method"
+
+" CODE
+let g:WhichKeyDesc_ca = "<Space>ca Intentions"
+let g:WhichKeyDesc_cc = "<Space>cc Context Menu"
+let g:WhichKeyDesc_cf = "<Space>cf Format"
+let g:WhichKeyDesc_co = "<Space>co Optimize Imports"
+let g:WhichKeyDesc_cs = "<Space>cs Surround"
+let g:WhichKeyDesc_cw = "<Space>cw Unwrap"
+let g:WhichKeyDesc_ce = "<Space>ce Show Error"
+
+" RUN
+let g:WhichKeyDesc_Rr = "<Space>Rr Run"
+let g:WhichKeyDesc_Rc = "<Space>Rc Choose Config"
+let g:WhichKeyDesc_Rt = "<Space>Rt Context Run"
+let g:WhichKeyDesc_Rs = "<Space>Rs Stop"
+let g:WhichKeyDesc_RR = "<Space>RR Rerun"
+
+" DEBUG
+let g:WhichKeyDesc_Db = "<Space>Db Toggle Breakpoint"
+let g:WhichKeyDesc_DB = "<Space>DB Remove All Breakpoints"
+let g:WhichKeyDesc_Dr = "<Space>Dr Resume"
+let g:WhichKeyDesc_Do = "<Space>Do Step Over"
+let g:WhichKeyDesc_Di = "<Space>Di Step Into"
+let g:WhichKeyDesc_DO = "<Space>DO Step Out"
+let g:WhichKeyDesc_Dc = "<Space>Dc Context Debug"
+let g:WhichKeyDesc_De = "<Space>De Edit Breakpoint"
+
+" TOOLS
+let g:WhichKeyDesc_ta = "<Space>ta Ask AI"
+let g:WhichKeyDesc_tg = "<Space>tg Generate Command"
+let g:WhichKeyDesc_tn = "<Space>tn Toggle NERDTree"
+let g:WhichKeyDesc_tf = "<Space>tf Find Current File"
+let g:WhichKeyDesc_tc = "<Space>tc Close NERDTree"
+
+" WINDOWS
+let g:WhichKeyDesc_wv = "<Space>wv Split Vertical"
+let g:WhichKeyDesc_ws = "<Space>ws Split Horizontal"
+let g:WhichKeyDesc_wc = "<Space>wc Close"
+let g:WhichKeyDesc_wo = "<Space>wo Unsplit All"
+let g:WhichKeyDesc_wh = "<Space>wh Hide All"
+let g:WhichKeyDesc_wj = "<Space>wj Jump Last"
+
+" BOOKMARKS
+let g:WhichKeyDesc_bt = "<Space>bt Toggle Bookmark"
+let g:WhichKeyDesc_bm = "<Space>bm Toggle Bookmark Mnemonic"
+let g:WhichKeyDesc_bs = "<Space>bs Show Bookmarks"
+
+" SETTINGS
+let g:WhichKeyDesc_Se = "<Space>Se Edit ideavimrc"
+let g:WhichKeyDesc_Ss = "<Space>Ss Source ideavimrc"
+
+" ═══════════════════════════════════════════
+" FIND
+" ═══════════════════════════════════════════
+
+nmap <leader>ff <Action>(GotoFile)
+nmap <leader>ft <Action>(TextSearchAction)
+nmap <leader>fa <Action>(GotoAction)
+nmap <leader>fc <Action>(GotoClass)
+nmap <leader>fs <Action>(GotoSymbol)
+nmap <leader>fr <Action>(RecentFiles)
+nmap <leader>fS <Action>(FileStructurePopup)
+
+" ═══════════════════════════════════════════
+" GIT
+" ═══════════════════════════════════════════
+
+nmap <leader>gb <Action>(Git.Branches)
+nmap <leader>gc <Action>(CheckinProject)
+nmap <leader>gP <Action>(Vcs.Push)
+nmap <leader>gp <Action>(Git.CommitAndPushExecutor)
+nmap <leader>gl <Action>(Vcs.QuickListPopupAction)
+nmap <leader>gk <Action>(Vcs.ShowTabbedFileHistory)
+nmap <leader>ga <Action>(Annotate)
+nmap <leader>gr <Action>(Vcs.RollbackChangedLines)
+nmap <leader>gv <Action>(ActivateVersionControlToolWindow)
+
+" ═══════════════════════════════════════════
+" REFACTOR
+" ═══════════════════════════════════════════
+
+nmap <leader>rr <Action>(Refactorings.QuickListPopupAction)
+nmap <leader>rn <Action>(RenameElement)
+nmap <leader>rf <Action>(RenameFile)
+nmap <leader>rs <Action>(ChangeSignature)
+nmap <leader>rm <Action>(Move)
+nmap <leader>ri <Action>(Inline)
+vmap <leader>ri <Action>(Inline)
+nmap <leader>rv <Action>(IntroduceVariable)
+vmap <leader>rv <Action>(IntroduceVariable)
+nmap <leader>rc <Action>(IntroduceConstant)
+vmap <leader>rc <Action>(IntroduceConstant)
+nmap <leader>re <Action>(ExtractMethod)
+vmap <leader>re <Action>(ExtractMethod)
+
+" ═══════════════════════════════════════════
+" CODE
+" ═══════════════════════════════════════════
+
+nmap <leader>ca <Action>(ShowIntentionActions)
+vmap <leader>ca <Action>(ShowIntentionActions)
+nmap <leader>cc <Action>(EditorPopupMenu)
+vmap <leader>cc <Action>(EditorPopupMenu)
+nmap <leader>cf <Action>(ReformatCode)
+vmap <leader>cf <Action>(ReformatCode)
+nmap <leader>co <Action>(OptimizeImports)
+nmap <leader>cs <Action>(SurroundWith)
+vmap <leader>cs <Action>(SurroundWith)
+nmap <leader>cw <Action>(Unwrap)
+vmap <leader>cw <Action>(Unwrap)
+nmap <leader>ce <Action>(ShowErrorDescription)
+
+" ═══════════════════════════════════════════
+" RUN
+" ═══════════════════════════════════════════
+
+nmap <leader>Rr <Action>(Run)
+nmap <leader>Rc <Action>(ChooseRunConfiguration)
+nmap <leader>Rt <Action>(ContextRun)
+nmap <leader>Rs <Action>(Stop)
+nmap <leader>RR <Action>(Rerun)
+
+" ═══════════════════════════════════════════
+" DEBUG
+" ═══════════════════════════════════════════
+
+nmap <leader>Db <Action>(ToggleLineBreakpoint)
+nmap <leader>DB <Action>(Debugger.RemoveAllBreakpoints)
+nmap <leader>Dr <Action>(Resume)
+nmap <leader>Do <Action>(StepOver)
+nmap <leader>Di <Action>(StepInto)
+nmap <leader>DO <Action>(StepOut)
+nmap <leader>Dc <Action>(ContextDebug)
+nmap <leader>De <Action>(EditBreakpoint)
+
+" ═══════════════════════════════════════════
+" TOOLS
+" ═══════════════════════════════════════════
+
+nmap <leader>ta <Action>(AIAssistant.Editor.AskAiAssistantInEditor)
+nmap <leader>tg <Action>(Terminal.GenerateCommandFromText)
+nmap <leader>tn :NERDTreeToggle<CR>
+nmap <leader>tf :NERDTreeFind<CR>
+nmap <leader>tc :NERDTreeClose<CR>
+
+" ═══════════════════════════════════════════
+" WINDOWS
+" ═══════════════════════════════════════════
+
+nmap <leader>wv <Action>(SplitVertically)
+nmap <leader>ws <Action>(SplitHorizontally)
+nmap <leader>wc <Action>(Unsplit)
+nmap <leader>wo <Action>(UnsplitAll)
+nmap <leader>wh <Action>(HideAllWindows)
+nmap <leader>wj <Action>(JumpToLastWindow)
+
+nmap <C-h> <C-w>h
+nmap <C-j> <C-w>j
+nmap <C-k> <C-w>k
+nmap <C-l> <C-w>l
+
+" ═══════════════════════════════════════════
+" BOOKMARKS
+" ═══════════════════════════════════════════
+
+nmap <leader>bt <Action>(ToggleBookmark)
+nmap <leader>bm <Action>(ToggleBookmarkWithMnemonic)
+nmap <leader>bs <Action>(ShowBookmarks)
+
+" ═══════════════════════════════════════════
+" SETTINGS
+" ═══════════════════════════════════════════
+
+nmap <leader>Se :edit ~/.ideavimrc<CR>
+nmap <leader>Ss :source ~/.ideavimrc<CR>
+
+" ═══════════════════════════════════════════
+" NAVIGATION (Native g)
+" ═══════════════════════════════════════════
+
+nmap gd <Action>(GotoDeclaration)
+nmap gi <Action>(GotoImplementation)
+nmap gy <Action>(GotoTypeDeclaration)
+nmap gr <Action>(FindUsages)
+nmap g; <Action>(LastEditLocation)
+nmap gs <Action>(ShowUsages)
+nmap gq <Action>(QuickImplementations)
+nmap gt <Action>(QuickTypeDefinition)
+nmap gI <Action>(ExpressionTypeInfo)
+nmap gch <Action>(CallHierarchy)
+nmap gth <Action>(TypeHierarchy)
+
+" ═══════════════════════════════════════════
+" DIAGNOSTICS / MOVEMENT
+" ═══════════════════════════════════════════
+
+nmap ]e <Action>(GotoNextError)
+nmap [e <Action>(GotoPreviousError)
+nmap ]w <Action>(GotoNextError)
+nmap [w <Action>(GotoPreviousError)
+nmap ]c <Action>(Vcs.ShowNextChangeMarker)
+nmap [c <Action>(Vcs.ShowPrevChangeMarker)
+
+" ═══════════════════════════════════════════
+" QUICK
+" ═══════════════════════════════════════════
+
+noremap U <C-r>
+nmap K <Action>(ShowHoverInfo)
+nmap <leader>q <Action>(CloseContent)
