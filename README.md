@@ -105,6 +105,7 @@ The stack is installed. These finish and personalise it; only the first two are 
 | for Claude's status line | add the `statusLine` block to `~/.claude/settings.json` | the model · dir · git · cost line ([how](docs/install.md#status-line)) |
 | recommended | `make git-setup` | set your git name/email in `~/.gitconfig` (never committed) |
 | optional | `make macos` | opinionated macOS defaults — Dock, Vim key-repeat, trackpad (**opt-in**; `--dry-run` previews) |
+| optional | `make jetbrains` | link `~/.ideavimrc` + import IDE settings, if you still use a JetBrains IDE (**opt-in**; `--dry-run`) |
 | anytime | `make doctor` | read-only health check — is every tool + symlink in place? |
 | anytime | `make update` | pull configs + upgrade tools + prune stale links |
 
@@ -144,6 +145,7 @@ terminal-stack/
 ├── fonts/          # bundled Dank Mono (.otf)                — see fonts/README.md
 ├── git/            # delta diffs, defaults + identity setup   — see git/README.md
 ├── macos/          # opt-in macOS system defaults script     — see macos/README.md
+├── jetbrains/      # opt-in IdeaVim + IDE settings (link by demand) — see jetbrains/README.md
 ├── docs/           # guide.md · install.md · sandbox.md      — see docs/README.md
 ├── scripts/        # check.sh + entrypoint.sh (sandbox/CI)
 ├── .claude/        # the SDD toolkit that builds this repo (see below)
