@@ -8,10 +8,11 @@ a **worktree** helper for running several agents in parallel.
 > that *builds* this repo. Two different things, deliberately separate.
 
 - **Files:** [`statusline.sh`](./statusline.sh) → `~/.claude/statusline.sh`,
+  [`settings.json`](./settings.json) → `~/.claude/settings.json`,
   [`rules/*.md`](./rules/) → `~/.claude/rules/` (one link per file),
-  [`cc-worktree.sh`](./cc-worktree.sh) → a `$PATH` dir
-- **Validate:** `bash -n` (syntax) + a mock-input render — run by `/check` + CI
-- **Feature:** `F-AGENT-001`, `F-AGENT-002`, `F-AGENT-003` · **Upstream:** <https://code.claude.com/docs/en/statusline> · <https://code.claude.com/docs/en/memory>
+  [`cc-worktree.sh`](./cc-worktree.sh) → a `$PATH` dir, [`mcp-setup.sh`](./mcp-setup.sh) → run once
+- **Validate:** `bash -n` (syntax) + valid JSON + a mock-input render — run by `/check` + CI
+- **Feature:** `F-AGENT-001` … `F-AGENT-004` · **Upstream:** <https://code.claude.com/docs/en/statusline> · <https://code.claude.com/docs/en/memory> · <https://code.claude.com/docs/en/settings> · <https://code.claude.com/docs/en/mcp>
 
 ---
 
@@ -26,7 +27,8 @@ Opus 4.8   terminal-stack   feat/x*   23% ctx   $0.04
 ¹ branch, `*` = uncommitted changes · ² context-window usage. Colours are Catppuccin Mocha accents;
 the glyphs need a Nerd Font (the stack assumes one). Falls back from `jq` to `grep` if `jq` is absent.
 
-**Enable it** — add to `~/.claude/settings.json` (merge, don't overwrite):
+**It's already enabled** — [`settings.json`](./settings.json) (linked to `~/.claude/settings.json` by
+`install.sh`) carries the `statusLine` block, so a fresh install shows the line with no hand-editing:
 
 ```json
 {
@@ -95,9 +97,41 @@ The first rule shipped is [`communication-style.md`](./rules/communication-style
   coexist, and `./install.sh --prune` only ever removes *our* stale links. Keep each rule focused;
   prefer a new file over growing one past ~200 lines (the upstream size guidance).
 
+## Settings, plugins & MCP
+
+[`settings.json`](./settings.json) is the whole user-facing Claude Code config, linked to
+`~/.claude/settings.json`. Beyond `statusLine` it declares **`enabledPlugins`** — so a trusted fresh
+machine reinstalls them from the **preloaded** `claude-plugins-official` marketplace
+([docs](https://code.claude.com/docs/en/discover-plugins)):
+
+| Plugin | What it adds |
+|---|---|
+| `typescript-lsp` | TS/JS go-to-definition, find-references, post-edit diagnostics — a **plugin**, not an MCP, so it costs no MCP slot |
+| `commit-commands` | `/commit`, `/push`, create-PR commands |
+| `pr-review-toolkit` | PR-review agents |
+
+**Why no GitHub MCP.** `gh` is already installed and authed ([`Brewfile`](../Brewfile)); for a fluent
+`gh` user the GitHub MCP is heavier (more tokens, PR flakiness) for no gain. Git + GitHub run through
+`gh` via the shell; the two plugins above add the ergonomic slash-commands on top. Add the GitHub MCP
+only if you later want typed cross-repo tooling.
+
+**MCP servers.** [`mcp-setup.sh`](./mcp-setup.sh) registers two **user-scope** servers, idempotently —
+`install.sh` runs it best-effort (skipped if `claude` is absent), or run it yourself any time:
+
+| Server | Auth | |
+|---|---|---|
+| `notion` (`https://mcp.notion.com/mcp`) | **OAuth** — `/mcp → notion → Authenticate` once; token in the OS keychain | the SDD knowledge base |
+| `context7` (`https://mcp.context7.com/mcp`) | **keyless** | up-to-date library docs in context |
+
+Neither server puts a secret in the repo (this repo is **public**). For any *future* token-based
+server, reference it as `${VAR}` in the MCP config and keep the real value in the git-ignored
+`~/.zshrc.local` — never a committed file ([`config.md`](../.claude/rules/config.md) §Secrets). Don't
+also enable a `notion` *plugin*: it would double the hosted MCP's tools.
+
 ## Verify
 
 - `bash -n claude/*.sh` — syntax clean (run by `/check` + CI).
+- `settings.json` is valid JSON (`jq . claude/settings.json`).
 - Status line renders from mock JSON (verified: model · dir · git · context% · cost).
 - Try the layout live in the sandbox: `make zellij`.
 
