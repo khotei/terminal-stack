@@ -80,7 +80,7 @@ brew bundle list         # list the deps
 | `nvim/` | → | `~/.config/nvim` |
 | `zsh/.zshrc` · `zsh/*.zsh` · `zsh/starship.toml` | → | `~/.zshrc` · `~/.config/zsh/` · `~/.config/starship.toml` |
 | `git/config` | → | `~/.config/git/config` (additive; never touches `~/.gitconfig`) |
-| `claude/statusline.sh` · `claude/rules/*.md` · `claude/cc-worktree.sh` | → | `~/.claude/statusline.sh` · `~/.claude/rules/` (one link per file) · `~/.local/bin/cc-worktree` |
+| `claude/statusline.sh` · `claude/settings.json` · `claude/rules/*.md` · `claude/cc-worktree.sh` | → | `~/.claude/statusline.sh` · `~/.claude/settings.json` · `~/.claude/rules/` (one link per file) · `~/.local/bin/cc-worktree` |
 | `fonts/*.otf` | ⇒ | `~/Library/Fonts` (macOS) · `~/.local/share/fonts` (Linux) — **copied**, skip-if-present |
 
 It is **idempotent** and **safe**:
@@ -95,15 +95,22 @@ It is **idempotent** and **safe**:
 
 ### Status line
 
-```json
-// ~/.claude/settings.json — create the file if it doesn't exist; otherwise merge this key in
-{ "statusLine": { "type": "command", "command": "~/.claude/statusline.sh", "padding": 0 } }
-```
+Nothing to do — `install.sh` links [`claude/settings.json`](../claude/settings.json) to
+`~/.claude/settings.json`, and it already carries the `statusLine` block (plus `enabledPlugins`). It
+needs `jq` (in the Brewfile) and a Nerd Font. Verify by launching `claude` — the line appears at the
+bottom. (More detail, and the plugin/MCP set, in [`claude/README.md`](../claude/README.md).)
 
-If the file already exists, add only the `statusLine` key — don't replace the whole file (invalid JSON
-silently disables the status line). It needs `jq` (in the Brewfile) and a Nerd Font. Verify by
-launching `claude` — the line appears at the bottom. (More detail in
-[`claude/README.md`](../claude/README.md).)
+> A real `~/.claude/settings.json` already on the machine is backed up to `.bak` before the symlink
+> goes in (the installer never clobbers your file).
+
+### Optional: MCP servers
+
+[`claude/mcp-setup.sh`](../claude/mcp-setup.sh) registers two **user-scope** MCP servers — **Notion**
+(hosted, OAuth) and **Context7** (hosted, keyless). `install.sh` runs it best-effort (skipped if the
+`claude` CLI isn't installed yet); run it yourself any time. Finish Notion auth **once**: launch
+`claude` → `/mcp` → `notion` → *Authenticate* (browser sign-in; the token lands in the OS keychain,
+never in the repo — it's public). See [`claude/README.md`](../claude/README.md) for the full set and
+the `${VAR}` + `~/.zshrc.local` pattern for future token-based servers.
 
 - Open a new terminal (zsh + Starship loads), then `zellij --layout dev` for the editor │ agent split.
 - First `nvim` launch installs the LazyVim plugins.
@@ -157,7 +164,9 @@ There's no uninstall script — the install is just symlinks plus copied fonts, 
 
 - **Remove the symlinks** `install.sh` created (`~/.config/ghostty/config`, `~/.config/zellij`,
   `~/.config/nvim`, `~/.zshrc`, `~/.config/zsh/`, `~/.config/starship.toml`, `~/.claude/statusline.sh`,
-  `~/.claude/rules/`, `~/.local/bin/cc-worktree`).
+  `~/.claude/settings.json`, `~/.claude/rules/`, `~/.local/bin/cc-worktree`).
+- **MCP servers** registered by `claude/mcp-setup.sh` live in `~/.claude.json` (per-machine, not in the
+  repo) — remove with `claude mcp remove notion` · `claude mcp remove context7`.
 - **Restore your originals:** each path `install.sh` replaced was backed up to `<path>.bak` — move it
   back.
 - **Fonts** were *copied* to `~/Library/Fonts` (macOS) / `~/.local/share/fonts` (Linux) — delete the

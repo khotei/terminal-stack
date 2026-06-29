@@ -61,6 +61,7 @@ MANAGED=(
   "$CONFIG/starship.toml"
   "$CONFIG/git/config"
   "$HOME/.claude/statusline.sh"
+  "$HOME/.claude/settings.json"
   "$HOME/.local/bin/cc-worktree"
 )
 
@@ -121,6 +122,17 @@ install_autolock() {
   fi
 }
 
+# Register the user-scope MCP servers (Notion, Context7) via claude/mcp-setup.sh.
+# Best-effort like install_autolock: needs the claude CLI + network, so a missing
+# CLI or an offline machine just skips — the install never fails on it. Skipped on
+# --dry-run. The script is idempotent (a server already present is left as-is).
+install_claude_mcp() {
+  echo "• Claude Code — MCP servers"
+  if $DRY_RUN; then note "would run: claude/mcp-setup.sh (register Notion + Context7, user scope)"; return 0; fi
+  if ! command -v claude >/dev/null 2>&1; then note "skipped: claude CLI not found (run after 'brew bundle')"; return 0; fi
+  "$REPO/claude/mcp-setup.sh" || note "skipped: mcp-setup.sh did not complete (harmless; re-run later)"
+}
+
 echo "terminal-stack → installing from $REPO"
 $DRY_RUN && echo "(dry run — no changes)"
 
@@ -132,18 +144,20 @@ echo "• Shell";      link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
                      for f in "$REPO"/zsh/*.zsh; do link "$f" "$CONFIG/zsh/$(basename "$f")"; done
 echo "• Git";        link "$REPO/git/config"          "$CONFIG/git/config"
 echo "• Claude Code"; link "$REPO/claude/statusline.sh" "$HOME/.claude/statusline.sh"
+                      link "$REPO/claude/settings.json"  "$HOME/.claude/settings.json"
                       link "$REPO/claude/cc-worktree.sh" "$HOME/.local/bin/cc-worktree"
                       # each rule links on its own (like zsh/*.zsh) so machine-local rules can coexist
                       for f in "$REPO"/claude/rules/*.md; do link "$f" "$HOME/.claude/rules/$(basename "$f")"; done
 
 install_fonts
+install_claude_mcp
 $PRUNE && prune
 
 cat <<'DONE'
 
 Done. Next:
   • brew bundle                      # install the toolchain (if not yet)
-  • add the statusLine block to ~/.claude/settings.json   (see claude/README.md)
+  • sign in to Notion's MCP once:  open `claude`, then  /mcp → notion → Authenticate
   • open a new terminal, then:  zellij --layout dev
   • to update later:  make update    (pull + upgrade tools + prune)
 DONE
