@@ -63,20 +63,32 @@ pass straight through to whichever app is focused.
 
 ## Parallel agents — git worktrees
 
-To run several Claude Code agents on the same repo at once without collisions, give each its own
-**git worktree** + Zellij session. `cc-worktree.sh` does both:
+Two agents in one working tree **fight** — they overwrite each other's edits and stage stale
+snapshots. The fix is a **git worktree per agent**: its own directory + branch, one shared `.git`, so
+file races are impossible. `cc-worktree.sh` makes the worktree **and** opens a Zellij `dev` session
+(editor │ agent) in it:
 
 ```sh
-cc-worktree.sh feat/new-thing          # worktree off HEAD + a Zellij dev session
-cc-worktree.sh fix/bug origin/main     # worktree off a specific base
+cc-worktree.sh feat/new-thing          # → ../<repo>-feat-new-thing/ + a Zellij dev session
+cc-worktree.sh fix/bug origin/main     # branch from a specific base instead of HEAD
 ```
 
-It creates `../<repo>-<branch>/`, checks out the branch there, and (if Zellij is installed) opens a
-`dev`-layout session named after the branch. Install by symlinking onto your `$PATH`:
+It creates a **sibling** `../<repo>-<branch>/` (outside the repo — never shows as untracked), checks
+out the branch there, and (if Zellij is installed) opens a `dev`-layout session named after the
+branch. Install by symlinking onto your `$PATH`:
 
 ```sh
 ln -sf "$PWD/claude/cc-worktree.sh" ~/.local/bin/cc-worktree
 ```
+
+Claude Code also has worktrees **built in** — `claude --worktree <name>` (a lone agent session, no
+editor pane, in `.claude/worktrees/`), desktop `⌘N` (auto-isolated sessions), and `isolation:
+worktree` for subagents. [`settings.json`](./settings.json) ships **`worktree.baseRef: "head"`** so a
+native worktree branches from your *current* work, not the remote default.
+
+> **The full model** — why they collide, the two isolation modes, launching each, and **merging the
+> parallel branches back** — is [`docs/parallel-agents.md`](../docs/parallel-agents.md). Read it
+> before running two agents on real code at once.
 
 ## Global rules — `rules/`
 
