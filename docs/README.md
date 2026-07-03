@@ -1,7 +1,7 @@
 # 📚 docs
 
 The written half of terminal-stack — the reference guides that turn the configs into a workflow you
-can actually live in. Four docs, by intent:
+can actually live in. Five docs, by intent:
 
 | Doc | Read it to… |
 |---|---|
@@ -9,6 +9,7 @@ can actually live in. Four docs, by intent:
 | **[install.md](install.md)** | **Set it up** — `bootstrap.sh` → `brew bundle` → `install.sh`, updating, troubleshooting, uninstall. |
 | **[sandbox.md](sandbox.md)** | **Try it first** — `make try` runs the in-terminal layers in a disposable Docker container, no install. |
 | **[jetbrains-to-stack-review.md](jetbrains-to-stack-review.md)** | **Migrate from JetBrains** — the IDE-hotkey → stack map for reading, navigating, and reviewing code. |
+| **[parallel-agents.md](parallel-agents.md)** | **Run several agents at once** — why one shared tree collides, the two isolation modes, worktrees per agent, and merging the parallel branches back. |
 
 **Per-layer references** (one README per tool, with the per-setting rationale):
 [ghostty](../ghostty/README.md) · [zellij](../zellij/README.md) · [nvim](../nvim/README.md) ·

@@ -4,6 +4,9 @@
     "command": "~/.claude/statusline.sh",
     "padding": 0
   },
+  "worktree": {
+    "baseRef": "head"
+  },
   "skipWorkflowUsageWarning": true,
   "enabledPlugins": [
     "typescript-lsp@claude-plugins-official",

@@ -10,6 +10,7 @@
 .claude/shell-snapshots/
 .claude/telemetry/
 .claude/.last-cleanup
+.claude/worktrees/
 
 # ── Zellij plugin binaries (fetched by install.sh) ─────────
 zellij/plugins/*.wasm

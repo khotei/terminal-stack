@@ -416,9 +416,13 @@ cc-worktree fix/rate-limit origin/main
   and opens a `dev`-layout Zellij session in it. Run a `claude` in each — they never step on each
   other's files.
 - Bounce between them with `⌃a` `p`/`n` (tabs) or `zellij attach <name>`.
+- **Merge back** by pushing each branch and opening a PR per branch — the squash-merge reunites them
+  ([`pull-requests.md`](../.claude/rules/pull-requests.md)).
 
 **Why this way:** worktrees give each agent an isolated working tree, so "two features at once" is
-real parallelism, not branch-switch thrashing. (See [`claude/README.md`](../claude/README.md).)
+real parallelism, not branch-switch thrashing. The full model — *why* a shared tree collides, when to
+split by file instead, native `claude --worktree`, and the merge-back — is
+[`docs/parallel-agents.md`](parallel-agents.md).
 
 ### 6. Move around (history, dirs, files)
 *You need that `docker run …` from yesterday and a deeply-nested folder.*
