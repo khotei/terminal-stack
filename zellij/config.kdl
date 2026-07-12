@@ -11,10 +11,17 @@ theme "catppuccin-mocha"        // fallback if the terminal reports no appearanc
 theme_dark "catppuccin-mocha"
 theme_light "catppuccin-latte"
 default_layout "compact"        // built-in compact-bar — theme-aware, shows mode + keys + tabs
-pane_frames false               // cleaner splits; the active pane is shown by the theme
+pane_frames true                // on so the rounded corners below can draw; frame = 1-cell content breathing room
 copy_on_select true             // select = copy, tmux-like
 scrollback_editor "nvim"        // `Edit scrollback` opens in the stack's editor
 mouse_mode true
+
+// ── UI ────────────────────────────────────────────────────────────────
+ui {
+    pane_frames {
+        rounded_corners true    // inert unless pane_frames true above
+    }
+}
 
 // Keybinds live in the block below the autolock plugin — native modal Zellij
 // (no prefix); nested-app passthrough is autolock's job.
