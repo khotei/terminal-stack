@@ -18,8 +18,9 @@ Every key set in [`config`](./config), why it's there, and where it's documented
 |---|---|---|---|
 | `font-family` | `Dank Mono` | Primary typeface (expressive italics). | [font](https://ghostty.org/docs/config/reference#font-family) |
 | `font-family` | `Symbols Nerd Font Mono` | **Fallback** for icon glyphs — Dank Mono has none, so LazyVim/Starship icons need it. Repeated `font-family` = fallback chain. | [font](https://ghostty.org/docs/config/reference#font-family) |
-| `font-size` | `14` | Comfortable default point size. | [font-size](https://ghostty.org/docs/config/reference#font-size) |
-| `theme` | `Catppuccin Mocha` | Bundled theme; one palette shared across the stack. Verify with `ghostty +list-themes`. | [theme](https://ghostty.org/docs/config/reference#theme) · [catppuccin/ghostty](https://github.com/catppuccin/ghostty) |
+| `font-size` | `18` | Comfortable default point size. | [font-size](https://ghostty.org/docs/config/reference#font-size) |
+| `font-thicken` | `true` | Thickens strokes on macOS — Dank Mono's thin glyphs (esp. Cyrillic) render grainy at native weight. | [font-thicken](https://ghostty.org/docs/config/reference#font-thicken) |
+| `theme` | `light:Catppuccin Latte,dark:Catppuccin Mocha` | Bundled Catppuccin pair; Ghostty follows the **macOS appearance** and switches automatically (and reports it to apps inside via CSI 2031 — see [Zellij](../zellij/README.md), [Neovim](../nvim/README.md)). Verify with `ghostty +list-themes`. | [theme](https://ghostty.org/docs/config/reference#theme) · [catppuccin/ghostty](https://github.com/catppuccin/ghostty) |
 | `window-padding-x` | `8` | Breathing room between cells and the window edge. | [window-padding-x](https://ghostty.org/docs/config/reference#window-padding-x) |
 | `window-padding-y` | `8` | Same, vertical. | [window-padding-y](https://ghostty.org/docs/config/reference#window-padding-y) |
 | `macos-option-as-alt` | `true` | Option → **Alt**, so Alt-binds in nvim/zsh fire (vs. composing accents). | [macos-option-as-alt](https://ghostty.org/docs/config/reference#macos-option-as-alt) |
@@ -40,9 +41,9 @@ See [`background-opacity`](https://ghostty.org/docs/config/reference#background-
 
 ## Keybindings
 
-Ghostty owns **only terminal-level** keys. The multiplexer prefix (`ctrl+a`) and the editor leader
-are deliberately **left unbound** here so Zellij and Neovim get them cleanly — this is the
-[keyboard-layer contract](../.claude/rules/config.md).
+Ghostty owns **only terminal-level** keys. Zellij's modal keys (`ctrl+p/t/n/s/o…`) and the editor
+leader are deliberately **left unbound** here so the multiplexer and Neovim get them cleanly — this is
+the [keyboard-layer contract](../.claude/rules/config.md).
 
 | Keys | Action | Notes |
 |---|---|---|
@@ -52,7 +53,8 @@ are deliberately **left unbound** here so Zellij and Neovim get them cleanly —
 Ghostty's built-in macOS defaults still apply on top (e.g. `⌘=` / `⌘-` / `⌘0` for font size,
 `⌘C` / `⌘V` for clipboard) — see [keybind reference](https://ghostty.org/docs/config/keybind/reference).
 
-> **Boundary:** never add a `keybind` here whose trigger is `ctrl+a` (Zellij) or the nvim leader.
+> **Boundary:** never add a `keybind` here whose trigger is a Zellij mode key (`ctrl+p/t/n/s/o…`) or
+> the nvim leader.
 
 ---
 

@@ -7,12 +7,16 @@
 # Starship glyphs render — Dank Mono carries no Nerd-Font icons of its own.
 font-family = "Dank Mono"
 font-family = "Symbols Nerd Font Mono"
-font-size = 14
+font-size = 18
+# Thicken strokes on macOS — Dank Mono's thin glyphs (esp. Cyrillic) render
+# grainy at native weight; thickening restores solid, legible edges.
+font-thicken = true
 
 # ── theme ─────────────────────────────────────────────────────────────
-# Catppuccin Mocha ships bundled with Ghostty; the stack reuses it across
-# Zellij / LazyVim / Starship for one palette. Verify: ghostty +list-themes
-theme = Catppuccin Mocha
+# Catppuccin ships bundled with Ghostty; the stack reuses Mocha across
+# Zellij / LazyVim / Starship for one palette. Latte is its light sibling,
+# auto-selected to follow the macOS appearance. Verify: ghostty +list-themes
+theme = light:Catppuccin Latte,dark:Catppuccin Mocha
 
 # ── window ────────────────────────────────────────────────────────────
 # Opaque by choice (readability over glass). To enable translucency add
@@ -26,8 +30,9 @@ window-padding-y = 8
 macos-option-as-alt = true
 
 # ── keybinds — TERMINAL LAYER ONLY ────────────────────────────────────
-# Invariant: leave ctrl+a unbound — it is Zellij's prefix, and the editor
-# leader is nvim's. Ghostty binds only terminal-scoped actions, never a
-# multiplexer/editor key. (@.claude/rules/config.md — keyboard-layer contract)
+# Invariant: Ghostty binds only terminal-scoped actions, never a multiplexer
+# or editor key. Leave ctrl-combos free so they reach the layers below —
+# Zellij is modal (Ctrl+p/t/n/s/o…) and nvim's leader is <space>.
+# (@.claude/rules/config.md — keyboard-layer contract)
 keybind = cmd+shift+r=reload_config
 keybind = global:cmd+backquote=toggle_quick_terminal

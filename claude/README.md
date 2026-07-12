@@ -57,9 +57,9 @@ Claude Code is a TUI, so it lives in a **Zellij pane** next to Neovim, not an ID
 zellij --layout dev      # left: editor · right (40%): agent
 ```
 
-Switch editor ↔ agent with the Zellij prefix nav (`ctrl+a h/l`), or enable
-[`zellij-autolock`](../zellij/README.md#autolock-opt-in--seamless-editoragent-passthrough) so keys
-pass straight through to whichever app is focused.
+Switch editor ↔ agent with Zellij's direct focus keys (`Alt+h`/`Alt+l`); [`zellij-autolock`](../zellij/README.md#autolock)
+is on by default, so keys otherwise pass straight through to whichever app is focused. To reach the
+full multiplexer from inside a locked agent pane, press `Alt+z`.
 
 ## Parallel agents — git worktrees
 

@@ -205,8 +205,8 @@ That's why every PR here is a guide: it's a requirement of the process, not an a
 Each item is one SDD Feature → one (or a few) reference-guide PR(s).
 
 - [x] **Meta** — repo scaffold, README, `.claude/` toolkit · Docker sandbox + CI · `Brewfile` + `install.sh`
-- [x] **Terminal** — Ghostty config (font, Catppuccin Mocha, `macos-option-as-alt`, `ctrl+a` left free)
-- [x] **Multiplexer** — Zellij config + `dev` layout + `ctrl+a` prefix, autolock opt-in
+- [x] **Terminal** — Ghostty config (font, Catppuccin auto light/dark, `macos-option-as-alt`, ctrl-keys left free)
+- [x] **Multiplexer** — Zellij config + `dev` layout + native modal keys, autolock on by default
 - [x] **Editor** — Neovim + LazyVim starter, Catppuccin, pinned `lazy-lock.json`
 - [x] **Shell** — zsh + Starship (Catppuccin) + zoxide/atuin/fzf
 - [x] **Agent** — Claude Code statusline + worktree helper + pane workflow

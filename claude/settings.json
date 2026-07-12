@@ -12,5 +12,20 @@
     "typescript-lsp@claude-plugins-official",
     "commit-commands@claude-plugins-official",
     "pr-review-toolkit@claude-plugins-official"
-  ]
+  ],
+  "theme": "auto",
+  "voiceEnabled": true,
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "language": "Русский",
+  "editorMode": "vim",
+  "permissions": {
+    "defaultMode": "default",
+    "allow": [
+      "WebFetch",
+      "WebSearch"
+    ]
+  }
 }

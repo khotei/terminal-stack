@@ -122,6 +122,24 @@ install_autolock() {
   fi
 }
 
+# Fetch the zjstatus plugin wasm (best-effort) — the custom bar in layouts/
+# default.kdl + dev.kdl. Lands in the same git-ignored zellij/plugins/ dir. If it
+# fails (offline), the bar pane errors but sessions still run — fall back to the
+# built-in bar with `zellij -l compact`. Skipped on --dry-run.
+# Source: github.com/dj95/zjstatus
+install_zjstatus() {
+  local dir="$CONFIG/zellij/plugins" f="$CONFIG/zellij/plugins/zjstatus.wasm"
+  [ -f "$f" ] && { note "ok: zjstatus.wasm already present"; return 0; }
+  if $DRY_RUN; then note "would fetch: zjstatus.wasm → ~/.config/zellij/plugins/"; return 0; fi
+  mkdir -p "$dir"
+  if command -v curl >/dev/null 2>&1 && curl -fsSL -o "$f" \
+      https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm; then
+    note "fetched: zjstatus.wasm (custom bar enabled)"
+  else
+    note "skipped: zjstatus.wasm fetch failed (bar falls back to 'zellij -l compact')"
+  fi
+}
+
 # Register the user-scope MCP servers (Notion, Context7) via claude/mcp-setup.sh.
 # Best-effort like install_autolock: needs the claude CLI + network, so a missing
 # CLI or an offline machine just skips — the install never fails on it. Skipped on
@@ -137,7 +155,7 @@ echo "terminal-stack → installing from $REPO"
 $DRY_RUN && echo "(dry run — no changes)"
 
 echo "• Ghostty";    link "$REPO/ghostty/config"     "$CONFIG/ghostty/config"
-echo "• Zellij";     link "$REPO/zellij"             "$CONFIG/zellij"; install_autolock
+echo "• Zellij";     link "$REPO/zellij"             "$CONFIG/zellij"; install_autolock; install_zjstatus
 echo "• Neovim";     link "$REPO/nvim"               "$CONFIG/nvim"
 echo "• Shell";      link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
                      link "$REPO/zsh/starship.toml"  "$CONFIG/starship.toml"

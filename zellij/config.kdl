@@ -4,34 +4,23 @@
 // Validate: `zellij --config zellij/config.kdl setup --check` (run by /check + CI)
 
 // ── options ───────────────────────────────────────────────────────────
-theme "catppuccin-mocha"        // defined in the themes block below (self-contained)
-default_layout "compact"        // minimal UI chrome; the dev layout is opt-in (zellij -l dev)
+theme "catppuccin-mocha"        // fallback if the terminal reports no appearance
+// Auto-switch with the OS: Ghostty follows macOS appearance and reports it via
+// CSI 2031 / DSR 997; Zellij picks theme_dark/theme_light accordingly. Both
+// palettes are defined in the themes block below (self-contained).
+theme_dark "catppuccin-mocha"
+theme_light "catppuccin-latte"
+default_layout "default"        // layouts/default.kdl = custom zjstatus bar; built-in fallback: zellij -l compact
 pane_frames false               // cleaner splits; the active pane is shown by the theme
 copy_on_select true             // select = copy, tmux-like
 scrollback_editor "nvim"        // `Edit scrollback` opens in the stack's editor
 mouse_mode true
 
-// ── keybinds: tmux-style ctrl+a prefix ────────────────────────────────
-// Keep ALL of Zellij's modal defaults, but move the "tmux mode" entry from
-// the default Ctrl+b to Ctrl+a (ex-tmux muscle memory). In tmux mode,
-// Ctrl+a again sends a literal Ctrl+a to the running app (tmux send-prefix).
-// Grounded in `zellij setup --dump-config` (the Ctrl+b binding lives in
-// `shared_except "tmux" "locked"`). The bare ctrl+hjkl keys are deliberately
-// NOT grabbed here — they belong to Neovim; pane nav goes through the prefix
-// (or enable zellij-autolock below for seamless locked-mode passthrough).
-keybinds {
-    shared_except "tmux" "locked" {
-        unbind "Ctrl b"
-        bind "Ctrl a" { SwitchToMode "Tmux"; }
-    }
-    tmux {
-        unbind "Ctrl b"
-        bind "Ctrl a" { Write 1; SwitchToMode "Normal"; }   // send literal Ctrl+a
-    }
-}
+// Keybinds live in the block below the autolock plugin — native modal Zellij
+// (no prefix); nested-app passthrough is autolock's job.
 
 // ── zellij-autolock (ON by default) ───────────────────────────────────
-// Auto-locks Zellij when nvim/vim/git/fzf/zoxide/atuin is focused, so the
+// Auto-locks Zellij when nvim/vim/git/fzf/zoxide/atuin/claude is focused, so the
 // editor and Claude Code get every keystroke without manual locking. Needs the
 // plugin wasm at ~/.config/zellij/plugins/zellij-autolock.wasm — `install.sh`
 // fetches it. If the wasm is absent the keybinds below stay harmless (Enter
@@ -40,7 +29,7 @@ keybinds {
 plugins {
     autolock location="file:~/.config/zellij/plugins/zellij-autolock.wasm" {
         is_enabled true
-        triggers "nvim|vim|git|fzf|zoxide|atuin"
+        triggers "nvim|vim|git|fzf|zoxide|atuin|claude"
         reaction_seconds "0.3"
         print_to_log false
     }
@@ -48,22 +37,33 @@ plugins {
 load_plugins {
     autolock
 }
+// ── keybinds: native modal, tuned for nested apps ─────────────────────
+// Native modal Zellij (Ctrl+p pane · Ctrl+t tab · Ctrl+n resize · Ctrl+s
+// scroll · Ctrl+o session · …). No tmux prefix — passthrough to nvim/claude
+// is autolock's job. Two deliberate rebinds keep a locked pane cooperative:
+//   · unbind Ctrl+g — in Locked mode it is Zellij's unlock and would shadow
+//     Claude Code's Ctrl+g (edit prompt in $EDITOR). Freed → the app gets it.
+//   · Alt+z is the master switch — from a locked pane it DISABLES autolock and
+//     drops to Normal (sticky: no re-lock), so every Zellij mode is reachable
+//     without leaving Claude/nvim. Press again to re-arm. Locked mode honours
+//     only this one key, so it is always your way back out.
 keybinds {
-    normal {
-        bind "Enter" {
-            WriteChars "\u{000D}";
-            MessagePlugin "autolock" {};
-        }
+    shared_except "locked" {
+        unbind "Ctrl g"
+        bind "Alt z" { MessagePlugin "autolock" {payload "enable";}; }
     }
     locked {
-        bind "Alt z" {
-            MessagePlugin "autolock" {payload "disable";};
-            SwitchToMode "Normal";
-        }
+        unbind "Ctrl g"
+        bind "Alt z" { MessagePlugin "autolock" {payload "disable";}; SwitchToMode "Normal"; }
+    }
+    normal {
+        // Re-check the focused command on each Enter so autolock locks promptly
+        // right after you launch nvim/claude in a pane.
+        bind "Enter" { WriteChars "\u{000D}"; MessagePlugin "autolock" {}; }
     }
 }
 
-// ── theme: Catppuccin Mocha (official palette — catppuccin/zellij) ─────
+// ── themes: Catppuccin Mocha + Latte (official palettes — catppuccin/zellij) ──
 themes {
     catppuccin-mocha {
         bg "#585b70"      // Surface2
@@ -77,5 +77,18 @@ themes {
         cyan "#89dceb"     // Sky
         black "#181825"    // Mantle
         white "#cdd6f4"    // Text
+    }
+    catppuccin-latte {
+        bg "#acb0be"      // Surface2
+        fg "#4c4f69"      // Text
+        red "#d20f39"
+        green "#40a02b"
+        blue "#1e66f5"
+        yellow "#df8e1d"
+        magenta "#ea76cb"  // Pink
+        orange "#fe640b"   // Peach
+        cyan "#04a5e5"     // Sky
+        black "#e6e9ef"    // Mantle
+        white "#4c4f69"    // Text
     }
 }
