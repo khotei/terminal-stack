@@ -18,6 +18,8 @@ script in the spirit of [mathiasbynens/.macos](https://github.com/mathiasbynens/
 | Area | Setting | Why |
 |---|---|---|
 | **Dock** | `autohide` + fast slide · no recent apps · smaller icons | reclaim screen space; you launch via Raycast and switch via the keyboard |
+| **Menu bar** | `_HIHideMenuBar = true` | auto-hide the top menu bar — it slides back in on hover; reclaims the top strip, mirrors the Dock |
+| **Desktop widgets** | `StandardHideWidgets` + `StageManagerHideWidgets = true` | hide the Calendar/Weather/Photos cards on the wallpaper — glanceable clutter in a terminal-first rig (macOS Tahoe 26+) |
 | **Keyboard** | `ApplePressAndHoldEnabled = false` | **the Vim one** — holding a key (hjkl, x) **repeats** instead of popping the accent menu |
 | | `KeyRepeat = 2`, `InitialKeyRepeat = 15` | fast repeat, short initial delay (tune lower = faster) |
 | | `AppleKeyboardUIMode = 3` | full keyboard access — Tab reaches every control |
@@ -46,9 +48,10 @@ make macos                      # apply
 ./macos/defaults.sh --dry-run   # preview every command, change nothing
 ```
 
-Then **log out and back in** (or restart) so the key-repeat, the disabled hotkey, and the Services
-changes fully register. The Dock/Finder/trackpad changes apply immediately (the script restarts Dock,
-Finder, SystemUIServer).
+Then **log out and back in** (or restart) so the key-repeat, the disabled hotkey, the Services
+changes, and the **menu-bar auto-hide** fully register — `_HIHideMenuBar` is only re-read at login,
+so `killall SystemUIServer` alone won't apply it. The Dock/Finder/trackpad/widget changes apply
+immediately (the script restarts Dock, Finder, SystemUIServer).
 
 ## Reverting
 
@@ -57,6 +60,8 @@ Each setting is a `defaults` key — flip it back, or just toggle it in **System
 | Setting | Revert |
 |---|---|
 | Dock auto-hide | `defaults write com.apple.dock autohide -bool false && killall Dock` (or System Settings → Desktop & Dock) |
+| Menu bar auto-hide | `defaults write NSGlobalDomain _HIHideMenuBar -bool false && killall SystemUIServer` (or System Settings → Control Center → "Automatically hide and show the menu bar") |
+| Desktop widgets | `defaults write com.apple.WindowManager StandardHideWidgets -bool false && killall Dock` (or System Settings → Desktop & Dock → Widgets → "On Desktop") |
 | Key repeat / press-and-hold | `defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool true` (then log out/in); reset rates in Settings → Keyboard |
 | Trackpad gestures | toggle in System Settings → Trackpad, or `defaults delete` the keys above |
 | Text substitutions | re-enable in System Settings → Keyboard → Text Input → Edit, or flip each `…Enabled` key to `true` |
