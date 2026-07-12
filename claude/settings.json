@@ -17,7 +17,7 @@
   "voiceEnabled": true,
   "voice": {
     "enabled": true,
-    "mode": "hold"
+    "mode": "tap"
   },
   "language": "Русский",
   "editorMode": "vim",
