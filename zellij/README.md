@@ -18,7 +18,8 @@ workspaces.
 | `theme` | `catppuccin-mocha` | Fallback palette if the terminal reports no appearance — defined **in-config** (themes block) so it doesn't depend on a built-in. |
 | `theme_dark` / `theme_light` | `catppuccin-mocha` / `catppuccin-latte` | Auto-switch with the OS: Ghostty follows the macOS appearance and reports it via **CSI 2031 / DSR 997**; Zellij picks the matching palette live. |
 | `default_layout` | `compact` | Built-in **compact-bar** — theme-aware, shows mode + keys + tabs (see below). |
-| `pane_frames` | `false` | Cleaner splits; the theme marks the active pane. |
+| `pane_frames` | `true` | Frames on so splits read as distinct cards; the frame lends a 1-cell content offset (Zellij has no native inner padding). |
+| `ui.pane_frames.rounded_corners` | `true` | Round the frame corners — softer look; inert without `pane_frames true`. |
 | `copy_on_select` | `true` | Select = copy (tmux-like). |
 | `scrollback_editor` | `nvim` | "Edit scrollback" opens in the stack's editor. |
 | `mouse_mode` | `true` | Scroll/select with the mouse when you want it. |
