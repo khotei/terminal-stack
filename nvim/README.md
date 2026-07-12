@@ -22,7 +22,7 @@ nvim/
 │   ├── keymaps.lua               # editor maps — the place to port IdeaVim habits
 │   └── autocmds.lua              # autocmds (stub)
 ├── lua/plugins/
-│   └── colorscheme.lua           # Catppuccin Mocha → LazyVim colorscheme
+│   └── colorscheme.lua           # Catppuccin (auto latte/mocha) + auto-dark-mode.nvim
 ├── stylua.toml                   # 2-space, 120-col (matches the starter)
 └── lazy-lock.json                # pinned plugin versions (reproducible installs)
 ```
@@ -31,7 +31,8 @@ nvim/
 
 | File | Change | Why |
 |---|---|---|
-| `lua/plugins/colorscheme.lua` | add `catppuccin/nvim` (mocha) + set `colorscheme = "catppuccin"` | One palette across Ghostty / Zellij / Starship. The [LazyVim-documented](https://www.lazyvim.org/configuration/general) way to theme. |
+| `lua/plugins/colorscheme.lua` | `catppuccin/nvim` `flavour="auto"` (`background`→latte/mocha) + set `colorscheme = "catppuccin"` | One palette across the stack, auto light/dark. `flavour="auto"` tracks `vim.o.background`. The [LazyVim-documented](https://www.lazyvim.org/configuration/general) way to theme. |
+| `lua/plugins/colorscheme.lua` | add [`f-person/auto-dark-mode.nvim`](https://github.com/f-person/auto-dark-mode.nvim) | Polls the macOS appearance and flips `vim.o.background` → catppuccin recompiles. Works **inside Zellij**, where the terminal's CSI 2031 signal may not reach the editor. |
 | `lua/config/lazy.lua` | `install.colorscheme = { "catppuccin", … }` | Use the real theme during install, not the default tokyonight. |
 | `lua/config/options.lua` | `relativenumber`, `scrolloff=8`, `confirm` | Small comfort defaults on top of LazyVim's. |
 | `lua/config/keymaps.lua` | `jk` → `<Esc>` | One universal comfort bind; this file is where you port your IdeaVim maps. |
@@ -40,7 +41,7 @@ nvim/
 | `lua/plugins/dropbar.lua` | add `Bekaboo/dropbar.nvim` | Breadcrumb winbar (the "Context Info" view) — no LazyVim-native equivalent. Requires **Neovim ≥ 0.11** — an editor version floor the stack now depends on. [dropbar.nvim](https://github.com/Bekaboo/dropbar.nvim). |
 
 > **Porting IdeaVim:** `lua/config/keymaps.lua` is the single home for editor maps, so collisions with
-> the Zellij prefix (`ctrl+a`) and Ghostty stay auditable
+> Zellij's mode keys (`ctrl+p/t/n/s/o…`) and Ghostty stay auditable
 > ([keyboard-layer contract](../.claude/rules/config.md)). Add your maps there with `vim.keymap.set`.
 
 ## Keys (LazyVim defaults — discover, don't memorize)

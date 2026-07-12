@@ -43,7 +43,7 @@ Five layers, each owning one job, nested inside each other:
 
 ```
 ┌─ Ghostty ──────────────────────────────────────────────┐   the window (GPU, font, copy/paste)
-│ ┌─ Zellij ───────────────────────────────────────────┐ │   sessions · tabs · panes  (prefix ⌃a)
+│ ┌─ Zellij ───────────────────────────────────────────┐ │   sessions · tabs · panes  (modal · ⌃p ⌃t …)
 │ │ ┌─ pane: Neovim ─────────┐ ┌─ pane: Claude Code ──┐ │ │   edit  ││  the agent
 │ │ │  <Space> leader        │ │  statusline, /cmds   │ │ │
 │ │ │  LSP · snacks · git    │ │  cc-worktree         │ │ │
@@ -59,15 +59,16 @@ and they never collide:
 | Layer | Owns | Entry key |
 |---|---|---|
 | **Ghostty** | terminal-level keys (font, copy/paste, quick-terminal) | `⌘ …` |
-| **Zellij** | sessions, tabs, panes | **`⌃a`** prefix, then a key |
+| **Zellij** | sessions, tabs, panes | **`⌃p`/`⌃t`/…** mode key, then a key (or `⌥`-direct) |
 | **Neovim** | editor motions, LSP, plugins | **`<Space>`** leader, then a key |
 
-So your fingers always know *which tool they're talking to*: a bare `⌃a` means "multiplexer", a bare
-`<Space>` in the editor means "editor command". Ghostty deliberately leaves `⌃a` free; Neovim's leader
-never shadows the multiplexer. (Details: [`.claude/rules/config.md`](../.claude/rules/config.md).)
+So your fingers always know *which tool they're talking to*: a `⌃`-mode key means "multiplexer", a bare
+`<Space>` in the editor means "editor command". Ghostty deliberately leaves the `⌃` keys free; Neovim's
+leader never shadows the multiplexer. And when the editor/agent is focused, [autolock](../zellij/README.md#autolock)
+hands it *every* key — press `⌥z` to reach Zellij again. (Details: [`.claude/rules/config.md`](../.claude/rules/config.md).)
 
 **Where Claude Code lives:** in a Zellij pane next to Neovim — not an IDE sidebar. You edit on the
-left, the agent works on the right, and you flick between them with the prefix.
+left, the agent works on the right, and you flick between them with `⌥h`/`⌥l`.
 
 ---
 
@@ -81,8 +82,8 @@ zellij --layout dev        # opens the editor │ agent split (40% agent on the 
 - Both panes **start as shells** (the layout doesn't auto-launch the apps — so a fresh prompt is
   expected, not a failure). Left pane — type `nvim` to edit. Right pane — type `claude` to start the
   agent.
-- **Switch panes:** `⌃a` then `h`/`l` (left/right). **New tab:** `⌃a c`. **Detach (leave it
-  running):** `⌃a d` — reattach later with `zellij attach`.
+- **Switch panes:** `⌥h`/`⌥l` (Alt, left/right). **New tab:** `⌃t` then `n`. **Detach (leave it
+  running):** `⌃o` then `d` — reattach later with `zellij attach`.
 - In Neovim, press **`<Space>`** and *wait* — a menu (which-key) shows every command. That's your
   discovery tool; you never need to memorize up front.
 
@@ -110,34 +111,39 @@ That's enough to be productive. The rest is muscle memory you'll build through t
 | `⌘=` / `⌘-` / `⌘0` | Font size up / down / reset *(default)* |
 | `⌘C` / `⌘V` | Copy / paste *(default)* |
 
-> Keep **one** Ghostty window — Zellij does the tabs and panes. `⌃a` is intentionally unbound here.
+> Keep **one** Ghostty window — Zellij does the tabs and panes. Zellij's `⌃` mode keys are
+> intentionally unbound here.
 
 ### Zellij — multiplexer
 
-Press the **`⌃a`** prefix, release, then the key (tmux-style):
+Zellij is **modal**, not prefix-based: press a **mode key**, act with plain keys, then `Enter`/`Esc`
+to leave. For the everyday moves, hold **`⌥` (Alt)** and skip the mode entirely:
 
 | Keys | Action |
 |---|---|
-| `⌃a` `c` | New tab |
-| `⌃a` `"` / `⌃a` `%` | Split pane down / right |
-| `⌃a` `h` `j` `k` `l` | Move focus between panes |
-| `⌃a` `n` / `⌃a` `p` | Next / previous tab |
-| `⌃a` `x` | Close the focused pane |
-| `⌃a` `z` | Toggle fullscreen (zoom) a pane |
-| `⌃a` `[` | Scroll / copy mode (then `q` to exit) |
-| `⌃a` `d` | Detach the session (keeps running) |
-| `⌃a` `⌃a` | Send a literal `⌃a` to the app |
+| `⌥h` `⌥j` `⌥k` `⌥l` | Move focus between panes (`⌥h`/`⌥l` cross into adjacent tabs) |
+| `⌥n` / `⌥f` | New pane / floating pane (the "popup" window) |
+| `⌃p` then `n` · `d` · `r` | Pane mode → new · split down · split right |
+| `⌃p` then `x` · `f` | Close pane · fullscreen (zoom) |
+| `⌃t` then `n` · `1`…`9` | Tab mode → new tab · jump to tab N |
+| `⌃t` then `h`/`l` | Previous / next tab |
+| `⌃s` | Scroll / search mode (`e` edits scrollback in nvim · `Esc` exits) |
+| `⌃o` then `w` · `d` | Session mode → session manager (fuzzy switch) · detach |
+| `⌥z` | Drop a **locked** (editor/agent) pane back to full Zellij |
 
-From the shell (no prefix):
+From the shell (no mode):
 
 | Command | Action |
 |---|---|
 | `zellij --layout dev` | New session with the editor │ agent layout |
 | `zellij attach` (or `za`) | Reattach the last session |
 | `zellij ls` | List sessions |
+| `zellij setup --dump-config` | Print **every** default keybind (the full list) |
 
-> Zellij is modal and **shows its keys in the status bar** — when in doubt, look down. Its other
-> default modes (`⌃p` pane, `⌃t` tab, `⌃n` resize, `⌃g` lock) still work alongside the `⌃a` prefix.
+> **Seeing the keys:** Zellij **shows the active mode's keys in the status bar** — enter a mode (`⌃p`,
+> `⌃t`, …) and read the bar. There's no single "all hotkeys" popup; for the exhaustive list use
+> `zellij setup --dump-config`. Locking is automatic ([autolock](../zellij/README.md#autolock)) so
+> editor/agent panes get every key; `⌥z` gets you back.
 
 ### Neovim + LazyVim — editor
 
@@ -335,7 +341,8 @@ are from the official docs — [CLI](https://code.claude.com/docs/en/cli-referen
   `⌥P`/`⌥T`/`⌥O` need on macOS.
 - **The PR badge is live** — `gh` (in the Brewfile) powers Claude Code's clickable PR status in the
   footer.
-- **No prefix clash** — Claude's `⌃B` (background) is free because the Zellij prefix is `⌃a`, not `⌃b`.
+- **No key clash** — [autolock](../zellij/README.md#autolock) locks the agent pane, so Claude's
+  `⌃O`/`⌃T`/`⌃B` reach it untouched; Zellij's `⌃G` is unbound too, so `⌃G` opens nvim even unlocked.
 
 > Worktrees for parallel agents: [flow 5](#5-run-agents-in-parallel-worktrees) +
 > [`claude/README.md`](../claude/README.md).
@@ -354,9 +361,9 @@ cd ~/code/api
 zellij --layout dev          # editor │ agent split, named after the dir
 ```
 - Left pane: `nvim` → you're editing. Right pane: `claude` → the agent is ready.
-- Need a third pane for tests/logs? `⌃a "` splits the current pane downward; run `npm test --watch`
-  there.
-- Lunch? `⌃a d` detaches — everything keeps running. Back later: `zellij attach`.
+- Need a third pane for tests/logs? `⌃p` then `d` splits the current pane downward; run
+  `npm test --watch` there.
+- Lunch? `⌃o` then `d` detaches — everything keeps running. Back later: `zellij attach`.
 
 **Why this way:** one session = one project. Tabs are sub-tasks; panes are editor/agent/runner. You
 never lose context, and a reboot-free week of work lives in detached sessions.
@@ -377,9 +384,9 @@ keys (`gd`/`gr`/`cr`) replace "go to / find usages / rename". Hands stay on the 
 ### 3. Pair with Claude Code
 *You want the agent to implement a function while you keep reading code.*
 
-1. `⌃a l` → focus the Claude pane. Describe the task (`@` to attach a file path, `!` to run a quick
+1. `⌥l` → focus the Claude pane. Describe the task (`@` to attach a file path, `!` to run a quick
    bash check inline).
-2. `⌃a h` → back to Neovim; keep navigating while it works. The status line shows context % so you
+2. `⌥h` → back to Neovim; keep navigating while it works. The status line shows context % so you
    know when to `/compact`.
 3. When it edits files, Neovim shows the changes (`:e` to reload, or it auto-reloads); review with
    `gd`/`<Space>gg`.
@@ -387,9 +394,9 @@ keys (`gd`/`gr`/`cr`) replace "go to / find usages / rename". Hands stay on the 
 
 **Why this way:** the agent and the editor are *peers in adjacent panes* — lower RAM and a tighter
 loop than an embedded IDE agent, and you stay in control of the diff.
-[`zellij-autolock`](../zellij/README.md) (on by default) passes every key straight to the focused
-editor/agent — no manual locking when the focused pane runs one of its watched apps (nvim/vim/git/fzf/
-zoxide/atuin); `Alt z` disables it if you need the prefix.
+[`zellij-autolock`](../zellij/README.md#autolock) (on by default) passes every key straight to the
+focused editor/agent — no manual locking when the pane runs one of its watched apps (nvim/vim/git/fzf/
+zoxide/atuin/**claude**); `⌥z` drops back to the full multiplexer when you need it.
 
 ### 4. Git, the fast way
 *You're ready to review and commit.*
@@ -415,7 +422,7 @@ cc-worktree fix/rate-limit origin/main
 - Each command creates a **git worktree** (a separate checkout of the same repo on its own branch)
   and opens a `dev`-layout Zellij session in it. Run a `claude` in each — they never step on each
   other's files.
-- Bounce between them with `⌃a` `p`/`n` (tabs) or `zellij attach <name>`.
+- Bounce between them with `⌃t` then `h`/`l` (tabs) or `zellij attach <name>`.
 - **Merge back** by pushing each branch and opening a PR per branch — the squash-merge reunites them
   ([`pull-requests.md`](../.claude/rules/pull-requests.md)).
 
@@ -467,13 +474,13 @@ pass `/check`.
 
 > `⌘⇧R`-fresh terminal. `z api` → `zellij --layout dev`. Left: `nvim`. Right: `claude`.
 >
-> `<Space>fg` "parseToken" → land in the auth module, `gd` into the helper, spot the bug. `⌃a l` →
-> tell Claude "write a failing test for an expired token, then fix `parseToken`". `⌃a h` → back to
+> `<Space>fg` "parseToken" → land in the auth module, `gd` into the helper, spot the bug. `⌥l` →
+> tell Claude "write a failing test for an expired token, then fix `parseToken`". `⌥h` → back to
 > nvim, keep reading while it works; the statusline ticks to *31% ctx*.
 >
 > It's done. `<Space>gg` → lazygit, stage the two files (`Space`), commit (`c`), and — because a
 > second idea struck — `cc-worktree feat/refresh-rotation` spins a parallel session to chase it
-> later. `⌃a d`, close the laptop. Nothing lost.
+> later. `⌃o` then `d`, close the laptop. Nothing lost.
 
 That's the loop: **navigate by search, edit by motion, delegate to the pane next door, commit in
 seconds, detach without fear.**
@@ -484,8 +491,8 @@ seconds, detach without fear.**
 
 The *why* behind the combos — the reasons this stack is fast once it's yours:
 
-- **One prefix per layer.** `⌘` = terminal, `⌃a` = multiplexer, `<Space>` = editor. Your hands always
-  know who's listening; nothing overlaps.
+- **One entry per layer.** `⌘` = terminal, `⌃`-mode keys = multiplexer, `<Space>` = editor. Your hands
+  always know who's listening; nothing overlaps.
 - **Search, don't browse.** `<Space>ff`/`fg`, `⌃R`, `z`, lazygit — reaching a file / command / commit
   is a fuzzy query, not a click-path. Fewer keystrokes, no mouse.
 - **Stay on the home row.** Vim motions in the editor *and* the shell (vi-mode) mean you almost never
@@ -496,8 +503,9 @@ The *why* behind the combos — the reasons this stack is fast once it's yours:
   is independent (and parallel, via worktrees).
 - **Detach, don't lose.** Sessions outlive the window. Close the lid mid-task; `zellij attach` and
   you're exactly where you were.
-- **One palette, low friction.** Catppuccin Mocha across every layer — less visual context-switching
-  when your eyes jump pane to pane.
+- **One palette, low friction.** Catppuccin across every layer — Latte in light, Mocha in dark,
+  following the macOS appearance in lockstep — so there's less visual context-switching when your
+  eyes jump pane to pane.
 
 ---
 
@@ -510,7 +518,7 @@ The *why* behind the combos — the reasons this stack is fast once it's yours:
 | Changed an nvim plugin spec | `:Lazy sync` (or restart nvim) |
 | Changed a shell file | `source ~/.zshrc` or open a new shell |
 | "Does my config even load?" | `make check` (all validators) — or per-tool, see below |
-| A keybind seems dead | check the layer: is a `⌃a`-prefix key being eaten by the app? `⌃a ⌃a` sends a literal `⌃a` |
+| A keybind seems dead | check the layer: is the pane **locked** (autolock)? Then the app gets the key — press `⌥z` to reach Zellij |
 | fzf/atuin `⌃R` stopped working | vi-mode must load *before* them — it does in `zsh/.zshrc`; check your `~/.zshrc.local` overrides |
 | New machine / new files added | `git pull && ./install.sh --prune` |
 | Update all the tools | `make update` (then `:Lazy update` + commit `lazy-lock.json`) |

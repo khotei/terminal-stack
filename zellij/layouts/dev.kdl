@@ -4,18 +4,22 @@
 // by default so the layout works even before nvim/claude are installed; uncomment
 // the `command` lines to auto-launch them.
 layout {
-    pane size=1 borderless=true {
-        plugin location="tab-bar"
-    }
-    pane split_direction="vertical" {
-        pane name="editor" focus=true {
-            // command "nvim"
-        }
-        pane name="agent" size="40%" {
-            // command "claude"
+    // Bar in the tab template so every dev tab carries it. Built-in compact-bar:
+    // theme-aware (follows theme_dark/theme_light), shows mode + keys + tabs.
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="compact-bar"
         }
     }
-    pane size=1 borderless=true {
-        plugin location="status-bar"
+    tab name="dev" {
+        pane split_direction="vertical" {
+            pane name="editor" focus=true {
+                // command "nvim"
+            }
+            pane name="agent" size="40%" {
+                // command "claude"
+            }
+        }
     }
 }

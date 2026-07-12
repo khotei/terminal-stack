@@ -23,3 +23,8 @@ alias gl='git log --oneline --graph --decorate'
 # stack tools (guarded — alias only if installed)
 command -v lazygit >/dev/null && alias lg='lazygit'
 command -v yazi    >/dev/null && alias y='yazi'
+
+# Claude Code with all permission checks off — a named, opt-in alias, NOT a shadow
+# of bare `claude`: `--dangerously-skip-permissions` runs with zero guardrails, so
+# it must never be the silent default. `yolo` for a trusted session; `claude` prompts.
+command -v claude >/dev/null && alias yolo='claude --dangerously-skip-permissions'

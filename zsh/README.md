@@ -22,7 +22,7 @@ zsh/
 ├── tools.zsh         # zoxide · atuin · fzf · bat man-pager (each guarded)
 ├── prompt.zsh        # starship init
 ├── plugins.zsh       # autosuggestions · fzf-tab · syntax-highlighting (sourced LAST)
-└── starship.toml     # Catppuccin Mocha prompt
+└── starship.toml     # prompt (ANSI colors → follows the terminal theme)
 ```
 
 `.zshrc` sources `env → vi-mode → aliases → tools → prompt → plugins`. Order matters: env sets
@@ -80,10 +80,11 @@ syntax-highlighted man pages — we do **not** alias `cat` (it breaks `cat > fil
 
 ## The prompt
 
-`starship.toml` sets the **Catppuccin Mocha** palette (official
-[catppuccin/starship](https://github.com/catppuccin/starship) mapping) and a compact two-line format:
-directory · git branch/status · command duration, then the `❯` character (green ok / red error). The
-git-branch glyph needs a Nerd Font (the stack assumes one).
+`starship.toml` styles the prompt with the terminal's **16 ANSI colors** (no hardcoded palette), so it
+**follows Ghostty's live theme repaint** — Catppuccin Latte in light, Mocha in dark — with zero
+switching logic, the same way the rest of the stack tracks the macOS appearance. A compact two-line
+format: directory · git branch/status · command duration, then the `❯` character (green ok / red
+error). The git-branch glyph needs a Nerd Font (the stack assumes one).
 
 ## Keeping `$HOME` tidy — XDG base directories
 
