@@ -155,6 +155,26 @@ curl -fsSL -o ~/.config/zellij/plugins/zjstatus.wasm \
   https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
 ```
 
+> **First-run gotcha — a blank bar means *ungranted*, not *missing*.** On first load zjstatus
+> requests three permissions (`ReadApplicationState`, `ChangeApplicationState`, `RunCommands`) and
+> Zellij shows the request *inside the plugin's pane* — but the bar is a `size=1 borderless` pane, so
+> the prompt is invisible and unfocusable and the bar renders empty until you grant. `install.sh`
+> pre-seeds the grant into Zellij's cache (`grant_zellij_permissions`), so a fresh install is fine;
+> if you fetched the wasm by hand, append the block below to `permissions.kdl` (macOS:
+> `~/Library/Caches/org.Zellij-Contributors.Zellij/`; Linux: `${XDG_CACHE_HOME:-~/.cache}/zellij/`)
+> and start a **new** session — a running one won't re-read it:
+>
+> ```kdl
+> "~/.config/zellij/plugins/zjstatus.wasm" {
+>     ReadApplicationState
+>     ChangeApplicationState
+>     RunCommands
+> }
+> ```
+>
+> (Use the path Zellij canonicalises — the `~`-expanded, symlink-preserved
+> `/Users/<you>/.config/zellij/plugins/zjstatus.wasm`, matching the existing autolock block.)
+
 > **Known limit:** the bar colours are static Mocha — zjstatus can't follow the OS light/dark switch
 > that `theme_dark`/`theme_light` give the rest of the stack. In Latte (light) mode the bar stays dark.
 
