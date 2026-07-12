@@ -4,34 +4,13 @@
 // by default so the layout works even before nvim/claude are installed; uncomment
 // the `command` lines to auto-launch them.
 layout {
-    // Bar lives in the tab template so the named tab shows "dev" (not "Tab #1").
-    // zjstatus block mirrors layouts/default.kdl — keep the two in sync.
+    // Bar in the tab template so every dev tab carries it. Built-in compact-bar:
+    // theme-aware (follows theme_dark/theme_light), shows mode + keys + tabs.
     default_tab_template {
-        pane size=1 borderless=true {
-            plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
-                format_left   "{mode}#[bg=#181825] #[fg=#89b4fa,bold]{session}"
-                format_center "{tabs}"
-                format_right  "{command_git_branch}#[bg=#181825,fg=#6c7086]{datetime}"
-                format_space  "#[bg=#181825]"
-
-                mode_normal          "#[bg=#a6e3a1,fg=#181825,bold] NORMAL "
-                mode_locked          "#[bg=#585b70,fg=#cdd6f4,bold] LOCKED "
-                mode_default_to_mode "normal"
-
-                tab_normal "#[bg=#181825,fg=#6c7086] {index} {name} "
-                tab_active "#[bg=#a6e3a1,fg=#181825,bold] {index} {name} "
-
-                command_git_branch_command    "git branch --show-current"
-                command_git_branch_format     "#[bg=#181825,fg=#f5c2e7]  {stdout} "
-                command_git_branch_interval   "3"
-                command_git_branch_rendermode "static"
-
-                datetime          "#[bg=#181825,fg=#6c7086] {format} "
-                datetime_format   "%H:%M"
-                datetime_timezone "Europe/Kiev"
-            }
-        }
         children
+        pane size=1 borderless=true {
+            plugin location="compact-bar"
+        }
     }
     tab name="dev" {
         pane split_direction="vertical" {

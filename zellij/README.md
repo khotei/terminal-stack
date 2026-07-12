@@ -17,7 +17,7 @@ workspaces.
 |---|---|---|
 | `theme` | `catppuccin-mocha` | Fallback palette if the terminal reports no appearance — defined **in-config** (themes block) so it doesn't depend on a built-in. |
 | `theme_dark` / `theme_light` | `catppuccin-mocha` / `catppuccin-latte` | Auto-switch with the OS: Ghostty follows the macOS appearance and reports it via **CSI 2031 / DSR 997**; Zellij picks the matching palette live. |
-| `default_layout` | `default` | Loads `layouts/default.kdl` — the custom **zjstatus** bar (see below). Built-in fallback: `zellij -l compact`. |
+| `default_layout` | `compact` | Built-in **compact-bar** — theme-aware, shows mode + keys + tabs (see below). |
 | `pane_frames` | `false` | Cleaner splits; the theme marks the active pane. |
 | `copy_on_select` | `true` | Select = copy (tmux-like). |
 | `scrollback_editor` | `nvim` | "Edit scrollback" opens in the stack's editor. |
@@ -129,54 +129,17 @@ curl -fsSL -o ~/.config/zellij/plugins/zellij-autolock.wasm \
 Use **`Alt+z`** whenever you need the full multiplexer back while an editor/agent is focused (see
 above) — it disables autolock and drops to Normal; `Alt+z` again re-arms it.
 
-## The status bar (zjstatus)
+## The status bar (built-in compact-bar)
 
-The bar is [`zjstatus`](https://github.com/dj95/zjstatus), a configurable plugin replacing Zellij's
-built-in `compact-bar`. Three zones, Catppuccin Mocha:
+The bar is Zellij's built-in [`compact-bar`](https://zellij.dev/documentation/plugin-aliases) — a
+single line that is **theme-aware**: it follows `theme_dark`/`theme_light`, so it lightens with the
+rest of the stack in Latte and darkens in Mocha (this is what closes the auto-theme loop — a plugin
+bar with hard-coded colours could not). For the current mode it shows the **mode name, that mode's
+keybinding hints, and the tabs** — the live cheatsheet the mode tables above summarise.
 
-| Zone | Shows |
-|---|---|
-| **left** | current mode (`NORMAL` green · `LOCKED` grey) + session name |
-| **center** | tabs — active tab on a green fill, others dim; `Ctrl+t → r` to name one |
-| **right** | git branch (`git branch --show-current`, refreshed every 3s) + clock `HH:MM` |
-
-Config lives **twice** — `layouts/default.kdl` (every session) and `layouts/dev.kdl` (the editor │
-agent split); Zellij has no layout include, so **keep the two bar blocks in sync**. Every widget key
-is documented at [zjstatus wiki → Configuration](https://github.com/dj95/zjstatus/wiki/3-%E2%80%90-Configuration).
-
-Like [autolock](#autolock), `install.sh` fetches the plugin wasm to
-`~/.config/zellij/plugins/zjstatus.wasm`. **If the wasm is missing** the bar pane shows a plugin
-error but the session still runs — fall back to the always-valid built-in bar with `zellij -l
-compact`. To fetch it manually:
-
-```sh
-mkdir -p ~/.config/zellij/plugins
-curl -fsSL -o ~/.config/zellij/plugins/zjstatus.wasm \
-  https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
-```
-
-> **First-run gotcha — a blank bar means *ungranted*, not *missing*.** On first load zjstatus
-> requests three permissions (`ReadApplicationState`, `ChangeApplicationState`, `RunCommands`) and
-> Zellij shows the request *inside the plugin's pane* — but the bar is a `size=1 borderless` pane, so
-> the prompt is invisible and unfocusable and the bar renders empty until you grant. `install.sh`
-> pre-seeds the grant into Zellij's cache (`grant_zellij_permissions`), so a fresh install is fine;
-> if you fetched the wasm by hand, append the block below to `permissions.kdl` (macOS:
-> `~/Library/Caches/org.Zellij-Contributors.Zellij/`; Linux: `${XDG_CACHE_HOME:-~/.cache}/zellij/`)
-> and start a **new** session — a running one won't re-read it:
->
-> ```kdl
-> "~/.config/zellij/plugins/zjstatus.wasm" {
->     ReadApplicationState
->     ChangeApplicationState
->     RunCommands
-> }
-> ```
->
-> (Use the path Zellij canonicalises — the `~`-expanded, symlink-preserved
-> `/Users/<you>/.config/zellij/plugins/zjstatus.wasm`, matching the existing autolock block.)
-
-> **Known limit:** the bar colours are static Mocha — zjstatus can't follow the OS light/dark switch
-> that `theme_dark`/`theme_light` give the rest of the stack. In Latte (light) mode the bar stays dark.
+Nothing to install: it ships with Zellij — **no wasm, no permission grant**. It loads via
+`default_layout "compact"` (`config.kdl`) for every session, and `layouts/dev.kdl` references it as
+`plugin location="compact-bar"` so the editor │ agent split carries the same bar.
 
 ## The `dev` layout
 

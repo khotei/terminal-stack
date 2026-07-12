@@ -122,52 +122,6 @@ install_autolock() {
   fi
 }
 
-# Fetch the zjstatus plugin wasm (best-effort) — the custom bar in layouts/
-# default.kdl + dev.kdl. Lands in the same git-ignored zellij/plugins/ dir. If it
-# fails (offline), the bar pane errors but sessions still run — fall back to the
-# built-in bar with `zellij -l compact`. Skipped on --dry-run.
-# Source: github.com/dj95/zjstatus
-install_zjstatus() {
-  local dir="$CONFIG/zellij/plugins" f="$CONFIG/zellij/plugins/zjstatus.wasm"
-  [ -f "$f" ] && { note "ok: zjstatus.wasm already present"; return 0; }
-  if $DRY_RUN; then note "would fetch: zjstatus.wasm → ~/.config/zellij/plugins/"; return 0; fi
-  mkdir -p "$dir"
-  if command -v curl >/dev/null 2>&1 && curl -fsSL -o "$f" \
-      https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm; then
-    note "fetched: zjstatus.wasm (custom bar enabled)"
-  else
-    note "skipped: zjstatus.wasm fetch failed (bar falls back to 'zellij -l compact')"
-  fi
-}
-
-# Pre-seed Zellij plugin permission grants so the bar renders on FIRST run without
-# the invisible prompt. Zellij shows a plugin's permission request inside its pane;
-# zjstatus lives in a `size=1 borderless` bar pane, so that prompt is unreachable
-# and the bar stays blank until granted (autolock has no pane at all). Grants live
-# in Zellij's CACHE dir (not the repo) — per-OS path below. Merge-safe: a block is
-# appended only when the plugin path is absent, so other grants are never touched.
-# Permission names are Zellij's PermissionType variants; each set matches exactly
-# what the plugin's request_permission() asks for (github.com/dj95/zjstatus,
-# github.com/fresh2dev/zellij-autolock). Skipped on --dry-run.
-grant_zellij_permissions() {
-  local cache; case "$(uname -s)" in
-    Darwin) cache="$HOME/Library/Caches/org.Zellij-Contributors.Zellij" ;;
-    *)      cache="${XDG_CACHE_HOME:-$HOME/.cache}/zellij" ;;
-  esac
-  local f="$cache/permissions.kdl"
-  _grant() { # _grant <wasm-path> <perm>...
-    local path="$1"; shift
-    [ -f "$path" ] || return 0                                  # plugin absent → nothing to grant
-    if [ -f "$f" ] && grep -qF "\"$path\"" "$f"; then note "ok: grant present $(basename "$path")"; return 0; fi
-    if $DRY_RUN; then note "would grant: $(basename "$path") [$*]"; return 0; fi
-    mkdir -p "$cache"
-    { printf '"%s" {\n' "$path"; printf '    %s\n' "$@"; printf '}\n'; } >>"$f"
-    note "granted: $(basename "$path") [$*]"
-  }
-  _grant "$CONFIG/zellij/plugins/zellij-autolock.wasm" ChangeApplicationState ReadApplicationState
-  _grant "$CONFIG/zellij/plugins/zjstatus.wasm"        ReadApplicationState ChangeApplicationState RunCommands
-}
-
 # Register the user-scope MCP servers (Notion, Context7) via claude/mcp-setup.sh.
 # Best-effort like install_autolock: needs the claude CLI + network, so a missing
 # CLI or an offline machine just skips — the install never fails on it. Skipped on
@@ -183,7 +137,7 @@ echo "terminal-stack → installing from $REPO"
 $DRY_RUN && echo "(dry run — no changes)"
 
 echo "• Ghostty";    link "$REPO/ghostty/config"     "$CONFIG/ghostty/config"
-echo "• Zellij";     link "$REPO/zellij"             "$CONFIG/zellij"; install_autolock; install_zjstatus; grant_zellij_permissions
+echo "• Zellij";     link "$REPO/zellij"             "$CONFIG/zellij"; install_autolock
 echo "• Neovim";     link "$REPO/nvim"               "$CONFIG/nvim"
 echo "• Shell";      link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
                      link "$REPO/zsh/starship.toml"  "$CONFIG/starship.toml"

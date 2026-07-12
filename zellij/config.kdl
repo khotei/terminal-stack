@@ -10,7 +10,7 @@ theme "catppuccin-mocha"        // fallback if the terminal reports no appearanc
 // palettes are defined in the themes block below (self-contained).
 theme_dark "catppuccin-mocha"
 theme_light "catppuccin-latte"
-default_layout "default"        // layouts/default.kdl = custom zjstatus bar; built-in fallback: zellij -l compact
+default_layout "compact"        // built-in compact-bar — theme-aware, shows mode + keys + tabs
 pane_frames false               // cleaner splits; the active pane is shown by the theme
 copy_on_select true             // select = copy, tmux-like
 scrollback_editor "nvim"        // `Edit scrollback` opens in the stack's editor
