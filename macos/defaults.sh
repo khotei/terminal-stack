@@ -51,6 +51,18 @@ apply "Dock won't show a 'recent apps' section" \
 apply "Dock icons are smaller (44px)" \
   defaults write com.apple.dock tilesize -int 44
 
+# ── Menu bar ──────────────────────────────────────────────────────────
+section "Menu bar"
+apply "Menu bar auto-hides; slides back in when the pointer reaches the top edge" \
+  defaults write NSGlobalDomain _HIHideMenuBar -bool true
+
+# ── Desktop widgets ───────────────────────────────────────────────────
+section "Desktop widgets"
+apply "Hide desktop widgets (the Calendar/Weather/Photos cards on the wallpaper)" \
+  defaults write com.apple.WindowManager StandardHideWidgets -bool true
+apply "Hide desktop widgets in Stage Manager too" \
+  defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
+
 # ── Keyboard — the Vim-critical settings ──────────────────────────────
 section "Keyboard"
 apply "Holding a key REPEATS it (off = the accent-picker popup; on = key repeat — needed for Vim hjkl/x)" \
@@ -163,4 +175,5 @@ for app in Dock Finder SystemUIServer; do
 done
 
 printf '\n\033[32m✓ Done.\033[0m Log out/in (or restart) so the key-repeat, the disabled hotkey,\n'
-printf '  and the Services changes fully register. Revert anything: see macos/README.md.\n'
+printf '  the Services changes, and the menu-bar auto-hide fully register (_HIHideMenuBar is\n'
+printf '  only re-read at login). Revert anything: see macos/README.md.\n'
