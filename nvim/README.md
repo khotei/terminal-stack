@@ -93,7 +93,7 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§9](#9-what-we-changed-v
 | Keys | Action | Keys | Action |
 |---|---|---|---|
 | `<leader><space>` | Find files (root) | `<leader>/` | Grep (root) |
-| `<leader>ff` | Find files (root) | `<leader>fg` | Grep (root) |
+| `<leader>ff` | Find files (root) | `<leader>fg` | Find files (git-files) |
 | `<leader>,` | Buffers | `<leader>fr` | Recent files |
 | `<leader>fc` | Find config file | `<leader>sR` | Resume last picker |
 | `<leader>sk` | Search keymaps | `<leader>ss` | Symbols (this file) |
