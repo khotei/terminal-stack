@@ -18,7 +18,7 @@ fast recipes, and the config rationale. Nothing to hunt across other files.
 2. [Quick start: the moves that pay rent](#2-quick-start--the-moves-that-pay-rent)
 3. [Complete keybinding reference](#3-complete-keybinding-reference) — every mode, every key
 4. [Recipes — "I want to… → do this"](#4-recipes--i-want-to--do-this)
-5. [Sessions are workspaces](#5-sessions-are-workspaces)
+5. [Sessions are workspaces](#5-sessions-are-workspaces) — plus [Zellij from the shell — CLI flags](#zellij-from-the-shell--cli-flags)
 6. [Advanced pane craft](#6-advanced-pane-craft)
 7. [Anti-patterns](#7-anti-patterns)
 8. [Living with Claude Code / Neovim + autolock](#8-living-with-claude-code--neovim--autolock)
@@ -177,6 +177,72 @@ terminal tabs.
 
 > *Resurrection* = rebuilding a session from saved layout metadata, not from a live process. The
 > processes are gone; the shape (and the commands to relaunch them) comes back.
+
+### Zellij from the shell — CLI flags
+
+The whole multiplexer is drivable from a plain shell prompt (or a script/hook), no mode dance. The
+tables below are the offline reference for the `zellij` binary itself — pick a goal, read the command.
+Every flag is confirmed against `zellij --help` on **0.44.3**; short forms in `()`. Aliases already in
+this stack: **`zja`** = `zellij attach`, **`zjd`** = `zellij --layout dev` (zsh).
+
+**Start & name a session:**
+
+| I want to… | Command |
+|---|---|
+| Start a new session | `zellij` |
+| Start a **named** session | `zellij -s <name>` (`--session`) |
+| Start with a layout | `zellij --layout <name\|path>` (`-l`) — *inside* a session this adds tabs instead |
+| Force a **new** session with a layout | `zellij --new-session-with-layout <name\|path>` (`-n`) — always new, even when nested |
+| Tweak startup behaviour | `zellij options <flag>…` (e.g. `--default-layout compact`) |
+
+**Attach · list · kill · delete:**
+
+| I want to… | Command |
+|---|---|
+| Attach to a session | `zellij attach <name>` (`a` · `zja`) |
+| Attach, creating it if absent | `zellij attach -c <name>` (`--create`) |
+| List running sessions | `zellij ls` (`list-sessions`) |
+| Kill one · all running sessions | `zellij kill-session <name>` (`k`) · `zellij kill-all-sessions` (`ka`) |
+| Permanently delete one · all *exited* (resurrectable) sessions | `zellij delete-session <name>` (`d`) · `zellij delete-all-sessions` (`da`) |
+
+> **Kill vs delete.** `kill-*` stops a *running* session (its resurrectable metadata survives — you can
+> still bring it back via `Ctrl+o` `w`). `delete-*` erases an already-exited session's saved metadata for
+> good ([session resurrection](https://zellij.dev/documentation/session-resurrection.html)).
+
+**Run a command / open a file in a pane** — the fast path from a shell or script (recipe form in
+[§4](#4-recipes--i-want-to--do-this)):
+
+| I want to… | Command |
+|---|---|
+| Run a command in a **new pane** | `zellij run -- <cmd>` |
+| …floating · in a direction | `zellij run -f -- <cmd>` (`--floating`) · `-d right\|down` (`--direction`) |
+| …named · auto-close when it exits | `zellij run -n build -- <cmd>` (`--name`) · `-c` (`--close-on-exit`) |
+| …in place of the current pane | `zellij run -i -- <cmd>` (`--in-place`) |
+| Open a **file** in a pane | `zellij edit <file>` (`e`) |
+| …floating · in place · at a line | `zellij edit -f <file>` · `-i <file>` · `-l <N> <file>` (`--line-number`) |
+
+**Script the running session** — `zellij action <sub>` targets the current session (or another with
+`zellij --session <name> action …`). Full list: [cli-actions](https://zellij.dev/documentation/cli-actions).
+
+| I want to… | Command |
+|---|---|
+| Dump the live layout to KDL | `zellij action dump-layout > mine.kdl` |
+| New tab, named / from a layout | `zellij action new-tab --name <n> --layout <l>` |
+| Jump to a tab by name (create if absent) | `zellij action go-to-tab-name <name> [--create]` |
+| Rename the current tab | `zellij action rename-tab <name>` |
+| New pane, directional / floating / running a cmd | `zellij action new-pane [-d <dir>] [-f] -- <cmd>` |
+| List panes / tabs (machine-readable) | `zellij action list-panes` · `list-tabs` `[--json]` (`-j`) |
+| Close the focused pane | `zellij action close-pane` |
+| Type text into the pane | `zellij action write-chars <text>` |
+| Launch/focus a plugin · pipe data to one | `zellij action launch-or-focus-plugin <url>` · `zellij action pipe --name <n> -- <data>` |
+
+**Setup & introspection:**
+
+| I want to… | Command |
+|---|---|
+| Validate config + layouts | `zellij setup --check` (the `/check` gate) |
+| Print the effective config / a built-in layout | `zellij setup --dump-config` · `--dump-layout <name>` |
+| Shell completion · auto-start snippet | `zellij setup --generate-completion <shell>` · `--generate-auto-start <shell>` |
 
 ---
 
