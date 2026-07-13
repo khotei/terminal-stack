@@ -20,7 +20,7 @@ rationale. Nothing to hunt across other files or upstream manuals.
 3. [Complete reference — aliases + shell keys](#3-complete-reference--aliases--shell-keys)
 4. [Recipes — "I want to… → do this"](#4-recipes--i-want-to--do-this)
 5. [Companion CLIs — a card each](#5-companion-clis--a-card-each)
-   · [fzf](#51-fzf--fuzzy-everything) · [fzf-tab](#52-fzf-tab--tab-becomes-a-fuzzy-menu) · [zoxide](#53-zoxide--jump-by-frecency) · [atuin](#54-atuin--history-as-a-database) · [zsh-vi-mode](#55-zsh-vi-mode--vim-on-the-command-line) · [autosuggestions](#56-zsh-autosuggestions--grey-ghost-text) · [syntax-highlighting](#57-zsh-syntax-highlighting--live-colour) · [eza](#58-eza--a-better-ls) · [bat](#59-bat--a-better-cat--pager) · [ripgrep](#510-ripgrep-rg--a-better-grep) · [fd](#511-fd--a-better-find) · [lazygit](#512-lazygit--git-as-a-tui) · [yazi](#513-yazi--a-tui-file-manager)
+   · [fzf](#51-fzf--fuzzy-everything) · [fzf-tab](#52-fzf-tab--tab-becomes-a-fuzzy-menu) · [zoxide](#53-zoxide--jump-by-frecency) · [atuin](#54-atuin--history-as-a-database) · [zsh-vi-mode](#55-zsh-vi-mode--vim-on-the-command-line) · [autosuggestions](#56-zsh-autosuggestions--grey-ghost-text) · [syntax-highlighting](#57-zsh-syntax-highlighting--live-colour) · [eza](#58-eza--a-better-ls) · [bat](#59-bat--a-better-cat--pager) · [ripgrep](#510-ripgrep-rg--a-better-grep) · [fd](#511-fd--a-better-find) · [lazygit](#512-lazygit--git-as-a-tui) · [yazi](#513-yazi--a-tui-file-manager) · [fnm](#514-fnm--node-version-manager)
 6. [Anti-patterns](#6-anti-patterns)
 7. [The prompt (Starship)](#7-the-prompt-starship)
 8. [Keeping `$HOME` tidy — XDG](#8-keeping-home-tidy--xdg-base-directories)
@@ -194,6 +194,20 @@ scroll a preview · `Esc`/`Ctrl-C`/`Ctrl-G` abort.
 > Also: `?`/`toggle-preview` have **no** default bind, and `Ctrl-/` now toggles *word-wrap*, not
 > preview scroll (scroll is `Shift-↑/↓`).
 
+**Power flags — by task** *(when you pipe a list into `fzf` yourself, e.g. `fd -t f | fzf …`):*
+
+| Task / goal | Flag or combo | What it does |
+|---|---|---|
+| Preview each candidate | `--preview 'bat --color=always {}'` | Runs the command per line; `{}` is the current item |
+| Pick several at once | `-m` | Multi-select with `Tab`; prints every chosen line |
+| Start already filtered | `-q 'foo'` | Open with a query pre-typed |
+| Literal, not fuzzy | `-e` | Exact-match mode |
+| Non-interactive filter | `-f 'foo'` | Print matches and exit, no UI (add `--no-sort` for a fuzzy `grep`) |
+| Auto-pick the obvious one | `-1` | Select immediately if there is exactly one match (`-0` exits on none) |
+| Keep it out of the way | `--height 40% --layout reverse` | A 40%-tall pane below the cursor, list on top |
+| Colorized input | `--ansi` | Honor ANSI color codes in the piped-in text |
+| Capture the typed query | `--print-query` | Emit the query as the first output line |
+
 ### 5.2 fzf-tab — Tab becomes a fuzzy menu
 
 Replaces zsh's completion *selection menu* with an fzf picker — it hooks native completion, doesn't
@@ -223,6 +237,17 @@ previous directory · `zi foo` pick interactively via fzf · plain paths (`z ..`
 > **Matching rule:** keywords match path *components* left-to-right, and the **last keyword must match
 > the last path segment** — so `z stack` beats `z lab` for `…/terminal-stack`.
 
+**Power flags — by task:**
+
+| Task / goal | Flag or combo | What it does |
+|---|---|---|
+| Disambiguate with two hints | `z foo bar` | Match multiple keywords in order (last must hit the last segment) |
+| Bounce back | `z -` | Jump to the previous directory |
+| Not sure of the name | `zi foo` | Interactive fzf picker, optionally seeded with `foo` |
+| See the match without moving | `zoxide query foo` | Print the top path (`-l` lists all; `-i` picks interactively) |
+| Prune a stale entry | `zoxide remove <path>` | Drop a directory from the database |
+| Seed the database | `zoxide add <path>` | Add / bump a directory's rank |
+
 ### 5.4 atuin — history as a database
 
 Replaces flat `~/.zsh_history` with a searchable (optionally syncable) SQLite history and a full-screen
@@ -241,6 +266,19 @@ immediately** · `Tab` put on the prompt to **edit first** · `Ctrl-R` cycle fil
 > a separate, deliberate step. ⚠️ Edit-vs-run is **`Enter` = run / `Tab` = edit** (plus an
 > `enter_accept` config toggle) — there is **no** default `Alt-Enter`/`Ctrl-Enter`, contrary to some
 > blogs.
+
+**Power flags — by task** *(the `atuin search` CLI, not the `Ctrl-R` UI):*
+
+| Task / goal | Flag or combo | What it does |
+|---|---|---|
+| Cap the result count | `--limit 20` | Return at most N matches |
+| Only commands since… | `--after "yesterday 3pm"` | Filter by time (`--before` / `-b` for the other bound) |
+| Scope to a directory | `-c <dir>` | Only history run in that directory |
+| Only the ones that succeeded | `-e 0` | Filter by exit code (`--exclude-exit` to invert) |
+| Just the command text | `--cmd-only` | Print the bare command, ideal for piping |
+| Change how it matches | `--search-mode fulltext` | `prefix` · `fulltext` · `fuzzy` · `skim` |
+| Change what it searches | `--filter-mode directory` | `global` · `host` · `session` · `directory` |
+| What do I run most | `atuin stats` | Top commands (`--count N`); add a period like `atuin stats yesterday` |
 
 ### 5.5 zsh-vi-mode — Vim on the command line
 
@@ -294,6 +332,19 @@ combines them), `--git` status column, `--tree` + `--level=N`.
 > ⚠️ **eza, not exa** — `exa` is unmaintained; eza is the maintained fork. Long forms are `-T`/`--tree`
 > and `-L`/`--level` (not `-t`/`-l`).
 
+**Power flags — by task:**
+
+| Task / goal | Flag or combo | What it does |
+|---|---|---|
+| See the tree, but not endlessly deep | `-T -L 2` | Tree view capped at 2 levels (`-L` alone just governs depth; pair it with `-T`) |
+| Which files are the space hogs | `-l -s size -r` | Long view, sort by size, biggest first (`-r` reverses the ascending default) |
+| What did I touch most recently | `-l -s modified -r` | Sort by mtime; `-r` puts newest at the top |
+| Total weight of each directory | `-l --total-size` | Recursive size per dir, not just the entry (**Unix only**) |
+| Hide the noise git already ignores | `--git-ignore` | Omit `.gitignore`d paths from the listing |
+| List only sub-directories | `-D` | Directories only (`-f` for files only) |
+| Show `.` and `..` too | `-aa` | `-a` shows dotfiles; a second `a` adds `.`/`..` |
+| Group folders at the top | `--group-directories-first` | Dirs first, then files (already in the `ls` alias) |
+
 ### 5.9 bat — a better `cat` / pager
 
 A `cat` clone with syntax highlighting and a built-in pager. Wired **only** as the man-pager in
@@ -308,6 +359,19 @@ A `cat` clone with syntax highlighting and a built-in pager. Wired **only** as t
 > terser `MANPAGER="bat -plman"`, but the `col -bx |` pipe strips overstrike sequences some `man`
 > implementations still emit — the more robust form.
 
+**Power flags — by task:**
+
+| Task / goal | Flag or combo | What it does |
+|---|---|---|
+| Read just lines 20–40 | `-r 20:40` | Print a line range (`:40`, `20:`, `20:+5` also work; repeat `-r` for several ranges) |
+| Feed clean text into a pipe | `-p` | Plain style — no numbers/grid/gutter; `-pp` also turns paging off |
+| Syntax for a file with no extension | `-l <lang>` | Force a language (`-l json`, `-l man`) |
+| Show only what git changed | `-d` | Print just added/modified lines vs the git index; `--diff-context N` for surroundings |
+| Point at one line while reading | `-H 30` | Highlight a line (range syntax like `-r`; repeatable) |
+| Pick the exact look | `--style=numbers,changes` | Choose components; `+x`/`-x` add/remove from a preset |
+| Find a theme you like | `--list-themes` | List themes; then `--theme=<name>` (`--list-languages` for syntaxes) |
+| Reveal tabs/spaces/newlines | `-A` | Show non-printable characters |
+
 ### 5.10 ripgrep (`rg`) — a better `grep`
 
 Recursive, `.gitignore`-aware, very fast search. A runtime dependency (**not** aliased — `grep` stays
@@ -318,6 +382,22 @@ Recursive, `.gitignore`-aware, very fast search. A runtime dependency (**not** a
 `-A`/`-B`/`-C N` context lines · `--hidden` include hidden. **Defaults:** respects
 `.gitignore`/`.ignore`, skips hidden + binary (disable all filtering: `rg -uuu`).
 
+**Power flags — by task:**
+
+| Task / goal | Flag or combo | What it does |
+|---|---|---|
+| Search one language only | `-t py` / exclude `-T test` | Restrict to (or exclude) a file type; `--type-list` shows all |
+| Include/exclude by glob | `-g '*.md'` / `-g '!dist'` | Narrow to a glob, or negate one to skip it |
+| Read the hit in context | `-C 3` | 3 lines either side (`-A`/`-B` for just after/before) |
+| Just the filenames | `-l` | Files with a match (`--files-without-match` for the inverse) |
+| How many lines matched | `-c` | Count matching **lines** per file (`--count-matches` for total matches) |
+| Whole words only | `-w` | Match on word boundaries, not substrings |
+| Extract just the match | `-o` | Print only the matched text, not the line |
+| Lookarounds / backrefs | `-P` (`+ -U`) | PCRE2 engine; add `-U` for a multiline pattern |
+| Search the ignored stuff too | `-uu` / `-uuu` | Drop ignore+hidden filtering; a third `u` adds binary files |
+| Preview a rename | `-r '$1'` | Rewrite output with capture groups (non-destructive — display only) |
+| Deterministic ordering | `--sort path` | Stable path order (forces single-threaded) |
+
 ### 5.11 fd — a better `find`
 
 Fast, ergonomic file finder, `.gitignore`-aware. Also a runtime dependency (not aliased). Docs:
@@ -326,6 +406,22 @@ Fast, ergonomic file finder, `.gitignore`-aware. Also a runtime dependency (not 
 **Moves:** `fd pattern` (regex, from cwd) · `fd -e ts` by extension · `-t f`/`-t d` files/dirs only ·
 `-H` include hidden · `-x cmd` run a command per result (parallel). **Defaults:** respects `.gitignore`
 (`-I` disables), **smart-case** (case-insensitive unless the pattern has an uppercase letter).
+
+**Power flags — by task:**
+
+| Task / goal | Flag or combo | What it does |
+|---|---|---|
+| Find by extension | `-e ts` | Match a file extension (repeat for several) |
+| Only files / only dirs | `-t f` / `-t d` | Restrict to a type (`-t l` symlinks, `-t x` executables) |
+| Run a command on each hit | `-x cmd {}` | Exec once per result, in parallel (`{}` is the path) |
+| Run once with the whole list | `-X cmd` | Batch all results into a single command invocation |
+| Search hidden / ignored files | `-H` / `-I` / `-u` | Add hidden · ignore `.gitignore` · `-u` does both |
+| Stay shallow | `-d 2` | Cap traversal depth at 2 |
+| Glob instead of regex | `-g '*.test.ts'` | Treat the pattern as a glob |
+| Skip a subtree | `-E node_modules` | Exclude a glob (repeatable) |
+| Only what changed lately | `--changed-within 2d` | Modified in the last 2 days (`--changed-before` for older) |
+| By size | `-S +1m` | Larger than 1 MiB (`-500k` for smaller) |
+| Safe piping to xargs | `-0` | NUL-separate results for `xargs -0` |
 
 ### 5.12 lazygit — git as a TUI
 
@@ -364,6 +460,18 @@ Aliased `lg` when installed ([`aliases.zsh`](./aliases.zsh)). Every key below is
 **Branches panel:** `Space` checkout · `n` new · `d` delete · `r` rebase onto · `M` merge into current ·
 `R` rename · `f` fast-forward. **Stash:** `Space` apply · `g` pop · `d` drop.
 
+**CLI flags — launching it:**
+
+| Task / goal | Flag or combo | What it does |
+|---|---|---|
+| Open on another repo | `-p <path>` | Point at a repo path (shorthand for `--work-tree=<path> --git-dir=<path>/.git`) |
+| Land on a specific view | `lazygit log` / `status` / `branch` / `stash` | Positional arg — focus that panel on open |
+| Scope to one file's history | `-f <path>` | Filter commits/reflog/stash to `git log -- <path>` (overrides the panel arg) |
+| Drive a bare/dotfiles repo | `-w <tree> -g <gitdir>` | Explicit `--work-tree` + `--git-dir` (e.g. a `~/.dotfiles` bare repo over `$HOME`) |
+| Bigger focused panel | `-sm half` / `-sm full` | Initial screen-mode (`normal` default) |
+| Find where config lives | `-cd` | Print the config dir (`-ucd <dir>` overrides it for this run) |
+| Report a bug | `-d` | Debug mode with logging (`-l` tails those logs) |
+
 > **Recipe — stage, commit, push:** `lg`, in Files `Space` the file(s), `c` to commit, `P` to push.
 > **Rewrite history without fear:** in Commits, `s`/`f`/`r`/`d`/`e` on a commit drive an interactive
 > rebase through lazygit's guided flow — no `git rebase -i` editor to hand-edit.
@@ -397,6 +505,16 @@ A fast, vim-keyed file manager with live previews. Aliased `y` when installed. K
 content (rg) · `z` / `Z` jump via **fzf** / **zoxide** · `Enter`/`o` open · `O` open-with · `;` shell ·
 `q` quit · `Q` quit **without** cd-on-exit.
 
+**CLI flags — launching it:**
+
+| Task / goal | Flag or combo | What it does |
+|---|---|---|
+| Start in a directory | `yazi <path>` | Open with that entry as the cwd |
+| `cd` the shell on quit | `--cwd-file <f>` | Write the final directory to a file on exit — the mechanism the `y()` wrapper reads (below) |
+| Use it as a file picker | `--chooser-file <f>` | Chooser mode: write the selection to a file and exit (wire it into other tools) |
+| Clear a stale cache | `--clear-cache` | Empty the cache directory |
+| Report a bug | `--debug` | Print debug information |
+
 > ⚠️ **`z` is fzf, `Z` is zoxide in yazi** — inverted from the shell, where `z` is zoxide. And a vim
 > asymmetry: go-top is the chord `g g`, but go-bottom is bare `G`.
 
@@ -404,6 +522,27 @@ content (rg) · `z` / `Z` jump via **fzf** / **zoxide** · `Enter`/`o` open · `
 > shell. For "quit yazi → land in the last-browsed dir," add the upstream `y()` wrapper to
 > `~/.zshrc.local` — it runs yazi with `--cwd-file` and `cd`s there on `q` (not `Q`):
 > <https://yazi-rs.github.io/docs/quick-start#shell-wrapper>.
+
+### 5.14 fnm — Node version manager
+
+A fast, Rust-written Node.js version manager. **Not interactive** — it's initialised in
+[`tools.zsh`](./tools.zsh) (`eval "$(fnm env --use-on-cd)"`) so the right Node is on `PATH`, and it's
+here because Neovim's LSP tooling launched from this shell needs a runtime. Docs:
+<https://github.com/Schniz/fnm>.
+
+**Already wired:** `fnm env --use-on-cd` — on every `cd`, fnm reads a directory's `.node-version` /
+`.nvmrc` and **auto-switches** the active Node. You rarely call fnm by hand; the switch is automatic.
+
+**CLI — managing versions:**
+
+| Task / goal | Command | What it does |
+|---|---|---|
+| Install a version | `fnm install 22` (`--lts`) | Install a version (`--lts` for the latest LTS, `--latest` for newest) |
+| Switch this shell | `fnm use 22` | Change the active version for the current session |
+| Set the shell default | `fnm default 22` | Version new shells start on |
+| What's installed | `fnm list` | List local versions (`list-remote` shows installable ones) |
+| What's active now | `fnm current` | Print the version in use |
+| Pin a project | write `.node-version` | Then `--use-on-cd` switches to it automatically on entry |
 
 ---
 
@@ -500,9 +639,9 @@ The *why* behind the load-bearing settings — the config states the *what*.
 | guarded `command -v tool &&` | every integration | Missing tool = silent skip, never a broken startup. |
 | Starship ANSI-only colours | `starship.toml` | Prompt follows the live terminal theme with no switching logic ([§7](#7-the-prompt-starship)). |
 
-> `fnm` (Node version manager) is also initialised in `tools.zsh` (`fnm env --use-on-cd`) so the active
-> Node is on `PATH` — Neovim's LSP tooling launched from this shell finds a runtime. Not an interactive
-> tool, so it gets no card above.
+> `fnm` (Node version manager) is initialised in `tools.zsh` (`fnm env --use-on-cd`) so the active Node
+> is on `PATH` — Neovim's LSP tooling launched from this shell finds a runtime. It's non-interactive,
+> but common enough to earn a short card ([§5.14](#514-fnm--node-version-manager)).
 
 **Secrets & machine-local:** nothing secret goes in a committed file — this is a **public** repo.
 Machine-local tweaks live in `~/.zshrc.local` (git-ignored), sourced last by `.zshrc`.
