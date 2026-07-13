@@ -25,6 +25,20 @@ so your name/email/signing config in `~/.gitconfig` stays exactly as it is.
 | `push.autoSetupRemote` | `true` | First `git push` auto-creates the upstream branch. |
 | `pull.ff` | `only` | `git pull` only fast-forwards — never an implicit merge commit. |
 
+## delta — on-demand flags
+
+The config above makes delta the default pager (navigate + line-numbers always on). For a one-off
+tweak — no config change — reach for these (verified at [delta docs](https://dandavison.github.io/delta/)):
+
+| Task / goal | Command |
+|---|---|
+| Side-by-side for one big diff | `DELTA_FEATURES=+side-by-side git diff` |
+| Diff two files **outside** git | `delta A B` |
+| Force side-by-side + numbers on a pipe | `git show \| delta -s -n` |
+| Move between files in the pager | `n` / `N` (`--navigate`, already on) |
+| One-off light background | `git diff \| delta --light` (`--dark` for the inverse) |
+| Try a syntax theme, then keep it | `delta --show-syntax-themes` → set `delta.syntax-theme` |
+
 ## Additive — your identity is untouched
 
 Git layers config: it reads the system file, then `~/.config/git/config`, then `~/.gitconfig` (your
