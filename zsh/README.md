@@ -324,31 +324,80 @@ Fast, ergonomic file finder, `.gitignore`-aware. Also a runtime dependency (not 
 
 ### 5.12 lazygit — git as a TUI
 
-A full terminal UI for git. Aliased `lg` when installed ([`aliases.zsh`](./aliases.zsh)). Docs:
-<https://github.com/jesseduffield/lazygit>.
+A full terminal UI for git — stage, commit, rebase, and cherry-pick without leaving the keyboard.
+Aliased `lg` when installed ([`aliases.zsh`](./aliases.zsh)). Every key below is verified against the
+[upstream keybindings](https://github.com/jesseduffield/lazygit/blob/master/docs/keybindings/Keybindings_en.md).
 
-**Keys:** `?` keybindings menu · `Tab` / `[` `]` move between panels · `Space` **context-dependent**
-(stage in Files, checkout in Commits, apply in Stash) · `c` commit · `P` push · `p` pull · `b` branch ·
-`s` stash · `z`/`Z` undo/redo · `:` raw git command · `q` quit.
+**Global** (any panel):
 
-> **Recipe:** `lg`, move to Files, `Space` on the file(s) to stage, `c` to commit, `P` to push.
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `Tab` · `[` `]` | next panel · prev/next tab | `?` | keybindings menu |
+| `J`/`K` · `Ctrl-D`/`Ctrl-U` | scroll the main view | `/` | search the view |
+| `z` / `Z` | **undo / redo** the last git action | `:` | run a raw git command |
+| `R` | refresh state | `+` / `_` | cycle / prev screen-size mode |
 
-> `Space` and `b` change meaning with the focused panel — read the top bar or hit `?` if unsure.
+**Files panel:**
+
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `Space` | stage / unstage | `a` | stage **all** |
+| `c` | commit | `C` | commit in `$EDITOR` |
+| `A` | amend last commit | `d` | discard changes |
+| `e` / `o` | edit / open file | `i` | add to `.gitignore` |
+| `S` | stash options | `f` · `P` · `p` | fetch · push · pull |
+
+**Commits panel** — interactive rebase without the raw syntax:
+
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `s` | squash into commit below | `f` | fixup into below |
+| `r` | reword message | `d` | drop commit |
+| `e` | mark for edit (rebase) | `A` | amend with staged |
+| `C` / `V` | copy / paste (cherry-pick) | `t` · `T` | revert · tag |
+
+**Branches panel:** `Space` checkout · `n` new · `d` delete · `r` rebase onto · `M` merge into current ·
+`R` rename · `f` fast-forward. **Stash:** `Space` apply · `g` pop · `d` drop.
+
+> **Recipe — stage, commit, push:** `lg`, in Files `Space` the file(s), `c` to commit, `P` to push.
+> **Rewrite history without fear:** in Commits, `s`/`f`/`r`/`d`/`e` on a commit drive an interactive
+> rebase through lazygit's guided flow — no `git rebase -i` editor to hand-edit.
+
+> ⚠️ Keys are **panel-scoped**: `d` discards a file but drops a commit/stash; `Space` stages *or*
+> checks out *or* applies depending on focus. The top bar shows the active panel's keys; `?` lists all.
 
 ### 5.13 yazi — a TUI file manager
 
-A fast, vim-keyed file manager. Aliased `y` when installed. Docs: <https://yazi-rs.github.io>.
+A fast, vim-keyed file manager with live previews. Aliased `y` when installed. Keys verified against the
+[default keymap](https://github.com/sxyazi/yazi/blob/shipped/yazi-config/preset/keymap-default.toml).
 
-**Nav:** `h` leave dir · `j`/`k` down/up · `l`/`Enter` enter/open · `Space` select + advance · `g g` top,
-`G` bottom · `.` toggle hidden · `/` search · `1`…`9` switch tabs, `t t` new tab, `[`/`]` prev/next tab.
-**Ops:** `y` yank (copy) · `x` cut · `p` paste · `d` remove · `a` create · `q` quit (`Q` quit **without**
-cd-on-exit).
+**Navigate:**
 
-> ⚠️ vim asymmetry: go-top is the chord `g g` but go-bottom is bare `G`; new-tab is the chord `t t`.
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `h` / `l` | leave / enter dir | `g g` / `G` | top / bottom |
+| `j` / `k` | down / up | `K` / `J` | scroll the preview |
+| `.` | toggle hidden | `t t` · `1`…`9` · `[` `]` | new tab · switch · prev/next |
 
-> **`cd`-on-quit (opt-in):** this repo aliases `y='yazi'` (bare), so quitting yazi does **not** move the
-> shell. To get "quit yazi → shell lands in the last-browsed dir," add the upstream `y()` wrapper to
-> `~/.zshrc.local` — it runs yazi with `--cwd-file` and `cd`s there on `q` (but not `Q`):
+**Select & operate:**
+
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `Space` | toggle select + go down | `y` · `x` · `p` | copy · cut · paste |
+| `v` / `V` | visual select / unselect | `P` | paste (overwrite) |
+| `Ctrl-a` / `Ctrl-r` | select all / invert | `d` / `D` | trash / delete forever |
+| `Esc` | cancel selection | `a` · `r` | create · rename |
+
+**Find · jump · open · quit:** `/` `?` find next/prev · `f` filter · `s` search names (fd) · `S` search
+content (rg) · `z` / `Z` jump via **fzf** / **zoxide** · `Enter`/`o` open · `O` open-with · `;` shell ·
+`q` quit · `Q` quit **without** cd-on-exit.
+
+> ⚠️ **`z` is fzf, `Z` is zoxide in yazi** — inverted from the shell, where `z` is zoxide. And a vim
+> asymmetry: go-top is the chord `g g`, but go-bottom is bare `G`.
+
+> **`cd`-on-quit (opt-in):** this repo aliases `y='yazi'` (bare), so quitting does **not** move the
+> shell. For "quit yazi → land in the last-browsed dir," add the upstream `y()` wrapper to
+> `~/.zshrc.local` — it runs yazi with `--cwd-file` and `cd`s there on `q` (not `Q`):
 > <https://yazi-rs.github.io/docs/quick-start#shell-wrapper>.
 
 ---
