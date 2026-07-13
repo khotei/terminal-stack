@@ -101,6 +101,11 @@ Everything defined in this repo's config. The config file is the contract; this 
 | `..` / `...` | `cd ..` / `cd ../..` | |
 | `gs` / `gd` | `git status` / `git diff` | |
 | `gl` | `git log --oneline --graph --decorate` | one-line graph |
+| `ga` / `gc` / `gp` | `git add` / `commit` / `push` | the verbs `lg` doesn't cover |
+| `gco` | `git checkout` | |
+| `zj` | `zellij` | multiplexer CLI (attach/list/kill) |
+| `zjd` | `zellij --layout dev` | the editor │ agent workspace, one command |
+| `zja` | `zellij attach` | re-enter a detached session |
 | `lg` | `lazygit` | only if installed |
 | `y` | `yazi` | only if installed |
 | `yolo` | `claude --dangerously-skip-permissions` | opt-in, **never** a shadow of bare `claude` |
