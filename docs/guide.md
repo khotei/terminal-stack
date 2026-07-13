@@ -1,8 +1,11 @@
 # 📖 The developer's guide to terminal-stack
 
-How to actually *live* in this terminal — the mental model, the keys, and the moves a developer makes
-to get real work done. Read it top-to-bottom once to get oriented; come back to the
-[scenarios](#user-flows) and [cheat sheets](#cheat-sheets) to remember an ergonomic combo.
+How the five layers combine into **one** workflow — the mental model, how the tools are wired to each
+other, and the moves a developer makes to get real work done. Read it top-to-bottom once to get
+oriented; come back to the [scenarios](#user-flows) and the
+[essential-moves table](#the-essential-moves--and-where-the-full-keys-live) to remember a combo. The
+**exhaustive keys for each layer live in that layer's own README** — this guide is the cross-tool story
+that ties them together, not a key dump.
 
 > **New here?** Install with [`docs/install.md`](install.md) (or `make try` for a no-install Docker
 > sandbox of the in-terminal layers), then start at [First five minutes](#first-five-minutes).
@@ -13,14 +16,7 @@ to get real work done. Read it top-to-bottom once to get oriented; come back to 
 
 1. [The mental model](#the-mental-model)
 2. [First five minutes](#first-five-minutes)
-3. [Cheat sheets](#cheat-sheets)
-   - [Ghostty (terminal)](#ghostty--terminal)
-   - [Zellij (multiplexer)](#zellij--multiplexer)
-   - [Neovim + LazyVim (editor)](#neovim--lazyvim--editor)
-   - [Command line (zsh vi-mode + tools)](#command-line--zsh-vi-mode--tools)
-   - [lazygit (git TUI)](#lazygit--git-tui)
-   - [yazi (file manager)](#yazi--file-manager)
-   - [Claude Code (agent)](#claude-code--agent)
+3. [How the tools work together](#how-the-tools-work-together) — the wiring + the essential-moves table
 4. [User flows](#user-flows)
    - [1. Start a project session](#1-start-a-project-session)
    - [2. Find and edit code](#2-find-and-edit-code)
@@ -64,8 +60,9 @@ and they never collide:
 
 So your fingers always know *which tool they're talking to*: a `⌃`-mode key means "multiplexer", a bare
 `<Space>` in the editor means "editor command". Ghostty deliberately leaves the `⌃` keys free; Neovim's
-leader never shadows the multiplexer. And when the editor/agent is focused, [autolock](../zellij/README.md#autolock)
-hands it *every* key — press `⌥z` to reach Zellij again. (Details: [`.claude/rules/config.md`](../.claude/rules/config.md).)
+leader never shadows the multiplexer. And when the editor/agent is focused,
+[autolock](../zellij/README.md#8-living-with-claude-code--neovim--autolock) hands it *every* key — press
+`⌥z` to reach Zellij again. (Details: [`.claude/rules/config.md`](../.claude/rules/config.md).)
 
 **Where Claude Code lives:** in a Zellij pane next to Neovim — not an IDE sidebar. You edit on the
 left, the agent works on the right, and you flick between them with `⌥h`/`⌥l`.
@@ -76,14 +73,14 @@ left, the agent works on the right, and you flick between them with `⌥h`/`⌥l
 
 ```sh
 cd ~/my-project
-zellij --layout dev        # opens the editor │ agent split (40% agent on the right)
+zellij --layout dev        # opens the editor │ agent split (40% agent on the right) — alias: zjd
 ```
 
 - Both panes **start as shells** (the layout doesn't auto-launch the apps — so a fresh prompt is
   expected, not a failure). Left pane — type `nvim` to edit. Right pane — type `claude` to start the
   agent.
 - **Switch panes:** `⌥h`/`⌥l` (Alt, left/right). **New tab:** `⌃t` then `n`. **Detach (leave it
-  running):** `⌃o` then `d` — reattach later with `zellij attach`.
+  running):** `⌃o` then `d` — reattach later with `zellij attach` (alias `zja`).
 - In Neovim, press **`<Space>`** and *wait* — a menu (which-key) shows every command. That's your
   discovery tool; you never need to memorize up front.
 
@@ -95,257 +92,61 @@ That's enough to be productive. The rest is muscle memory you'll build through t
 
 ---
 
-## Cheat sheets
+## How the tools work together
 
-> Keys below are what this repo ships. Where a key is the tool's own default (not set by us) it's
-> marked *(default)*. Full per-tool reference lives in each layer's README
-> ([ghostty](../ghostty/README.md) · [zellij](../zellij/README.md) · [nvim](../nvim/README.md) ·
-> [zsh](../zsh/README.md) · [claude](../claude/README.md)).
+The five layers aren't just stacked — they're *wired*, so one mental model carries across all of them.
+This is the synthesis; the exhaustive, upstream-cited keys for any layer live in **its own README**
+(linked in the table below — that is now the single source per tool).
 
-### Ghostty — terminal
+**1. One keyboard contract, no collisions.** `⌘` talks to Ghostty, a `⌃`-mode key to Zellij, `<Space>`
+to Neovim — the contract from [the mental model](#the-mental-model). Nothing overlaps, so your fingers
+always know who's listening.
 
-| Keys | Action |
-|---|---|
-| `⌘⇧R` | Reload `ghostty/config` |
-| <code>⌘&#96;</code> | Quick terminal (drop-down) from anywhere |
-| `⌘=` / `⌘-` / `⌘0` | Font size up / down / reset *(default)* |
-| `⌘C` / `⌘V` | Copy / paste *(default)* |
+**2. Keys flow OS → terminal → multiplexer → app.** Ghostty's `macos-option-as-alt` turns the Mac's
+Option into a real Alt, so Zellij's `⌥h`/`⌥l` and Claude's `⌥P`/`⌥T` actually arrive. When a pane runs
+nvim/claude/git/fzf/zoxide/atuin,
+[autolock](../zellij/README.md#8-living-with-claude-code--neovim--autolock) locks Zellij and hands that
+app *every* key — and `⌥z` is the one key that always escapes back to the multiplexer. Zellij also frees
+`⌃g` so Claude Code's "edit prompt in `$EDITOR`" survives the lock.
 
-> Keep **one** Ghostty window — Zellij does the tabs and panes. Zellij's `⌃` mode keys are
-> intentionally unbound here.
+**3. One editing model everywhere.** Vim motions in Neovim, the *same* motions on the zsh prompt
+(vi-mode), and again inside Claude Code (`editorMode: vim`, plus `⌃G` to edit a prompt in nvim itself).
+Learn `ciw`/`ci"`/`b`/`w`/`cs"'` once; use them in the editor, the shell, and the agent's prompt box.
 
-### Zellij — multiplexer
+**4. A session is a project, and it outlives the window.** `cd ~/proj && zjd` opens the editor │ agent
+split; `⌃o` `d` detaches with builds and agents still running; `zja` drops you back exactly where you
+were — even after a reboot, via [resurrection](../zellij/README.md#5-sessions-are-workspaces). For two
+features at once, a **worktree per agent** ([flow 5](#5-run-agents-in-parallel-worktrees)).
 
-Zellij is **modal**, not prefix-based: press a **mode key**, act with plain keys, then `Enter`/`Esc`
-to leave. For the everyday moves, hold **`⌥` (Alt)** and skip the mode entirely:
+**5. The editor │ agent loop.** Navigate on the left (Neovim: `<Space>fg` search, `gd`/`gr` LSP),
+delegate on the right (Claude: `@file`, `!cmd`), review the diff back in the editor (`<Space>gg`
+lazygit). Switch sides with `⌥h`/`⌥l`. Peers in adjacent panes — lower RAM, tighter loop, you keep hold
+of the diff.
 
-| Keys | Action |
-|---|---|
-| `⌥h` `⌥j` `⌥k` `⌥l` | Move focus between panes (`⌥h`/`⌥l` cross into adjacent tabs) |
-| `⌥n` / `⌥f` | New pane / floating pane (the "popup" window) |
-| `⌃p` then `n` · `d` · `r` | Pane mode → new · split down · split right |
-| `⌃p` then `x` · `f` | Close pane · fullscreen (zoom) |
-| `⌃t` then `n` · `1`…`9` | Tab mode → new tab · jump to tab N |
-| `⌃t` then `h`/`l` | Previous / next tab |
-| `⌃s` | Scroll / search mode (`e` edits scrollback in nvim · `Esc` exits) |
-| `⌃o` then `w` · `d` | Session mode → session manager (fuzzy switch) · detach |
-| `⌥z` | Drop a **locked** (editor/agent) pane back to full Zellij |
+**6. One palette, one theme signal.** Every layer runs Catppuccin and follows the macOS light/dark
+appearance in lockstep (Latte ↔ Mocha): Ghostty repaints, and Zellij / Neovim / Starship / Claude Code
+track it — so your eye doesn't hitch jumping pane to pane. Change one appearance setting, the whole
+stack turns with it.
 
-From the shell (no mode):
+**7. The CLI mesh.** `fd` + `ripgrep` power Neovim's file/grep pickers *and* the shell; `fzf` + `atuin`
++ `zoxide` make history, paths, and directories a fuzzy query away; `lazygit` and `yazi` are the git
+and file TUIs both the shell (`lg` / `y`) and Neovim (`<Space>gg`) reach for. Everything is a search,
+not a click-path.
 
-| Command | Action |
-|---|---|
-| `zellij --layout dev` | New session with the editor │ agent layout |
-| `zellij attach` (or `za`) | Reattach the last session |
-| `zellij ls` | List sessions |
-| `zellij setup --dump-config` | Print **every** default keybind (the full list) |
+### The essential moves — and where the full keys live
 
-> **Seeing the keys:** Zellij **shows the active mode's keys in the status bar** — enter a mode (`⌃p`,
-> `⌃t`, …) and read the bar. There's no single "all hotkeys" popup; for the exhaustive list use
-> `zellij setup --dump-config`. Locking is automatic ([autolock](../zellij/README.md#autolock)) so
-> editor/agent panes get every key; `⌥z` gets you back.
+The top combos per layer — the "remember the ergonomic move" table. For the exhaustive, upstream-cited
+reference of any layer, open its README.
 
-### Neovim + LazyVim — editor
-
-Leader is **`<Space>`**. Press it and wait for **which-key**. The essentials (LazyVim defaults unless
-noted; full list: <https://www.lazyvim.org/keymaps>):
-
-| Keys | Action |
-|---|---|
-| `<Space>` (wait) | which-key menu — discover everything |
-| `<Space>ff` / `<Space>fg` | Find **f**iles / live **g**rep (snacks picker) |
-| `<Space>fr` / `<Space>,` | Recent files / switch buffer |
-| `<Space>e` | File explorer (neo-tree) |
-| `<Space>gg` / `<Space>gb` | Lazygit / git blame |
-| `gd` / `gr` / `gI` | LSP: definition / references / implementation |
-| `K` | Hover docs · `<Space>ca` code action · `<Space>cr` rename |
-| `]d` / `[d` | Next / previous diagnostic · `<Space>cd` line diagnostics |
-| `⌃h` `⌃j` `⌃k` `⌃l` | Move between **editor** splits |
-| `<Space>bd` / `<Space>qq` | Close buffer / quit |
-| `jk` *(ours)* | Exit insert mode |
-| `:Lazy` / `:Mason` | Plugin manager / LSP-server installer |
-
-### Command line — zsh vi-mode + tools
-
-**Vi editing** at the prompt ([zsh-vi-mode](https://github.com/jeffreytse/zsh-vi-mode); classic
-surround mode):
-
-| Keys | Action |
-|---|---|
-| `Esc` | Normal mode (block cursor); `i` `a` `I` `A` `o` back to insert |
-| `h` `l` · `w` `b` `e` | Char · word motions |
-| `0` `^` `$` | Line start · first non-blank · end |
-| `f{c}` `t{c}` · `;` `,` | Jump to / before a char on the line · repeat / reverse |
-| `x` `r{c}` `~` | Delete char · replace char · toggle case |
-| `dd` `cc` `D` `C` `s` | Delete line · change line · to end of line · substitute |
-| `ciw` `ci"` `ci(` `dt/` | Change inner word / quotes / parens · delete up to `/` |
-| `yy` `p` `P` | Yank line · paste after / before |
-| `u` `⌃R` | Undo · redo |
-| `v` `V` | Visual / visual-line select |
-| `ys"` `cs"'` `ds"` | **Surround**: add `"` · change `"`→`'` · delete `"` |
-
-**Navigation & history:**
-
-| Keys / cmd | Action |
-|---|---|
-| `⌃R` | Fuzzy-search shell history (atuin) |
-| `⌃T` | Pick a file path into the current command (fzf) |
-| `⌥C` | `cd` into a fuzzy-picked subdir (fzf) |
-| `vim **<Tab>` | fzf path completion — type `**` then `Tab` after any command |
-| `z foo` / `z foo bar` / `zi` | Jump to a dir by frecency (frequency + recency) / by keywords / pick interactively (zoxide) |
-| `cd -` | Back to the previous dir |
-| `ll` `la` `lt` · `..` `...` | **eza** long+icons+git / all / tree · up one / up two dirs |
-| `man <cmd>` | Syntax-coloured man page (**bat** is the `MANPAGER`; `cat` is *not* aliased) |
-| `gs` `gd` `gl` | git status / diff / log --graph (aliases) |
-| `lg` · `y` | Open lazygit ([below](#lazygit--git-tui)) · yazi ([below](#yazi--file-manager)) |
-
-**Power-ups** (load last, from `zsh/plugins.zsh`):
-
-| Feature | What it does |
-|---|---|
-| Autosuggestions | A grey suggestion from history appears as you type — `→` (right-arrow) accepts it |
-| Syntax-highlighting | The command line is coloured live as you type (valid command = green, bad = red) |
-| fzf-tab | `Tab` completion becomes a fuzzy fzf picker — type, filter, Enter |
-
-**Search & find, the modern way** (real flags you'll reuse):
-
-```sh
-fd auth                 # find files/dirs whose name matches "auth" (fast, respects .gitignore)
-fd -e ts -e tsx login   # only .ts/.tsx files matching "login"
-fd -H -t d node_modules # include Hidden, only Directories named node_modules
-rg "createUser"         # grep the repo for a string (ripgrep — fast, .gitignore-aware)
-rg -n -t ts "TODO"      # line Numbers, only TypeScript files
-rg -l "parseToken"      # just the file names that match
-rg -o 'v\d+\.\d+'       # print Only the matched part (a regex)
-atuin search -i         # full-screen history search (same engine as ⌃R)
-```
-
-### lazygit — git TUI
-
-Launch with **`lg`** (alias) or **`<Space>gg`** in Neovim. Panels on the left, diff on the right.
-`?` shows every key; `q` quits. (Keys are lazygit defaults — full list:
-<https://github.com/jesseduffield/lazygit/blob/master/docs/keybindings/Keybindings_en.md>.)
-
-| Keys | Action |
-|---|---|
-| `1`–`5` · `Tab` · `h`/`l` | Jump to panel: status · files · branches · commits · stash |
-| `↑`/`↓` or `k`/`j` | Move within a panel |
-| **Files:** `<Space>` | Stage / unstage the selected file |
-| `a` | Stage / unstage **all** |
-| `<Enter>` | Drill into a file → stage **hunks / lines** |
-| `c` · `C` · `A` | Commit · commit with `$EDITOR` · amend last commit |
-| `d` · `s` / `S` | Discard / unstage · stash all / stash options |
-| `p` · `P` | Pull · push |
-| **Line-staging:** `<Space>` · `v` · `a` · `<Tab>` | Stage line · range-select · toggle hunk mode · switch staged/unstaged |
-| **Branches:** `<Space>` · `n` · `c` · `-` | Checkout · new branch · checkout by name · previous branch |
-| **Commits:** `s` · `f` · `r` · `d` · `e` | Squash · fixup · reword · drop · edit (interactive rebase) |
-| `z` / `Z` | Undo / redo (via the reflog) |
-| `?` · `q` | Keybindings menu · quit |
-
-### yazi — file manager
-
-Launch with **`y`** (alias). Vim-keyed. `q` quits; `~` or `?` shows help. (Keys are yazi defaults —
-full keymap: <https://yazi-rs.github.io/docs/quick-start>.)
-
-| Keys | Action |
-|---|---|
-| `h` `j` `k` `l` | Parent dir · down · up · enter dir / open file |
-| `gg` / `G` · `⌃u` / `⌃d` | Top / bottom · half-page up / down |
-| `<Space>` · `v` · `⌃a` · `⌃r` | Toggle-select file · visual select · select all · invert |
-| `y` · `x` · `p` / `P` | Yank (copy) · cut · paste / paste-overwrite |
-| `d` · `D` | Move to trash · delete permanently |
-| `a` · `r` | Create (end with `/` for a dir) · rename |
-| `.` | Toggle hidden files |
-| `o` / `<Enter>` · `O` | Open · open-with (choose app) |
-| `s` / `S` | Search by name (fd) / by content (ripgrep) |
-| `z` / `Z` | Jump via fzf / via zoxide |
-| `f` · `/` · `n` / `N` | Filter · find · next / previous match |
-| `tt` · `1`–`9` · `[` / `]` | New tab · switch tab · previous / next tab |
-| `;` / `:` | Run a shell command (`:` blocks until it finishes) |
-| `q` · `<Esc>` | Quit · cancel / clear selection |
-
-> **Tip:** to make `yazi` change your *shell's* directory on quit, use its `y` wrapper function from
-> the docs instead of the bare alias — then `q` drops you in the folder you navigated to.
-
-### Claude Code — agent
-
-Runs in its own pane; the status line shows **model · dir · git · context% · cost**. Keys/flags below
-are from the official docs — [CLI](https://code.claude.com/docs/en/cli-reference) ·
-[commands](https://code.claude.com/docs/en/commands) ·
-[interactive mode](https://code.claude.com/docs/en/interactive-mode).
-
-**Start & resume (from the shell):**
-
-| Command | Action |
-|---|---|
-| `claude` | Start an interactive session |
-| `claude "fix the login bug"` | Start with an initial prompt |
-| `claude -c` (`--continue`) | Continue the most recent conversation |
-| `claude -r` (`--resume`) | Pick a past session to resume |
-| `claude -p "…"` (`--print`) | Print mode — non-interactive, for pipes/scripts |
-| `cat err.log \| claude -p "explain"` | Pipe content into a one-shot query |
-| `claude --model <name>` | Start on a specific model (see `/model` or the CLI docs for current ids) |
-| `claude --add-dir ../lib` | Add extra working directories to the session |
-| `claude mcp` | Manage MCP servers |
-
-**In-session shortcuts:**
-
-| Keys | Action |
-|---|---|
-| `Esc` | Interrupt Claude mid-turn (keeps the work so far) |
-| `Esc` `Esc` | Clear the input draft, or — when empty — open the **rewind** menu |
-| `⇧Tab` | Cycle permission mode (`default` → `acceptEdits` → `plan` → …) |
-| `⌃O` | Toggle the transcript viewer (full tool output) |
-| `⌃R` | Reverse-search input history (`⌃S` cycles scope) |
-| `⌃B` | Background the running bash command / agent |
-| `⌃T` | Toggle the task list |
-| `⌃G` | Edit the prompt in `$EDITOR` (**nvim**) |
-| `⌥P` / `⌥T` / `⌥O` | Switch model / toggle extended thinking / toggle fast mode |
-| `⇧⏎` or `\`+`⏎` | New line (multiline input) |
-| `⌃V` | Paste an image from the clipboard |
-| `⌃C` / `⌃D` | Interrupt or clear input / exit the session |
-
-**Quick prefixes (start of the line):**
-
-| Prefix | Action |
-|---|---|
-| `/` | Slash command or skill |
-| `!` | Shell mode — run a command, add its output to the context |
-| `@` | Mention a file path (autocomplete) |
-| `#` | Add a line to `CLAUDE.md` memory |
-
-**Useful slash commands** (type `/` to see all):
-
-| Command | Action |
-|---|---|
-| `/init` · `/memory` | Generate a starter `CLAUDE.md` · edit memory files |
-| `/clear` · `/compact` · `/context` | New session · summarize context down · show where the window is spent |
-| `/cost` · `/model` · `/effort` | Token cost · switch model · adjust reasoning effort |
-| `/plan` | Enter plan mode before a big change |
-| `/agents` · `/tasks` | Manage subagents · list background tasks |
-| `/review` · `/security-review` | Review a PR · security review |
-| `/resume` · `/rewind` | Resume a session · rewind to a checkpoint |
-| `/mcp` · `/permissions` | Manage MCP servers · approval rules |
-| `/vim` · `/terminal-setup` · `/keybindings` | Toggle vim editing · install `Shift+Enter` · edit keybindings |
-| `/config` · `/statusline` · `/help` | Settings · status line · list everything |
-
-> **Vim editing in the prompt:** enable via `/config` → *Editor mode* for `Esc`/`i`/`a`, `hjkl`, `dw`,
-> `ciw`, text objects — the same modal model as Neovim and the zsh prompt.
-
-**How the stack already smooths Claude Code:**
-
-- **`⇧⏎` just works** — Ghostty is one of the terminals with native `Shift+Enter`, so multiline needs
-  no `/terminal-setup`.
-- **`⌃G` opens Neovim** — `$EDITOR=nvim` (set in `zsh/env.zsh`), so long prompts get full Vim editing.
-- **Option shortcuts work** — `ghostty/config` sets `macos-option-as-alt`, which is exactly what
-  `⌥P`/`⌥T`/`⌥O` need on macOS.
-- **The PR badge is live** — `gh` (in the Brewfile) powers Claude Code's clickable PR status in the
-  footer.
-- **No key clash** — [autolock](../zellij/README.md#autolock) locks the agent pane, so Claude's
-  `⌃O`/`⌃T`/`⌃B` reach it untouched; Zellij's `⌃G` is unbound too, so `⌃G` opens nvim even unlocked.
-
-> Worktrees for parallel agents: [flow 5](#5-run-agents-in-parallel-worktrees) +
-> [`claude/README.md`](../claude/README.md).
+| Layer | The moves you'll reach for most | Full reference |
+|---|---|---|
+| **Ghostty** | `⌘⇧R` reload · <code>⌘&#96;</code> quick-terminal | [ghostty/README](../ghostty/README.md) |
+| **Zellij** | `⌥h`/`⌥l` pane+tab · `⌃t` `N` jump to tab · `⌃o` `w` sessions · `⌥z` unlock | [zellij/README](../zellij/README.md) |
+| **Neovim** | `<Space>` which-key · `<Space>ff`/`fg` find/grep · `gd`/`gr`/`K` LSP · `<Space>gg` lazygit | [nvim/README](../nvim/README.md) |
+| **Shell** | `z` jump · `⌃R` history · `⌃T` file · `Esc` vi-mode · `zjd` workspace | [zsh/README](../zsh/README.md) |
+| **lazygit** | `Space` stage · `c` commit · `P` push · `s`/`f`/`r` squash/fixup/reword | [zsh/README §lazygit](../zsh/README.md#512-lazygit--git-as-a-tui) |
+| **yazi** | `h`/`j`/`k`/`l` nav · `y`/`x`/`p` copy/cut/paste · `z` fzf-jump | [zsh/README §yazi](../zsh/README.md#513-yazi--a-tui-file-manager) |
+| **Claude Code** | `⇧Tab` mode · `@`/`!`/`/` sigils · `⌃G` edit in nvim · `Esc` interrupt | [claude/README](../claude/README.md) |
 
 ---
 
@@ -358,12 +159,12 @@ Concrete walkthroughs. Each is "the situation → the moves".
 
 ```sh
 cd ~/code/api
-zellij --layout dev          # editor │ agent split, named after the dir
+zellij --layout dev          # editor │ agent split, named after the dir (alias: zjd)
 ```
 - Left pane: `nvim` → you're editing. Right pane: `claude` → the agent is ready.
 - Need a third pane for tests/logs? `⌃p` then `d` splits the current pane downward; run
   `npm test --watch` there.
-- Lunch? `⌃o` then `d` detaches — everything keeps running. Back later: `zellij attach`.
+- Lunch? `⌃o` then `d` detaches — everything keeps running. Back later: `zellij attach` (`zja`).
 
 **Why this way:** one session = one project. Tabs are sub-tasks; panes are editor/agent/runner. You
 never lose context, and a reboot-free week of work lives in detached sessions.
@@ -394,16 +195,17 @@ keys (`gd`/`gr`/`cr`) replace "go to / find usages / rename". Hands stay on the 
 
 **Why this way:** the agent and the editor are *peers in adjacent panes* — lower RAM and a tighter
 loop than an embedded IDE agent, and you stay in control of the diff.
-[`zellij-autolock`](../zellij/README.md#autolock) (on by default) passes every key straight to the
-focused editor/agent — no manual locking when the pane runs one of its watched apps (nvim/vim/git/fzf/
-zoxide/atuin/**claude**); `⌥z` drops back to the full multiplexer when you need it.
+[`zellij-autolock`](../zellij/README.md#8-living-with-claude-code--neovim--autolock) (on by default)
+passes every key straight to the focused editor/agent — no manual locking when the pane runs one of its
+watched apps (nvim/vim/git/fzf/zoxide/atuin/**claude**); `⌥z` drops back to the full multiplexer when
+you need it.
 
 ### 4. Git, the fast way
 *You're ready to review and commit.*
 
 - Quick status: `gs` (alias) in any shell pane.
 - Full TUI: `lg` (or `<Space>gg` inside Neovim) → **lazygit**. Stage hunks with `Space`, commit with
-  `c`, push with `P`, browse branches with `b`. It's the fastest staging UI there is.
+  `c`, push with `P`, rebase interactively with `s`/`f`/`r`. It's the fastest staging UI there is.
 - Per-line history: `<Space>gb` (git blame) in Neovim.
 - Plain `git diff` / `git show` now flow through **delta** — pretty, line-numbered diffs; `n`/`N` move
   between hunks. Wired by the **additive** `~/.config/git/config` (it never touches your `~/.gitconfig`
@@ -536,7 +338,7 @@ The *why* behind the combos — the reasons this stack is fast once it's yours:
 
 ### Official docs — the authoritative reference per tool
 
-When the cheat sheet isn't enough, go to the source (and remember the repo rule: **never invent a
+When the per-tool README isn't enough, go to the source (and remember the repo rule: **never invent a
 config key — cite these**).
 
 | Layer / tool | Docs | Reach for it when |
@@ -575,10 +377,12 @@ above stay the source of truth). Pick one that fits; skim, don't memorize.
 
 ### Going deeper in this repo
 
-- Per-layer references: [ghostty](../ghostty/README.md) · [zellij](../zellij/README.md) ·
-  [nvim](../nvim/README.md) · [zsh](../zsh/README.md) · [claude](../claude/README.md) ·
-  [fonts](../fonts/README.md)
+- Per-layer references (the single source of keys per tool): [ghostty](../ghostty/README.md) ·
+  [zellij](../zellij/README.md) · [nvim](../nvim/README.md) · [zsh](../zsh/README.md) ·
+  [claude](../claude/README.md) · [fonts](../fonts/README.md)
 - Setup + ops: [install](install.md) · [sandbox](sandbox.md)
+- Running many agents at once: [parallel-agents](parallel-agents.md)
+- Coming from an IDE: [JetBrains → stack map](jetbrains-to-stack-review.md)
 - How the repo is built (the SDD loop + commands): [`.claude/commands/README.md`](../.claude/commands/README.md)
 
 ---

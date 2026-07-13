@@ -133,7 +133,7 @@ It writes only to `~/.gitconfig` (never the shared config). See [`git/README.md`
 
 Want the OS itself tuned for this keyboard-first workflow (Dock auto-hide, full trackpad gestures,
 **fast key-repeat for Vim**, and the `⌘⇧/` Help / man-page shortcuts disabled)? Run the opt-in
-[`macos/defaults.sh`](../macos/README.md):
+`macos/defaults.sh` ([how it works](../macos/README.md)):
 
 ```sh
 ./macos/defaults.sh --dry-run   # preview every change

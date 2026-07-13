@@ -172,4 +172,6 @@ terminal pane rather than a half-working plugin.
 
 - The narrative migration rationale (with upstream citations) lives in the Notion Research page for
   feature `F-EDIT-002`.
-- The stack's general cheat sheets: [guide.md](guide.md). Editor specifics: [nvim/README.md](../nvim/README.md).
+- The stack's cross-tool workflow guide: [guide.md](guide.md) — it ties the layers together; the
+  exhaustive keys per tool live in each layer's README. Editor specifics: [nvim/README.md](../nvim/README.md);
+  lazygit & yazi keys: [zsh/README.md](../zsh/README.md#512-lazygit--git-as-a-tui).

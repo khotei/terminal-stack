@@ -5,7 +5,7 @@ can actually live in. Five docs, by intent:
 
 | Doc | Read it to… |
 |---|---|
-| **[guide.md](guide.md)** | **Learn the stack** — the mental model, per-tool cheat sheets, and scenario-by-scenario walkthroughs of how a developer works in it. |
+| **[guide.md](guide.md)** | **Learn the stack** — the mental model, how the tools are wired into one workflow, and scenario-by-scenario walkthroughs. Per-tool keys live in each layer's README. |
 | **[install.md](install.md)** | **Set it up** — `bootstrap.sh` → `brew bundle` → `install.sh`, updating, troubleshooting, uninstall. |
 | **[sandbox.md](sandbox.md)** | **Try it first** — `make try` runs the in-terminal layers in a disposable Docker container, no install. |
 | **[jetbrains-to-stack-review.md](jetbrains-to-stack-review.md)** | **Migrate from JetBrains** — the IDE-hotkey → stack map for reading, navigating, and reviewing code. |

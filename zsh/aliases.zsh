@@ -19,10 +19,22 @@ alias ...='cd ../..'
 alias gs='git status'
 alias gd='git diff'
 alias gl='git log --oneline --graph --decorate'
+alias ga='git add'
+alias gc='git commit'
+alias gp='git push'
+alias gco='git checkout'
 
 # stack tools (guarded — alias only if installed)
 command -v lazygit >/dev/null && alias lg='lazygit'
 command -v yazi    >/dev/null && alias y='yazi'
+
+# zellij ships no short name; zjd launches the editor │ agent workspace
+# (zellij/layouts/dev.kdl) — the coupling is the reason this isn't just `zj`.
+if command -v zellij >/dev/null; then
+  alias zj='zellij'
+  alias zjd='zellij --layout dev'
+  alias zja='zellij attach'
+fi
 
 # Claude Code with all permission checks off — a named, opt-in alias, NOT a shadow
 # of bare `claude`: `--dangerously-skip-permissions` runs with zero guardrails, so
