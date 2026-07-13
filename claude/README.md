@@ -124,7 +124,7 @@ Readline-style editing, plus multiline. `Ctrl+A/E` line start/end · `Ctrl+K` ki
 kill to start · `Ctrl+W` delete word · `Ctrl+Y` paste killed text.
 
 **Multiline input** — `\` + `Enter` (any terminal) · `Ctrl+J` (any terminal, no config) · `Shift+Enter`
-(native in **Ghostty**, iTerm2, WezTerm, Kitty, Apple Terminal, Windows Terminal). For editors that
+(native in **Ghostty**, iTerm2, WezTerm, Kitty, Warp, Apple Terminal, Windows Terminal). For editors that
 need it, run `/terminal-setup` to install the `Shift+Enter` binding.
 
 ### Sigils — the first character of the prompt
@@ -143,7 +143,7 @@ need it, run `/terminal-setup` to install the `Shift+Enter` binding.
 | `/compact [hint]` | Summarize the conversation to free context (thread continues) |
 | `/context` | Visualize context-window usage as a colored grid |
 | `/model [name]` | Switch the model and save it as default |
-| `/config` | Open the settings UI (or `/config key=value` to set directly) |
+| `/config` | Open the settings UI (or `/config <key> <value>` to set one directly) |
 | `/agents` | Manage subagent configurations |
 | `/mcp` | Manage / authenticate MCP servers |
 | `/memory` | Browse & edit `CLAUDE.md` / rules / auto-memory files |
