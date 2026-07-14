@@ -97,23 +97,38 @@ Scroll/Search):
 | `d` / `r` | split down / right | `f` | fullscreen (zoom) toggle |
 | `s` | new **stacked** pane | `w` | floating panes toggle |
 | `e` | embed ↔ float | `i` | pin a floating pane (always-on-top) |
-| `c` | rename pane | | |
+| `c` | rename pane | `z` | toggle pane frames (declutter / +2 cols) |
+| `p` | focus the **previous** pane | | |
 
 **Tab** (`Ctrl+t`):
 
 | Key | Action | Key | Action |
 |---|---|---|---|
 | `n` | new tab | `1`…`9` | jump to tab N |
-| `x` | close tab | `h`/`k` · `l`/`j` | previous · next tab |
+| `x` | close tab | `←`/`→` (or `h/j/k/l`) | previous · next tab |
 | `r` | rename tab | `Tab` | toggle last-active |
+| `s` | **sync** — broadcast typing to every pane in the tab | | |
 | `b` | break pane into its own tab | `[` / `]` | break pane to prev / next tab |
 
-**Resize** (`Ctrl+n`): `h/j/k/l` grow a side · `H/J/K/L` shrink · `=` / `-` all sides.
-**Move** (`Ctrl+h`): `h/j/k/l` push the pane · `n`/`Tab` next slot · `p` previous.
-**Scroll** (`Ctrl+s`): `j/k` line · `d/u` half-page · `PageUp/PageDown` page · `s` search · `e` open
-scrollback in nvim · `Ctrl+c` jump to bottom and exit.
+> **Every mode is sticky — repeat, don't re-enter.** A mode stays live until `Enter`/`Esc` (or its own
+> `Ctrl+…` toggle), so once inside you **keep tapping** its single keys — the *same* reflex in all of
+> them:
+> - **Tab / Pane** — tap the **arrows** (or `h/j/k/l`) to walk tab-by-tab / pane-by-pane while watching
+>   the bar; the move for when you *don't recall the number* (browse, don't `Ctrl+t` `N`).
+> - **Resize** — `=` `=` `=` grows in steps · **Move** — `h h h` shoves the pane across slots ·
+>   **Scroll** — hold `j`/`k`.
+>
+> Mirror image of the `Alt+…` shortcuts, which fire *one* hop from Normal: the modes are for
+> *repeating* — hunting, sizing, sculpting.
+
+**Resize** (`Ctrl+n`): `h/j/k/l` (or arrows) grow a side · `H/J/K/L` shrink · `=` / `-` all sides.
+**Move** (`Ctrl+h`): `h/j/k/l` (or arrows) push the pane · `n`/`Tab` next slot · `p` previous.
+**Scroll** (`Ctrl+s`): `j/k` line · `d/u` half-page · `PageUp/PageDown` (or `Ctrl+b`/`Ctrl+f`) page ·
+`s` search · `e` open scrollback in nvim · `Ctrl+c` jump to bottom and exit.
+**Search** (`s` from Scroll): type the term · `Enter` · `n` / `p` next / prev hit · `c` case · `w` wrap
+· `o` whole-word · `Ctrl+c` exit to bottom. (Prev is `p`, **not** Vim's `N`.)
 **Session** (`Ctrl+o`): `w` **session manager** (fuzzy-switch/resurrect) · `d` detach · `c`
-configuration · `p` plugin manager.
+configuration · `p` plugin manager · `l` layout manager · `a` about · `s` share (web).
 
 **Skip the mode dance — direct `Alt` shortcuts.** For the moves you make constantly, hold `Alt` from
 Normal and act in one stroke:
@@ -144,9 +159,47 @@ bottom bar always shows the tab list, and with `mouse_mode true` a **click on a 
 `Ctrl+p` `i` (or click the `PIN` badge) makes a floating pane always-on-top
 ([pinned panes, 0.42](https://zellij.dev/news/stacked-resize-pinned-panes/)).
 
-**Mine your scrollback like a document.** `Ctrl+s` `e` opens the pane's entire scrollback in **nvim**
-(this config's `scrollback_editor`) — search, yank a stack trace, save it. Or stay in-pane: `Ctrl+s`
-`s` searches the buffer, `Ctrl+c` snaps back to the bottom.
+**Type one command into every pane at once.** `Ctrl+t` `s` toggles **tab sync** — keystrokes broadcast
+to *all* panes in the tab: `git pull` three repos, restart four services, `tail -f` a fleet identically.
+The bar shows a `SYNC` marker; `Ctrl+t` `s` again stops it
+([sync-tab](https://zellij.dev/documentation/keybindings-possible-actions.html)). Broadcast is
+per-*tab*, so corral the panes you want yoked into their own tab first — then break them back out with
+`Ctrl+t` `b`.
+
+**Ping-pong between two panes without aiming.** `Ctrl+p` `p` snaps to the **previously focused** pane —
+the pane-level twin of `Ctrl+t` `Tab` for tabs. When you're bouncing editor↔shell it beats aiming
+`Alt+h/j/k/l` at a moving target.
+
+**Strip the chrome for a clean copy (or two more columns).** `Ctrl+p` `z` toggles **pane frames** off:
+no border glyphs to snag in a mouse-drag selection, and the content reclaims the frame's cells for wide
+output (a 180-col diff, a table). Toggle back the same way — it's global, not per-pane.
+
+**Read a pane like a document — scroll, select, copy, search.** This is Zellij's answer to tmux's
+*copy-mode*: freeze a pane's output and move through it as text. Works over **any** pane — a shell, a
+build log, `claude`, a `tail -f`. There are **three tiers**; reach for the lightest that does the job.
+
+| When you want to… | Do this | Why this tier |
+|---|---|---|
+| Grab a line or two, right now | **Drag-select with the mouse** — `copy_on_select` copies on release; the wheel scrolls | Zero mode-switch, and it works even inside a *locked* Claude pane |
+| Scroll back and *find* something, keyboard-only | `Ctrl+s` → **Scroll**: `j/k` line · `d/u` half-page · `Ctrl+f`/`Ctrl+b` page. `s` starts a **search** — type, `Enter`, then `n`/`p` walk the hits. `Ctrl+c` snaps to the bottom and exits | Stays in the pane, incremental, no editor spin-up |
+| Yank a stack trace · Vim-select a block · save it out | `Ctrl+s` → `e` — **EditScrollback** dumps the whole buffer into **nvim** (`scrollback_editor`) | The *full* editor: `v`/`V` visual, `/` + `n`, macros, `:w /tmp/err.log` — more than copy-mode ever gave |
+
+> **The locked-pane catch (Claude / nvim).** Those panes are auto-**locked**, so `Ctrl+s` goes *to the
+> app*, not Zellij. Reflex: **`Alt+z` first** (disarm → Normal), *then* `Ctrl+s` `e`; `Alt+z` again to
+> re-arm ([§8](#8-living-with-claude-code--neovim--autolock)). For a one-off grab, skip all that — a
+> **mouse drag** copies without unlocking.
+
+**When to pick which — and a few secrets:**
+
+- **Past a glance? Go straight to `e` (nvim).** Searching a 5k-line log is faster with `/` `n` `*` than
+  stepping hits in Scroll mode, and you can `V`-select a range and `:w` it to a file. Scroll mode is for
+  *"where did that error scroll off to,"* EditScrollback for *"I need to work with this output."*
+- **`Ctrl+c` = "done, back to live."** It scrolls to the bottom **and** leaves Scroll mode in one key —
+  the clean way to rejoin a running `tail`, no `Esc`-then-jump.
+- **Search from where you are.** In Scroll mode you can `k` up a bit, *then* `s` — the search starts at
+  your cursor, and `n`/`p` walk matches without losing your place.
+- **No copy key on purpose.** `copy_on_select` makes *releasing the mouse* the copy — which is why the
+  default `Alt+c` Copy bind is left commented in the scroll block.
 
 **Run a command *into* a new pane from the shell** — no mode dance: `zellij run -- cargo test` (new
 pane running it), `zellij run -f -- htop` (floating), `zellij edit ./src/main.rs` (open a file)
@@ -259,6 +312,14 @@ this stack: **`zja`** = `zellij attach`, **`zjd`** = `zellij --layout dev` (zsh)
   toggles the whole floating layer.
 - **Break a pane out** — `Ctrl+t` `b` moves the focused pane into its own tab; `Ctrl+t` `[` / `]` sends
   it to the previous/next tab.
+- **Resize — usually *without* the mode.** `Ctrl+n` opens Resize (`h/j/k/l` grow a side · `H/J/K/L`
+  shrink · `=`/`-` all sides), but the fast paths skip it: `Alt+=` / `Alt+-` nudge straight from Normal,
+  and `Alt+[` / `Alt+]` reflow the *whole* tab via swap-layouts. Reserve the mode for fine, one-side
+  tuning; reach for `Alt+=` / swap-layouts for everything else.
+- **Move the pane, not the focus** — two verbs people conflate. `Alt+h/j/k/l` moves *focus* (which pane
+  you're in); `Ctrl+h` (**Move** mode) relocates the *pane itself* — `h/j/k/l` shoves it, `n` / `Tab`
+  cycles it through the layout's slots (`p` backwards). Use Move to reshuffle a mosaic without closing
+  and reopening anything.
 
 ---
 
