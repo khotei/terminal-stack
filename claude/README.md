@@ -30,7 +30,7 @@ and slash command, the fast recipes, the parallel-agent workflow, and this repo'
 5. [Parallel agents — git worktrees](#5-parallel-agents--git-worktrees)
 6. [Advanced craft](#6-advanced-craft) — plan mode · rewind · memory · vim input
 7. [Anti-patterns](#7-anti-patterns)
-8. [Living in a Zellij pane](#8-living-in-a-zellij-pane) — autolock · `Ctrl+G` · `Alt+z` · voice
+8. [Living in a Zellij pane](#8-living-in-a-zellij-pane) — the manual lock · `Ctrl+G` · `Alt+d` · voice
 9. [The status line](#9-the-status-line) · [Settings, plugins & MCP](#10-settings-plugins--mcp) · [Global rules](#11-global-rules--rules)
 10. [Verify](#12-verify) · [Install](#13-install) · [Go deeper](#go-deeper)
 
@@ -63,11 +63,12 @@ default (Manual) ──[ Shift+Tab ]──▶ acceptEdits ──▶ plan ──�
 | `@` | a **file/dir reference** — triggers path autocomplete, hands the file to Claude |
 | `!` | **shell mode** — run the command yourself; its output enters context and Claude responds to it |
 
-**The one reflex the pane demands.** Claude Code runs *inside* a Zellij pane, and this stack's Zellij
-config auto-**locks** that pane so every keystroke reaches Claude ([§8](#8-living-in-a-zellij-pane)).
-The cost: while you're "inside" Claude, Zellij's own hotkeys are dormant. So the first reflex to build
-is the mirror of Zellij's: **a Zellij key "didn't work"? The pane is locked for Claude — press `Alt+z`
-to escape to the multiplexer.**
+**The one reflex the pane demands.** Claude Code runs *inside* a Zellij pane, and by default Zellij's
+own modal keys (`Ctrl+p`/`t`/`n`/`s`/`o`) win — so a Claude `Ctrl`-shortcut can be eaten. Press
+**`Alt+d`** to drop the pane into **Locked** mode: now every keystroke reaches Claude
+([§8](#8-living-in-a-zellij-pane)). The cost: while locked, Zellij's own hotkeys are dormant. So two
+mirror-image reflexes: **a Claude `Ctrl`-key "didn't work"? You're not locked — press `Alt+d`.** And:
+**a Zellij key "didn't work"? You're still locked — `Alt+d` back.**
 
 ---
 
@@ -86,7 +87,7 @@ Ten moves that cover ~90% of real use. (Exhaustive tables in [§3](#3-complete-r
 | Speak your prompt (this stack: tap to toggle) | `Ctrl+F` ([§8](#8-living-in-a-zellij-pane)) |
 | Free context without losing the thread | `/compact` |
 | Fresh conversation, empty context | `/clear` |
-| Escape the locked pane to full Zellij | `Alt+z` |
+| Toggle the pane's Zellij lock (hand keys to Claude ⇄ back) | `Alt+d` |
 
 > `Esc` `Esc` is overloaded by design: with text in the box it **clears the draft** (recall with `Up`);
 > with the box **empty** it opens the **rewind menu** to restore code/conversation from earlier
@@ -289,7 +290,7 @@ in an isolated git worktree, no editor pane
 | Copy a command's output back in by hand | `!command` — output enters context automatically |
 | Let context creep to 100% then lose the thread | Watch `ctx %`, `/compact` early |
 | Run two agents in the same working tree | A worktree each — `cc-worktree.sh` / `claude -w` |
-| Fight a dead Zellij hotkey inside Claude | `Alt+z` out of the locked pane first |
+| Fight a dead Claude `Ctrl`-key, or a dead Zellij hotkey | `Alt+d` toggles which layer gets the keys |
 | Wire in the GitHub MCP because it exists | `gh` + the plugins already cover it ([§10](#10-settings-plugins--mcp)) |
 
 ---
@@ -297,18 +298,17 @@ in an isolated git worktree, no editor pane
 ## 8. Living in a Zellij pane
 
 Claude Code is a TUI, so it runs in a **Zellij pane** next to Neovim — the [`dev`
-layout](../zellij/layouts/dev.kdl): `zellij --layout dev` (left: editor · right, 40%: agent). Three
-couplings make that cohabitation seamless — the exact behavior lives in the
-[Zellij README §8](../zellij/README.md#8-living-with-claude-code--neovim--autolock):
+layout](../zellij/layouts/dev.kdl): `zellij --layout dev` (left: editor · right, 40%: agent). Two
+couplings make that cohabitation work — the exact behavior lives in the
+[Zellij README §8](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock):
 
-- **Autolock.** [`zellij-autolock`](https://github.com/fresh2dev/zellij-autolock) drops Zellij into
-  **Locked** mode the moment a pane runs `claude` (or `nvim`/`git`/…), so **every keystroke reaches
-  Claude** — you never lose a `Ctrl`. The trade-off is [§1](#1-the-mental-model)'s reflex: Zellij's
-  hotkeys sleep until you `Alt+z` out.
-- **`Ctrl+G` is freed in Zellij** — it's normally Locked mode's unlock, which would shadow Claude's
-  `Ctrl+G` (*edit prompt in `$EDITOR`*). The Zellij config unbinds it so the keystroke reaches Claude.
-- **`Alt+z` is the escape hatch** — from the locked agent pane it disables autolock and drops you to
-  Zellij's Normal mode (sticky); `Alt+z` again re-arms.
+- **`Alt+d` is the manual lock.** There's **no autolock** — you hand the pane its keys by choice. `Alt+d`
+  drops Zellij into **Locked** mode so **every keystroke reaches Claude** (`Ctrl+o`/`t`/`r` and the rest);
+  `Alt+d` again takes the multiplexer back. The trade-off is [§1](#1-the-mental-model)'s reflex: enter
+  `claude` and its `Ctrl`-keys are eaten by Zellij until you press `Alt+d`.
+- **`Ctrl+G` is freed in Zellij** — it's normally Locked mode's default unlock, which would shadow
+  Claude's `Ctrl+G` (*edit prompt in `$EDITOR`*). The Zellij config unbinds it so the keystroke reaches
+  Claude; leave Locked with `Alt+d` instead.
 
 **Voice — why `Ctrl+F`, not `Space`.** Voice dictation's push-to-talk key
 ([`voice:pushToTalk`](https://code.claude.com/docs/en/voice-dictation)) defaults to **`Space`** — which
@@ -336,9 +336,9 @@ on by default; the first `/voice` run asks for microphone permission. Rebinding 
 Opus 4.8   terminal-stack   feat/x*   23% ctx   $0.04
    model        dir          git¹     context²    cost
 ```
-¹ branch, `*` = uncommitted changes · ² context-window usage. Colours are Catppuccin Mocha 256-colour
-accents; the glyphs need a Nerd Font (the stack assumes one). Falls back from `jq` to `grep` if `jq` is
-absent. Fields consumed: `.model.display_name`, `.workspace.current_dir`,
+¹ branch, `*` = uncommitted changes · ² context-window usage. Colours are the terminal's 16 ANSI slots
+(no hardcoded palette), so the line follows the active theme — like the Starship prompt. The glyphs need
+a Nerd Font (the stack assumes one). Falls back from `jq` to `grep` if `jq` is absent. Fields consumed: `.model.display_name`, `.workspace.current_dir`,
 `.context_window.used_percentage`, `.cost.total_cost_usd`.
 
 **Already enabled** — [`settings.json`](./settings.json) carries the `statusLine` block, so a fresh

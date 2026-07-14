@@ -2,8 +2,8 @@
 
 # Starship prompt for terminal-stack. Installs to ~/.config/starship.toml.
 # Colors are the terminal's 16 ANSI slots (no hardcoded palette) so the prompt
-# follows Ghostty's live theme repaint — Catppuccin Latte in light, Mocha in
-# dark — with zero switching logic. Reference: zsh/README.md · https://starship.rs/config
+# follows Ghostty's live theme repaint — whatever palette, light or dark — with
+# zero switching logic. Reference: zsh/README.md · https://starship.rs/config
 
 add_newline = true
 

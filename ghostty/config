@@ -13,10 +13,11 @@ font-size = 18
 font-thicken = true
 
 # ── theme ─────────────────────────────────────────────────────────────
-# Catppuccin ships bundled with Ghostty; the stack reuses Mocha across
-# Zellij / LazyVim / Starship for one palette. Latte is its light sibling,
-# auto-selected to follow the macOS appearance. Verify: ghostty +list-themes
-theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+# Gruvbox Material ships bundled with Ghostty; the stack reuses it across
+# Zellij / LazyVim / Starship for one warm, high-contrast palette with clear
+# UI borders. Light is auto-selected to follow the macOS appearance.
+# Verify: ghostty +list-themes
+theme = light:Gruvbox Material Light,dark:Gruvbox Material Dark
 
 # ── window ────────────────────────────────────────────────────────────
 # Opaque by choice (readability over glass). To enable translucency add

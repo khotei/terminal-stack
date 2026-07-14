@@ -7,7 +7,7 @@ config key — **never invent one** (`@.claude/rules/config.md`).
 | Layer | Tool | Config | Notes |
 |---|---|---|---|
 | **Terminal** | **Ghostty** | `ghostty/config` → `~/.config/ghostty/config` | A single file, **no extension**, `key = value` syntax (one directive per line; repeated keys like `keybind` accumulate). GPU-accelerated; hot-reloads config. Docs: ghostty.org. |
-| **Multiplexer** | **Zellij** | `zellij/config.kdl` (+ `layouts/*.kdl`) → `~/.config/zellij/` | Config and layouts are **KDL**. Owns the prefix key and pane/tab/session management. Plugins (e.g. **zellij-autolock**, which releases the prefix to nested apps like nvim) load from the config/layout. Docs: zellij.dev. |
+| **Multiplexer** | **Zellij** | `zellij/config.kdl` (+ `layouts/*.kdl`) → `~/.config/zellij/` | Config and layouts are **KDL**. Owns the modal keys and pane/tab/session management. Nested apps (nvim, Claude Code) don't auto-lock — `Alt+d` toggles Locked mode by hand to hand the pane every key. Docs: zellij.dev. |
 | **Editor** | **Neovim + LazyVim** | `nvim/` → `~/.config/nvim/` | **Lua** config on the **lazy.nvim** plugin manager; LazyVim is the distro/preset on top. Entry `init.lua`; plugins as lazy.nvim specs under `lua/plugins/*.lua`, settings under `lua/config/`. Docs: lazyvim.org, neovim.io. |
 | **Shell** | **zsh + Starship** | `zsh/.zshrc`, `zsh/*.zsh`, `zsh/starship.toml` | zsh as the login shell; **Starship** the cross-shell prompt (`starship.toml`). Thin `.zshrc` sourcing role files (`env.zsh`, `aliases.zsh`, `prompt.zsh`). Docs: starship.rs. |
 | **Agent** | **Claude Code** | `.claude/` | Lives in a multiplexer pane; runs the SDD loop against Notion (`@.claude/commands/README.md`). The `.claude/` toolkit + rules are themselves config in this repo. |

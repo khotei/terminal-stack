@@ -60,9 +60,10 @@ and they never collide:
 
 So your fingers always know *which tool they're talking to*: a `⌃`-mode key means "multiplexer", a bare
 `<Space>` in the editor means "editor command". Ghostty deliberately leaves the `⌃` keys free; Neovim's
-leader never shadows the multiplexer. And when the editor/agent is focused,
-[autolock](../zellij/README.md#8-living-with-claude-code--neovim--autolock) hands it *every* key — press
-`⌥z` to reach Zellij again. (Details: [`.claude/rules/config.md`](../.claude/rules/config.md).)
+leader never shadows the multiplexer. When a full-screen app (nvim/claude) needs *every* key, press
+[`⌥d`](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock) to **lock** Zellij and hand it
+over — `⌥d` again to reach the multiplexer. (Details:
+[`.claude/rules/config.md`](../.claude/rules/config.md).)
 
 **Where Claude Code lives:** in a Zellij pane next to Neovim — not an IDE sidebar. You edit on the
 left, the agent works on the right, and you flick between them with `⌥h`/`⌥l`.
@@ -103,11 +104,12 @@ to Neovim — the contract from [the mental model](#the-mental-model). Nothing o
 always know who's listening.
 
 **2. Keys flow OS → terminal → multiplexer → app.** Ghostty's `macos-option-as-alt` turns the Mac's
-Option into a real Alt, so Zellij's `⌥h`/`⌥l` and Claude's `⌥P`/`⌥T` actually arrive. When a pane runs
-nvim/claude/git/fzf/zoxide/atuin,
-[autolock](../zellij/README.md#8-living-with-claude-code--neovim--autolock) locks Zellij and hands that
-app *every* key — and `⌥z` is the one key that always escapes back to the multiplexer. Zellij also frees
-`⌃g` so Claude Code's "edit prompt in `$EDITOR`" survives the lock.
+Option into a real Alt, so Zellij's `⌥h`/`⌥l` and Claude's `⌥P`/`⌥T` actually arrive. When a pane needs
+*every* key for a full-screen app (nvim/claude/fzf/atuin), press
+[`⌥d`](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock) to **lock** Zellij and hand that
+app the keyboard — `⌥d` again to return. There's no autolock: you lock by hand, so until you do, the
+app's own Ctrl-keys can be caught by Zellij. `⌃g` stays free so Claude Code's "edit prompt in
+`$EDITOR`" reaches Claude even while locked.
 
 **3. One editing model everywhere.** Vim motions in Neovim, the *same* motions on the zsh prompt
 (vi-mode), and again inside Claude Code (`editorMode: vim`, plus `⌃G` to edit a prompt in nvim itself).
@@ -123,10 +125,12 @@ delegate on the right (Claude: `@file`, `!cmd`), review the diff back in the edi
 lazygit). Switch sides with `⌥h`/`⌥l`. Peers in adjacent panes — lower RAM, tighter loop, you keep hold
 of the diff.
 
-**6. One palette, one theme signal.** Every layer runs Catppuccin and follows the macOS light/dark
-appearance in lockstep (Latte ↔ Mocha): Ghostty repaints, and Zellij / Neovim / Starship / Claude Code
-track it — so your eye doesn't hitch jumping pane to pane. Change one appearance setting, the whole
-stack turns with it.
+**6. One palette, one theme signal.** Every layer runs the *same* palette and follows the macOS
+light/dark appearance in lockstep: Ghostty repaints, and Zellij / Neovim / Starship / Claude Code track
+it — so your eye doesn't hitch jumping pane to pane. Change one appearance setting, the whole stack
+turns with it. *Which* palette isn't wired in anywhere but the config: swap the `theme` in
+[`ghostty/config`](../ghostty/config) (mirror it in Zellij + Neovim), or just ask Claude Code to
+re-theme the stack — the docs stay the same whatever palette you pick.
 
 **7. The CLI mesh.** `fd` + `ripgrep` power Neovim's file/grep pickers *and* the shell; `fzf` + `atuin`
 + `zoxide` make history, paths, and directories a fuzzy query away; `lazygit` and `yazi` are the git
@@ -141,7 +145,7 @@ reference of any layer, open its README.
 | Layer | The moves you'll reach for most | Full reference |
 |---|---|---|
 | **Ghostty** | `⌘⇧R` reload · <code>⌘&#96;</code> quick-terminal | [ghostty/README](../ghostty/README.md) |
-| **Zellij** | `⌥h`/`⌥l` pane+tab · `⌃t` `N` jump to tab · `⌃o` `w` sessions · `⌥z` unlock | [zellij/README](../zellij/README.md) |
+| **Zellij** | `⌥h`/`⌥l` pane+tab · `⌃t` `N` jump to tab · `⌃o` `w` sessions · `⌥d` lock/unlock | [zellij/README](../zellij/README.md) |
 | **Neovim** | `<Space>` which-key · `<Space>ff`/`fg` find/grep · `gd`/`gr`/`K` LSP · `<Space>gg` lazygit | [nvim/README](../nvim/README.md) |
 | **Shell** | `z` jump · `⌃R` history · `⌃T` file · `Esc` vi-mode · `zjd` workspace | [zsh/README](../zsh/README.md) |
 | **lazygit** | `Space` stage · `c` commit · `P` push · `s`/`f`/`r` squash/fixup/reword | [zsh/README §lazygit](../zsh/README.md#512-lazygit--git-as-a-tui) |
@@ -194,11 +198,11 @@ keys (`gd`/`gr`/`cr`) replace "go to / find usages / rename". Hands stay on the 
 4. Big task with many parallel pieces? Hand it off to a worktree → [flow 5](#5-run-agents-in-parallel-worktrees).
 
 **Why this way:** the agent and the editor are *peers in adjacent panes* — lower RAM and a tighter
-loop than an embedded IDE agent, and you stay in control of the diff.
-[`zellij-autolock`](../zellij/README.md#8-living-with-claude-code--neovim--autolock) (on by default)
-passes every key straight to the focused editor/agent — no manual locking when the pane runs one of its
-watched apps (nvim/vim/git/fzf/zoxide/atuin/**claude**); `⌥z` drops back to the full multiplexer when
-you need it.
+loop than an embedded IDE agent, and you stay in control of the diff. When you want the pane to swallow
+*every* key — Claude's own `Ctrl`-shortcuts, or nvim's — press
+[`⌥d`](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock) to **lock** Zellij, and `⌥d`
+again to hand the multiplexer back. It's a manual toggle (no autolock), so until you press it Zellij
+may catch the app's Ctrl-keys.
 
 ### 4. Git, the fast way
 *You're ready to review and commit.*
@@ -305,9 +309,9 @@ The *why* behind the combos — the reasons this stack is fast once it's yours:
   is independent (and parallel, via worktrees).
 - **Detach, don't lose.** Sessions outlive the window. Close the lid mid-task; `zellij attach` and
   you're exactly where you were.
-- **One palette, low friction.** Catppuccin across every layer — Latte in light, Mocha in dark,
-  following the macOS appearance in lockstep — so there's less visual context-switching when your
-  eyes jump pane to pane.
+- **One palette, low friction.** One shared palette across every layer — its light variant in light,
+  dark in dark, following the macOS appearance in lockstep — so there's less visual context-switching
+  when your eyes jump pane to pane.
 
 ---
 
@@ -320,7 +324,7 @@ The *why* behind the combos — the reasons this stack is fast once it's yours:
 | Changed an nvim plugin spec | `:Lazy sync` (or restart nvim) |
 | Changed a shell file | `source ~/.zshrc` or open a new shell |
 | "Does my config even load?" | `make check` (all validators) — or per-tool, see below |
-| A keybind seems dead | check the layer: is the pane **locked** (autolock)? Then the app gets the key — press `⌥z` to reach Zellij |
+| A keybind seems dead | check the layer. A Zellij key dead? The pane may be **locked** — `⌥d` to unlock. An app's own Ctrl-key dead? The pane is **not** locked — `⌥d` to lock so the app gets it |
 | fzf/atuin `⌃R` stopped working | vi-mode must load *before* them — it does in `zsh/.zshrc`; check your `~/.zshrc.local` overrides |
 | New machine / new files added | `git pull && ./install.sh --prune` |
 | Update all the tools | `make update` (then `:Lazy update` + commit `lazy-lock.json`) |
@@ -357,7 +361,7 @@ config key — cite these**).
 | **yazi** | <https://yazi-rs.github.io> | the file-manager keymap + plugins |
 | **Claude Code** | <https://code.claude.com/docs> · [interactive mode](https://code.claude.com/docs/en/interactive-mode) · [statusline](https://code.claude.com/docs/en/statusline) | slash commands, shortcuts, settings, hooks |
 | **Homebrew** | <https://brew.sh> · [bundle](https://github.com/Homebrew/homebrew-bundle) | the package manager + `brew bundle` |
-| **Catppuccin** | <https://catppuccin.com> | the shared palette + ports for other apps |
+| **Terminal theme** | `ghostty +list-themes` · [ghostty themes](https://ghostty.org/docs/config/reference#theme) | the palette every layer follows — named in `ghostty/config`, mirrored in Zellij & Neovim |
 
 ### Video intros (community)
 

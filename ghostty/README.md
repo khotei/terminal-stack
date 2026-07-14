@@ -108,13 +108,14 @@ The *why* behind each key in [`config`](./config); the config file itself states
 | [`font-family`](https://ghostty.org/docs/config/reference#font-family) | `Symbols Nerd Font Mono` | **Fallback** for icon glyphs — Dank Mono carries none, so LazyVim / Starship icons need it. A repeated `font-family` builds a fallback chain (later = lower priority). |
 | [`font-size`](https://ghostty.org/docs/config/reference#font-size) | `18` | Comfortable default point size. |
 | [`font-thicken`](https://ghostty.org/docs/config/reference#font-thicken) | `true` | macOS-only stroke thickening — Dank Mono's thin glyphs (esp. Cyrillic) render grainy at native weight. |
-| [`theme`](https://ghostty.org/docs/config/reference#theme) | `light:Catppuccin Latte,dark:Catppuccin Mocha` | The bundled Catppuccin pair. With the `light:…,dark:…` form Ghostty **follows the OS appearance** and swaps live — and reports the change to apps inside via **CSI 2031**, which is what lets [Zellij](../zellij/README.md) and [Neovim](../nvim/README.md) light/dark in lockstep. Verify names with `ghostty +list-themes`. |
+| [`theme`](https://ghostty.org/docs/config/reference#theme) | `light:<light>,dark:<dark>` | A bundled light/dark pair. The `light:…,dark:…` form is the load-bearing part: Ghostty **follows the OS appearance** and swaps live — and reports the change to apps inside via **CSI 2031**, which is what lets [Zellij](../zellij/README.md) and [Neovim](../nvim/README.md) light/dark in lockstep. Pick any pair from `ghostty +list-themes`; the config names the current one. |
 | [`window-padding-x`](https://ghostty.org/docs/config/reference#window-padding-x) | `8` | Horizontal breathing room between cells and the window edge. |
 | [`window-padding-y`](https://ghostty.org/docs/config/reference#window-padding-y) | `8` | Same, vertical. |
 | [`macos-option-as-alt`](https://ghostty.org/docs/config/reference#macos-option-as-alt) | `true` | Send **Alt** on Option (vs. composing accents) so Alt-binds in Zellij / nvim / zsh fire — see [§1](#1-the-one-idea-a-terminal-that-stays-out-of-the-way). |
 
-Both Catppuccin palettes ship **bundled with Ghostty** ([catppuccin/ghostty](https://github.com/catppuccin/ghostty)),
-so there's no theme file to install — hence `theme` names them directly rather than pointing at a path.
+The chosen palettes ship **bundled with Ghostty** (browse them with `ghostty +list-themes`), so there's
+no theme file to install — hence `theme` names them directly rather than pointing at a path. To re-theme
+the whole stack, change this pair and mirror it in Zellij + Neovim (or ask Claude Code to do it).
 
 ---
 

@@ -16,7 +16,7 @@ is skipped. Feature: `F-META-005`.
       ①  Xcode CLT     git · compiler · make             (prep · skipped if present)
       ②  Homebrew      the package manager               (prep · skipped if present)
       ③  brew bundle   the toolchain — Ghostty · Zellij · Neovim · Starship · CLIs · fonts
-      ④  install.sh    symlink configs → ~/.config · copy fonts · fetch autolock plugin
+      ④  install.sh    symlink configs → ~/.config · copy fonts
 ```
 
 If you already have Homebrew, you only need stages ③–④ (the
@@ -88,8 +88,6 @@ It is **idempotent** and **safe**:
 - A real file/dir in the way is backed up to `<path>.bak` before linking.
 - `./install.sh --dry-run` shows what it would do, changing nothing.
 - Fonts are **copied** (not symlinked), so `--prune` never touches them.
-- It also **fetches the `zellij-autolock` plugin wasm** (best-effort) so autolock — on by default —
-  works out of the box; offline, it just stays inert (harmless).
 
 ## 3. Finish
 

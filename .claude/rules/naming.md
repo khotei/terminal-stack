@@ -34,7 +34,7 @@ file configures from its path alone.
 
 ## General
 
-- **kebab-case** for every multi-word filename we author (`git-prompt.zsh`, `autolock.kdl`,
+- **kebab-case** for every multi-word filename we author (`git-prompt.zsh`, `dev-split.kdl`,
   `which-key.lua`). Single-word files stay single-word (`env.zsh`, `config`).
 - **Match the tool's expected name where it's fixed** — Ghostty's `config`, Zellij's `config.kdl`,
   Neovim's `init.lua`, Starship's `starship.toml` are named by the tool, not by us; don't rename

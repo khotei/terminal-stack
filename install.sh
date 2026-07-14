@@ -105,27 +105,28 @@ install_fonts() {
   return 0
 }
 
-# Fetch the zellij-autolock plugin wasm (best-effort) so autolock works out of
-# the box. ~/.config/zellij is a symlink to the repo's zellij/, so this lands in
-# zellij/plugins/ (git-ignored). If it fails (offline), autolock just stays
-# inert — the keybinds remain harmless. Skipped on --dry-run.
-install_autolock() {
-  local dir="$CONFIG/zellij/plugins" f="$CONFIG/zellij/plugins/zellij-autolock.wasm"
-  [ -f "$f" ] && { note "ok: zellij-autolock.wasm already present"; return 0; }
-  if $DRY_RUN; then note "would fetch: zellij-autolock.wasm → ~/.config/zellij/plugins/"; return 0; fi
+# Fetch the zellij-choose-tree plugin wasm (best-effort) — it backs Ctrl+o f
+# (fuzzy-jump to any tab/pane). ~/.config/zellij is a symlink to the repo's
+# zellij/, so this lands in zellij/plugins/ (git-ignored, like every plugin wasm).
+# If it fails (offline), Ctrl+o f is a no-op until you re-run install; every other
+# key is unaffected. Skipped on --dry-run.
+install_zellij_plugins() {
+  local dir="$CONFIG/zellij/plugins" f="$CONFIG/zellij/plugins/zellij-choose-tree.wasm"
+  [ -f "$f" ] && { note "ok: zellij-choose-tree.wasm already present"; return 0; }
+  if $DRY_RUN; then note "would fetch: zellij-choose-tree.wasm → ~/.config/zellij/plugins/"; return 0; fi
   mkdir -p "$dir"
   if command -v curl >/dev/null 2>&1 && curl -fsSL -o "$f" \
-      https://github.com/fresh2dev/zellij-autolock/releases/latest/download/zellij-autolock.wasm; then
-    note "fetched: zellij-autolock.wasm (autolock enabled)"
+      https://github.com/laperlej/zellij-choose-tree/releases/latest/download/zellij-choose-tree.wasm; then
+    note "fetched: zellij-choose-tree.wasm (Ctrl+o f enabled)"
   else
-    note "skipped: zellij-autolock.wasm fetch failed (autolock stays inert; harmless)"
+    note "skipped: zellij-choose-tree.wasm fetch failed (Ctrl+o f is a no-op until re-run; harmless)"
   fi
 }
 
 # Register the user-scope MCP servers (Notion, Context7) via claude/mcp-setup.sh.
-# Best-effort like install_autolock: needs the claude CLI + network, so a missing
-# CLI or an offline machine just skips — the install never fails on it. Skipped on
-# --dry-run. The script is idempotent (a server already present is left as-is).
+# Best-effort: needs the claude CLI + network, so a missing CLI or an offline
+# machine just skips — the install never fails on it. Skipped on --dry-run. The
+# script is idempotent (a server already present is left as-is).
 install_claude_mcp() {
   echo "• Claude Code — MCP servers"
   if $DRY_RUN; then note "would run: claude/mcp-setup.sh (register Notion + Context7, user scope)"; return 0; fi
@@ -137,7 +138,7 @@ echo "terminal-stack → installing from $REPO"
 $DRY_RUN && echo "(dry run — no changes)"
 
 echo "• Ghostty";    link "$REPO/ghostty/config"     "$CONFIG/ghostty/config"
-echo "• Zellij";     link "$REPO/zellij"             "$CONFIG/zellij"; install_autolock
+echo "• Zellij";     link "$REPO/zellij"             "$CONFIG/zellij"; install_zellij_plugins
 echo "• Neovim";     link "$REPO/nvim"               "$CONFIG/nvim"
 echo "• Shell";      link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
                      link "$REPO/zsh/starship.toml"  "$CONFIG/starship.toml"

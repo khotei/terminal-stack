@@ -25,8 +25,8 @@ require("lazy").setup({
     lazy = false,
     version = false, -- always use the latest git commit
   },
-  -- Catppuccin Mocha is the stack's shared palette (see lua/plugins/colorscheme.lua)
-  install = { colorscheme = { "catppuccin", "habamax" } },
+  -- The stack's shared palette is named in lua/plugins/colorscheme.lua
+  install = { colorscheme = { "gruvbox-material", "habamax" } },
   checker = {
     enabled = true, -- check for plugin updates periodically
     notify = false,

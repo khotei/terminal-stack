@@ -41,4 +41,14 @@ setopt INC_APPEND_HISTORY SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE
 
 # Navigation + completion (compdump → cache, not $HOME).
 setopt AUTO_CD              # `foo/` ≡ `cd foo/`
+# Two completion dirs must reach fpath BEFORE compinit, else Tab falls back to
+# filename completion. (1) Homebrew ships tool completions (_zellij, _rg, _gh, …)
+# in share/zsh/site-functions but does NOT put that dir on fpath. (2) Some tools
+# ship no file yet can emit one (lazygit) — cache it once under XDG_DATA; after
+# upgrading such a tool, `rm` its cached file to refresh. docs.brew.sh/Shell-Completion
+_brew="$([ -d /opt/homebrew ] && echo /opt/homebrew || echo /usr/local)"
+_zcomp="$XDG_DATA_HOME/zsh/completions"; mkdir -p "$_zcomp"
+command -v lazygit >/dev/null && [ ! -s "$_zcomp/_lazygit" ] && lazygit completion zsh >|"$_zcomp/_lazygit" 2>/dev/null
+fpath=("$_zcomp" "$_brew/share/zsh/site-functions" $fpath)
+unset _brew _zcomp
 autoload -Uz compinit && compinit -d "$XDG_CACHE_HOME/zcompdump"

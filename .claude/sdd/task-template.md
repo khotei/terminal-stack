@@ -4,8 +4,8 @@
 
 The body `/sdd:tasks` writes into each Tasks-DB row. It is what Claude Code sees when it picks up
 the task in a fresh `/sdd:implement` session — self-contained but tight. The Notion `Title`
-property is imperative, single-outcome, prefixed with the task number (e.g. *T07 — Add the
-`zellij-autolock` plugin to the default Zellij layout*).
+property is imperative, single-outcome, prefixed with the task number (e.g. *T07 — Bind `Alt+d` to
+toggle Zellij's Locked mode in `config.kdl`*).
 
 ```markdown
 > **Feature:** <mention parent Feature page>

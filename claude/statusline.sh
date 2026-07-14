@@ -29,8 +29,9 @@ if git -C "$dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   [ -n "$(git -C "$dir" status --porcelain 2>/dev/null)" ] && branch="${branch}*"
 fi
 
-# Catppuccin Mocha-ish 256-colour accents (blue/mauve/peach/green).
-b=$'\033[38;5;117m'; m=$'\033[38;5;183m'; p=$'\033[38;5;215m'; g=$'\033[38;5;150m'
+# Accents from the terminal's 16 ANSI slots (no hardcoded palette) so the line
+# tracks Ghostty's live theme, the same way the Starship prompt does.
+b=$'\033[34m'; m=$'\033[35m'; p=$'\033[36m'; g=$'\033[32m'
 dim=$'\033[2m'; r=$'\033[0m'
 
 line="${p}${model}${r} ${b} ${dirname}${r}"
