@@ -4,12 +4,12 @@
 // Validate: `zellij --config zellij/config.kdl setup --check` (run by /check + CI)
 
 // ── options ───────────────────────────────────────────────────────────
-theme "catppuccin-mocha"        // fallback if the terminal reports no appearance
+theme "gruvbox-material-dark"   // fallback if the terminal reports no appearance
 // Auto-switch with the OS: Ghostty follows macOS appearance and reports it via
 // CSI 2031 / DSR 997; Zellij picks theme_dark/theme_light accordingly. Both
 // palettes are defined in the themes block below (self-contained).
-theme_dark "catppuccin-mocha"
-theme_light "catppuccin-latte"
+theme_dark "gruvbox-material-dark"
+theme_light "gruvbox-material-light"
 default_layout "compact"        // built-in compact-bar — theme-aware, shows mode + keys + tabs
 pane_frames true                // on so the rounded corners below can draw; frame = 1-cell content breathing room
 copy_on_select true             // select = copy, tmux-like
@@ -23,79 +23,74 @@ ui {
     }
 }
 
-// Keybinds live in the block below the autolock plugin — native modal Zellij
-// (no prefix); nested-app passthrough is autolock's job.
-
-// ── zellij-autolock (ON by default) ───────────────────────────────────
-// Auto-locks Zellij when nvim/vim/git/fzf/zoxide/atuin/claude is focused, so the
-// editor and Claude Code get every keystroke without manual locking. Needs the
-// plugin wasm at ~/.config/zellij/plugins/zellij-autolock.wasm — `install.sh`
-// fetches it. If the wasm is absent the keybinds below stay harmless (Enter
-// still types; the MessagePlugin is a no-op), so the config is safe regardless.
-// Source: github.com/fresh2dev/zellij-autolock
-plugins {
-    autolock location="file:~/.config/zellij/plugins/zellij-autolock.wasm" {
-        is_enabled true
-        triggers "nvim|vim|git|fzf|zoxide|atuin|claude"
-        reaction_seconds "0.3"
-        print_to_log false
-    }
-}
-load_plugins {
-    autolock
-}
-// ── keybinds: native modal, tuned for nested apps ─────────────────────
+// ── keybinds: native modal, manual lock ───────────────────────────────
 // Native modal Zellij (Ctrl+p pane · Ctrl+t tab · Ctrl+n resize · Ctrl+s
-// scroll · Ctrl+o session · …). No tmux prefix — passthrough to nvim/claude
-// is autolock's job. Two deliberate rebinds keep a locked pane cooperative:
-//   · unbind Ctrl+g — in Locked mode it is Zellij's unlock and would shadow
-//     Claude Code's Ctrl+g (edit prompt in $EDITOR). Freed → the app gets it.
-//   · Alt+z is the master switch — from a locked pane it DISABLES autolock and
-//     drops to Normal (sticky: no re-lock), so every Zellij mode is reachable
-//     without leaving Claude/nvim. Press again to re-arm. Locked mode honours
-//     only this one key, so it is always your way back out.
+// scroll · Ctrl+o session · …), no tmux prefix. Nested apps do NOT auto-lock —
+// you hold the lock yourself, by choice (no zellij-autolock plugin):
+//   · Alt+d toggles Locked ⇄ Normal — the single manual switch. In Locked,
+//     Zellij hands the pane every key, so nvim's Ctrl+n/p and Claude Code's
+//     Ctrl+o/t/r reach the app instead of a Zellij mode; Alt+d again takes the
+//     multiplexer back. Home-row + Option, one left hand. GOTCHA: enter nvim /
+//     claude and their Ctrl-keys are eaten until you Alt+d — no auto-locking.
+//   · unbind Ctrl+g — Locked mode's default unlock; freed so Claude Code's own
+//     Ctrl+g (edit prompt in $EDITOR) reaches it. Leave Locked with Alt+d.
+// Locked mode honours only Alt+d, so a way back out is always bound.
 keybinds {
     shared_except "locked" {
         unbind "Ctrl g"
-        bind "Alt z" { MessagePlugin "autolock" {payload "enable";}; }
+        bind "Alt d" { SwitchToMode "Locked"; }
     }
     locked {
         unbind "Ctrl g"
-        bind "Alt z" { MessagePlugin "autolock" {payload "disable";}; SwitchToMode "Normal"; }
+        bind "Alt d" { SwitchToMode "Normal"; }
     }
-    normal {
-        // Re-check the focused command on each Enter so autolock locks promptly
-        // right after you launch nvim/claude in a pane.
-        bind "Enter" { WriteChars "\u{000D}"; MessagePlugin "autolock" {}; }
+    // choose-tree (Ctrl+o f) — tmux `choose-tree` analog: a fuzzy tree of
+    // sessions→tabs→panes where 1-9/A-Z jump straight to one. Picked over the
+    // built-in session-manager (Ctrl+o w), which can't drill to pane level. The wasm
+    // is fetched into plugins/ by install.sh (git-ignored, best-effort — Ctrl+o f is a
+    // no-op if absent). floating+move_to_focused_tab mirror the session-manager bind.
+    // https://github.com/laperlej/zellij-choose-tree
+    session {
+        bind "f" {
+            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/zellij-choose-tree.wasm" {
+                floating true
+                move_to_focused_tab true
+            }
+            SwitchToMode "Normal"
+        }
     }
 }
 
-// ── themes: Catppuccin Mocha + Latte (official palettes — catppuccin/zellij) ──
+// ── themes: dark + light (names below) ────────────────────────────────
+// ANSI colours lifted verbatim from Ghostty's active bundled theme, so the
+// terminal and the multiplexer render one identical palette. bg is a *lifted*
+// background tone (not the darkest) so pane frames stay visible against the base
+// — that legibility, not any one palette, is why these are hand-mapped here.
 themes {
-    catppuccin-mocha {
-        bg "#585b70"      // Surface2
-        fg "#cdd6f4"      // Text
-        red "#f38ba8"
-        green "#a6e3a1"
-        blue "#89b4fa"
-        yellow "#f9e2af"
-        magenta "#f5c2e7"  // Pink
-        orange "#fab387"   // Peach
-        cyan "#89dceb"     // Sky
-        black "#181825"    // Mantle
-        white "#cdd6f4"    // Text
+    gruvbox-material-dark {
+        bg "#504945"      // bg4 — lifted so pane frames read against bg0
+        fg "#d4be98"      // fg0
+        red "#ea6962"
+        green "#a9b665"
+        blue "#7daea3"
+        yellow "#d8a657"
+        magenta "#d3869b"
+        orange "#e78a4e"
+        cyan "#89b482"    // aqua
+        black "#282828"   // bg0
+        white "#d4be98"   // fg0
     }
-    catppuccin-latte {
-        bg "#acb0be"      // Surface2
-        fg "#4c4f69"      // Text
-        red "#d20f39"
-        green "#40a02b"
-        blue "#1e66f5"
-        yellow "#df8e1d"
-        magenta "#ea76cb"  // Pink
-        orange "#fe640b"   // Peach
-        cyan "#04a5e5"     // Sky
-        black "#e6e9ef"    // Mantle
-        white "#4c4f69"    // Text
+    gruvbox-material-light {
+        bg "#d5c4a1"      // bg2 — lifted so frames read against the light base
+        fg "#654735"      // fg0
+        red "#c14a4a"
+        green "#6c782e"
+        blue "#45707a"
+        yellow "#b47109"
+        magenta "#945e80"
+        orange "#c35e0a"
+        cyan "#4c7a5d"    // aqua
+        black "#fbf1c7"   // bg0 (lightest)
+        white "#654735"   // fg0
     }
 }

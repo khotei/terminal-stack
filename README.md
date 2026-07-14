@@ -75,7 +75,7 @@ re-running just skips anything already there:
       ①  Xcode CLT     git · compiler · make             (prep · skipped if present)
       ②  Homebrew      the package manager               (prep · skipped if present)
       ③  brew bundle   the toolchain:  Ghostty · Zellij · Neovim · Starship · CLIs · fonts
-      ④  install.sh    symlink configs → ~/.config · copy fonts · fetch autolock plugin
+      ④  install.sh    symlink configs → ~/.config · copy fonts
       │
       ▼
    stack installed
@@ -139,7 +139,7 @@ GUI app — see [`docs/sandbox.md`](docs/sandbox.md).
 ```
 terminal-stack/
 ├── ghostty/        # Ghostty config — key = value          — see ghostty/README.md
-├── zellij/         # Zellij KDL config, layouts, autolock   — see zellij/README.md
+├── zellij/         # Zellij KDL config + layouts            — see zellij/README.md
 ├── nvim/           # Neovim + LazyVim starter (Lua)         — see nvim/README.md
 ├── zsh/            # .zshrc, Starship, shell integrations    — see zsh/README.md
 ├── claude/         # Claude Code status line + cc-worktree   — see claude/README.md
@@ -176,7 +176,8 @@ Claude Code is a TUI, so it lives **in a multiplexer pane** — not an IDE sideb
 - **The panes start as shells** — type `nvim` (left) and `claude` (right) to fill them, or uncomment
   the `dev` layout's `command` lines to auto-launch them.
 - **Switch editor ↔ agent** with vim-style pane nav (`Ctrl-hjkl`).
-- **`zellij-autolock`** (on by default) keeps Zellij keys from colliding with Neovim / Claude Code.
+- **`Alt+d` toggles Locked mode** — hand the focused pane every key so Neovim / Claude Code
+  `Ctrl`-shortcuts reach the app; `Alt+d` again returns the multiplexer.
 - **One session per project / task**; git **worktrees** for parallel agents.
 
 ## ✦ How this repo is built
@@ -205,14 +206,13 @@ That's why every PR here is a guide: it's a requirement of the process, not an a
 Each item is one SDD Feature → one (or a few) reference-guide PR(s).
 
 - [x] **Meta** — repo scaffold, README, `.claude/` toolkit · Docker sandbox + CI · `Brewfile` + `install.sh`
-- [x] **Terminal** — Ghostty config (font, Catppuccin auto light/dark, `macos-option-as-alt`, ctrl-keys left free)
-- [x] **Multiplexer** — Zellij config + `dev` layout + native modal keys, autolock on by default
-- [x] **Editor** — Neovim + LazyVim starter, Catppuccin, pinned `lazy-lock.json`
-- [x] **Shell** — zsh + Starship (Catppuccin) + zoxide/atuin/fzf
+- [x] **Terminal** — Ghostty config (font, auto light/dark theme, `macos-option-as-alt`, ctrl-keys left free)
+- [x] **Multiplexer** — Zellij config + `dev` layout + native modal keys, manual `Alt+d` lock
+- [x] **Editor** — Neovim + LazyVim starter, shared auto light/dark palette, pinned `lazy-lock.json`
+- [x] **Shell** — zsh + Starship (follows the terminal's live palette) + zoxide/atuin/fzf
 - [x] **Agent** — Claude Code statusline + worktree helper + pane workflow
 
-> **v1 complete.** Next (v1.1): `zellij-autolock` wired by default, deeper LSP/DAP, an IdeaVim
-> keymap port, atuin sync, screenshots.
+> **v1 complete.** Next (v1.1): deeper LSP/DAP, an IdeaVim keymap port, atuin sync, screenshots.
 
 ## ✦ Credits & references
 

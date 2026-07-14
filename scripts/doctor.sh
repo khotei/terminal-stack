@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # scripts/doctor.sh — "is my terminal-stack setup healthy?"
 # Checks three things on THIS machine: the tools are installed, the configs are
-# symlinked into place, and the bundled assets (fonts, autolock plugin) are present.
+# symlinked into place, and the bundled assets (fonts) are present.
 # It does NOT change anything — read-only. Run:  make doctor
 #
 # Legend:  ✓ good   ✗ a problem (with the fix)   ↷ optional / not installed
@@ -72,7 +72,7 @@ linkcheck "cc-worktree"    "$HOME/.local/bin/cc-worktree"
 section "Bundled assets"
 fontdir="$HOME/Library/Fonts"; [ "$(uname -s)" = Darwin ] || fontdir="${XDG_DATA_HOME:-$HOME/.local/share}/fonts"
 if [ -e "$fontdir/DankMono-Regular.otf" ]; then ok "Dank Mono font installed"; else soft "Dank Mono font" "run ./install.sh; or use JetBrainsMono Nerd Font"; fi
-if [ -e "$CONFIG/zellij/plugins/zellij-autolock.wasm" ]; then ok "zellij-autolock plugin"; else soft "zellij-autolock plugin" "fetched by ./install.sh; autolock stays inert without it"; fi
+if [ -e "$CONFIG/zellij/plugins/zellij-choose-tree.wasm" ]; then ok "zellij-choose-tree plugin"; else soft "zellij-choose-tree plugin" "fetched by ./install.sh; Ctrl+o f is a no-op without it"; fi
 case ":$PATH:" in
   *":$HOME/.local/bin:"*) ok "~/.local/bin on \$PATH" ;;
   *) bad "PATH" "~/.local/bin not on \$PATH — cc-worktree won't be found; add it in zsh/env.zsh" ;;

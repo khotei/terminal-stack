@@ -20,7 +20,7 @@ rationale. Nothing to hunt across other files or upstream manuals.
 3. [Complete reference — aliases + shell keys](#3-complete-reference--aliases--shell-keys)
 4. [Recipes — "I want to… → do this"](#4-recipes--i-want-to--do-this)
 5. [Companion CLIs — a card each](#5-companion-clis--a-card-each)
-   · [fzf](#51-fzf--fuzzy-everything) · [fzf-tab](#52-fzf-tab--tab-becomes-a-fuzzy-menu) · [zoxide](#53-zoxide--jump-by-frecency) · [atuin](#54-atuin--history-as-a-database) · [zsh-vi-mode](#55-zsh-vi-mode--vim-on-the-command-line) · [autosuggestions](#56-zsh-autosuggestions--grey-ghost-text) · [syntax-highlighting](#57-zsh-syntax-highlighting--live-colour) · [eza](#58-eza--a-better-ls) · [bat](#59-bat--a-better-cat--pager) · [ripgrep](#510-ripgrep-rg--a-better-grep) · [fd](#511-fd--a-better-find) · [lazygit](#512-lazygit--git-as-a-tui) · [yazi](#513-yazi--a-tui-file-manager) · [fnm](#514-fnm--node-version-manager)
+   · [fzf](#51-fzf--fuzzy-everything) · [fzf-tab](#52-fzf-tab--tab-becomes-a-fuzzy-menu) · [zoxide](#53-zoxide--jump-by-frecency) · [atuin](#54-atuin--history-as-a-database) · [zsh-vi-mode](#55-zsh-vi-mode--vim-on-the-command-line) · [autosuggestions](#56-zsh-autosuggestions--grey-ghost-text) · [syntax-highlighting](#57-zsh-syntax-highlighting--live-colour) · [eza](#58-eza--a-better-ls) · [bat](#59-bat--a-better-cat--pager) · [ripgrep](#510-ripgrep-rg--a-better-grep) · [fd](#511-fd--a-better-find) · [lazygit](#512-lazygit--git-as-a-tui) · [yazi](#513-yazi--a-tui-file-manager) · [fnm](#514-fnm--node-version-manager) · [gh](#515-gh--github-from-the-terminal)
 6. [Anti-patterns](#6-anti-patterns)
 7. [The prompt (Starship)](#7-the-prompt-starship)
 8. [Keeping `$HOME` tidy — XDG](#8-keeping-home-tidy--xdg-base-directories)
@@ -180,9 +180,19 @@ adds keybindings. Docs: <https://github.com/junegunn/fzf>.
 
 **Shell keys:** `Ctrl-T` paste a picked path · `Alt-C` fuzzy-`cd` · (`Ctrl-R` is
 [atuin's](#54-atuin--history-as-a-database) here, not fzf's).
-**Inside the finder:** type to filter · `Ctrl-J`/`Ctrl-K` (or `Ctrl-N`/`Ctrl-P`) down/up · `Enter`
-accept · `Tab` toggle-select + advance (multi-select) · `Shift-Tab` toggle + back · `Shift-↑`/`Shift-↓`
-scroll a preview · `Esc`/`Ctrl-C`/`Ctrl-G` abort.
+
+**Inside the finder:**
+
+| Key | Action |
+|---|---|
+| type | filter the list |
+| `Ctrl-J` / `Ctrl-K` (or `Ctrl-N` / `Ctrl-P`) | move down / up |
+| `Enter` | accept |
+| `Tab` | toggle-select + advance (multi-select) |
+| `Shift-Tab` | toggle-select + back |
+| `Shift-↑` / `Shift-↓` | scroll a preview |
+| `Esc` / `Ctrl-C` / `Ctrl-G` | abort |
+
 **Fuzzy completion:** `COMMAND [dir/]pattern**⟨Tab⟩` — e.g. `cd **⟨Tab⟩`, `unset **⟨Tab⟩`.
 
 > **Recipe — pick a file into an editor:** `nvim **⟨Tab⟩`, filter, `Enter`. Or `Ctrl-T` to inject the
@@ -213,8 +223,14 @@ scroll a preview · `Esc`/`Ctrl-C`/`Ctrl-G` abort.
 Replaces zsh's completion *selection menu* with an fzf picker — it hooks native completion, doesn't
 replace it. Loaded in [`plugins.zsh`](./plugins.zsh). Docs: <https://github.com/Aloxaf/fzf-tab>.
 
-**Keys (inside the menu):** `Tab` accept · `Ctrl-Space` toggle multi-select · `F1`/`F2` switch
-completion groups · `/` continuous completion (drill into a path segment by segment).
+**Keys (inside the menu):**
+
+| Key | Action |
+|---|---|
+| `Tab` | accept |
+| `Ctrl-Space` | toggle multi-select |
+| `F1` / `F2` | switch completion groups |
+| `/` | continuous completion — drill into a path segment by segment |
 
 > **Recipe:** `cd ⟨Tab⟩` now fuzzy-filters directories in an fzf list instead of cycling; type a few
 > letters to narrow, `Enter` to accept.
@@ -228,8 +244,15 @@ completion groups · `/` continuous completion (drill into a path segment by seg
 A smarter `cd` that ranks visited directories by **frecency** = frequency + recency. Initialised in
 [`tools.zsh`](./tools.zsh) (`eval "$(zoxide init zsh)"`). Docs: <https://github.com/ajeetdsouza/zoxide>.
 
-**Commands:** `z foo` jump to the top match · `z foo bar` match multiple keywords in order · `z -`
-previous directory · `zi foo` pick interactively via fzf · plain paths (`z ..`, `z ~/x`) act like `cd`.
+**Commands:**
+
+| Command | Action |
+|---|---|
+| `z foo` | jump to the top match |
+| `z foo bar` | match multiple keywords in order |
+| `z -` | previous directory |
+| `zi foo` | pick interactively via fzf |
+| `z ..` · `z ~/x` | plain paths act like `cd` |
 
 > **Recipe:** visit `~/lab/terminal-stack` a couple of times, then from anywhere `z termi` teleports
 > there. The database self-ages, so stale dirs fade.
@@ -254,9 +277,19 @@ Replaces flat `~/.zsh_history` with a searchable (optionally syncable) SQLite hi
 search UI. Initialised in [`tools.zsh`](./tools.zsh). Docs: <https://docs.atuin.sh>.
 
 **It takes over `Ctrl-R` *and* `↑` by default.**
-**Search UI keys:** type to filter · `↑`/`↓` (or `Ctrl-P`/`Ctrl-N`) navigate · `Enter` **run
-immediately** · `Tab` put on the prompt to **edit first** · `Ctrl-R` cycle filter mode
-(global/session/directory) · `Ctrl-S` cycle search mode · `Esc`/`Ctrl-C`/`Ctrl-G` cancel.
+
+**Search UI keys:**
+
+| Key | Action |
+|---|---|
+| type | filter |
+| `↑` / `↓` (or `Ctrl-P` / `Ctrl-N`) | navigate |
+| `Enter` | **run immediately** |
+| `Tab` | put on the prompt to **edit first** |
+| `Ctrl-R` | cycle filter mode (global / session / directory) |
+| `Ctrl-S` | cycle search mode |
+| `Esc` / `Ctrl-C` / `Ctrl-G` | cancel |
+
 **CLI:** `atuin search <query>` (with `--after "yesterday 3pm"`, `--exit 0`, …).
 
 > **Recipe:** `Ctrl-R`, type `port 8080`, `Ctrl-R` again to narrow to *this directory's* history,
@@ -285,10 +318,18 @@ immediately** · `Tab` put on the prompt to **edit first** · `Ctrl-R` cycle fil
 Modal editing on the prompt — the same motions as Neovim. Loaded in [`vi-mode.zsh`](./vi-mode.zsh).
 Docs: <https://github.com/jeffreytse/zsh-vi-mode>.
 
-**Keys:** `Esc` (or `Ctrl-[`) → **normal** mode; `i`/`a`/`I`/`A` back to insert; `v` visual. Motions +
-text objects work (`ci"`, `daw`, `0`/`$`/`w`/`b`). **Surround:** `ys"` add, `cs"'` change `"`→`'`,
-`ds"` delete. A **cursor-shape** change marks the mode (beam = insert, block = normal); the prompt's
-`❮` glyph also flips (see [§7](#7-the-prompt-starship)).
+**Keys:**
+
+| Key | Action |
+|---|---|
+| `Esc` (or `Ctrl-[`) | enter **normal** mode |
+| `i` · `a` · `I` · `A` | back to insert |
+| `v` | visual mode |
+| `ci"` · `daw` · `0`/`$`/`w`/`b` | motions + text objects |
+| `ys"` · `cs"'` · `ds"` | **surround:** add · change `"`→`'` · delete |
+
+A **cursor-shape** change marks the mode (beam = insert, block = normal); the prompt's `❮` glyph also
+flips (see [§7](#7-the-prompt-starship)).
 
 > **Recipe:** typed a long command with a wrong flag? `Esc`, `b` to the word, `cw` to change it, keep
 > going — no re-typing.
@@ -457,8 +498,16 @@ Aliased `lg` when installed ([`aliases.zsh`](./aliases.zsh)). Every key below is
 | `e` | mark for edit (rebase) | `A` | amend with staged |
 | `C` / `V` | copy / paste (cherry-pick) | `t` · `T` | revert · tag |
 
-**Branches panel:** `Space` checkout · `n` new · `d` delete · `r` rebase onto · `M` merge into current ·
-`R` rename · `f` fast-forward. **Stash:** `Space` apply · `g` pop · `d` drop.
+**Branches panel:**
+
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `Space` | checkout | `M` | merge into current |
+| `n` | new | `R` | rename |
+| `d` | delete | `f` | fast-forward |
+| `r` | rebase onto |  |  |
+
+**Stash:** `Space` apply · `g` pop · `d` drop.
 
 **CLI flags — launching it:**
 
@@ -501,9 +550,15 @@ A fast, vim-keyed file manager with live previews. Aliased `y` when installed. K
 | `Ctrl-a` / `Ctrl-r` | select all / invert | `d` / `D` | trash / delete forever |
 | `Esc` | cancel selection | `a` · `r` | create · rename |
 
-**Find · jump · open · quit:** `/` `?` find next/prev · `f` filter · `s` search names (fd) · `S` search
-content (rg) · `z` / `Z` jump via **fzf** / **zoxide** · `Enter`/`o` open · `O` open-with · `;` shell ·
-`q` quit · `Q` quit **without** cd-on-exit.
+**Find, jump, open, quit:**
+
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `/` · `?` | find next / prev | `z` · `Z` | jump via **fzf** · **zoxide** |
+| `f` | filter | `Enter` · `o` | open |
+| `s` | search names (`fd`) | `O` | open-with |
+| `S` | search content (`rg`) | `;` | shell |
+|  |  | `q` · `Q` | quit · quit **without** cd-on-exit |
 
 **CLI flags — launching it:**
 
@@ -544,6 +599,49 @@ here because Neovim's LSP tooling launched from this shell needs a runtime. Docs
 | What's active now | `fnm current` | Print the version in use |
 | Pin a project | write `.node-version` | Then `--use-on-cd` switches to it automatically on entry |
 
+### 5.15 gh — GitHub from the terminal
+
+The GitHub CLI — PRs, reviews, CI, and the raw API without leaving the shell. **Not wired into zsh**
+(no alias/init — a standalone tool), but core to the review loop
+([reviewing-changes.md](../docs/reviewing-changes.md)) and the SDD flow; it's in the Brewfile. Needs
+`gh auth login` once. Docs: <https://cli.github.com/manual/>.
+
+**Review a PR (the LSP-first path):**
+
+| Task / goal | Command | What it does |
+|---|---|---|
+| Pull a PR local to review | `gh pr checkout <N>` | Check out its branch — real files, full LSP (`-f` re-syncs after a push) |
+| Read a PR diff in the terminal | `gh pr diff <N>` | The diff (`--patch`, `--name-only` for scope; pipe `\| delta` for colour) |
+| See a PR's description + state | `gh pr view <N>` | Body, checks, comments (`--web` opens the browser) |
+| CI status of a PR | `gh pr checks <N>` | Per-check pass/fail (`--watch` to follow) |
+| Leave a review verdict | `gh pr review <N> --approve` | or `--request-changes -b "…"` / `--comment -b "…"` |
+
+**Day-to-day PRs & CI:**
+
+| Task / goal | Command | What it does |
+|---|---|---|
+| Your PRs at a glance | `gh pr status` | Created by you · review-requested · current-branch |
+| Open a PR | `gh pr create` | `--fill` from commits · `--web` · `--draft` |
+| List / merge | `gh pr list` · `gh pr merge <N>` | Filter (`--search`, `--label`); merge (`--squash`, `--auto`) |
+| Watch a CI run | `gh run watch` | Live-follow the latest run (`gh run view --log-failed` for a failure) |
+| Issues | `gh issue list` · `create` · `view` | Same verbs, for issues |
+
+**The power tools:**
+
+| Task / goal | Command | What it does |
+|---|---|---|
+| Open the thing in a browser | `gh browse` | Current repo / file / line on GitHub |
+| Raw GitHub API + jq | `gh api <endpoint> --jq '…'` | Any REST/GraphQL call — scripts, or a command gh lacks |
+| Search across GitHub | `gh search prs/issues/code` | Query without the web UI |
+| Extend it | `gh extension install <repo>` | e.g. `dlvhdr/gh-dash` — a PR/issue dashboard TUI |
+
+> **Review recipe (all terminal, no browser):** `gh pr checkout <N>` → in nvim `<leader>gm`
+> (diffview vs main, LSP live) → read → `gh pr review <N> --approve` (or `--request-changes`). See
+> [reviewing-changes.md](../docs/reviewing-changes.md).
+
+> ⚠️ `gh pr checks --watch` and `gh run watch` are the "is CI green yet?" pollers — the thing to run
+> before a merge instead of refreshing the browser.
+
 ---
 
 ## 6. Anti-patterns
@@ -564,8 +662,8 @@ here because Neovim's LSP tooling launched from this shell needs a runtime. Docs
 ## 7. The prompt (Starship)
 
 [`starship.toml`](./starship.toml) styles the prompt with the terminal's **16 ANSI colors** (no
-hardcoded palette), so it **follows Ghostty's live theme repaint** — Catppuccin Latte in light, Mocha
-in dark — with zero switching logic, the same way the rest of the stack tracks the macOS appearance.
+hardcoded palette), so it **follows Ghostty's live theme repaint** — whatever palette the terminal is on,
+light or dark — with zero switching logic, the same way the rest of the stack tracks the macOS appearance.
 Docs: <https://starship.rs/config>.
 
 A compact **two-line** format: `directory · git branch · git status · command-duration`, then the `❯`
@@ -613,14 +711,17 @@ from `$HOME`), `~/.gitconfig` (your identity — [git/](../git/README.md)), `~/.
 
 ## 9. Living inside a Zellij pane
 
-This shell runs inside a [Zellij](../zellij/README.md) pane, and the two layers cooperate through one
-mechanism: **`zellij-autolock`**. The moment a pane runs `fzf`/`zoxide`/`atuin` (among others), Zellij
-drops to **Locked** mode and hands the app *every* keystroke — so atuin's `Ctrl-R`, fzf's `Ctrl-T`, and
-the finder's `Ctrl-J`/`Ctrl-K` reach the tool instead of triggering a Zellij binding. You don't
-lock/unlock by hand.
+This shell runs inside a [Zellij](../zellij/README.md) pane, and the two layers cooperate through **one
+manual switch: `Alt+d`**. By default Zellij is in Normal mode and owns its hotkeys — so a full-screen
+app's own Ctrl-keys (atuin's `Ctrl-R`, fzf's `Ctrl-T`/`Ctrl-J`/`Ctrl-K`) can be intercepted by the
+multiplexer before they reach the tool. Press **`Alt+d`** to drop the pane to **Locked** mode: Zellij
+then hands the app *every* keystroke, and those keys land where you mean them. `Alt+d` again returns to
+Normal.
 
-The flip side: while a pane is locked, Zellij hotkeys don't fire. If a multiplexer key "doesn't work,"
-the pane is locked — press **`Alt+z`** to release it (see the [Zellij README §8](../zellij/README.md#8-living-with-claude-code--neovim--autolock)).
+The trade-off is honest — **you lock by hand.** There's no autolock; nothing detects that you launched
+`fzf`/`atuin` and locks for you. If atuin's `Ctrl-R` or fzf's `Ctrl-T` "doesn't work," the pane is in
+Normal mode and Zellij ate the key — press `Alt+d` to lock, then use the tool (see the
+[Zellij README §8](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock)).
 
 ---
 
@@ -672,6 +773,7 @@ brew install starship zoxide atuin fzf fd ripgrep eza bat lazygit yazi \
 
 ### Go deeper (on demand — not front to back)
 
+- **Piping these CLIs together** (into fzf, Neovim, Claude) → [docs/composing-tools.md](../docs/composing-tools.md)
 - Starship modules & format → <https://starship.rs/config>
 - fzf advanced binds / `FZF_DEFAULT_OPTS` → <https://github.com/junegunn/fzf#advanced-topics>
 - atuin config & self-hosted sync → <https://docs.atuin.sh/configuration/config/>

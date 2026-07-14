@@ -18,10 +18,10 @@ fast recipes, and the config rationale. Nothing to hunt across other files.
 2. [Quick start: the moves that pay rent](#2-quick-start--the-moves-that-pay-rent)
 3. [Complete keybinding reference](#3-complete-keybinding-reference) — every mode, every key
 4. [Recipes — "I want to… → do this"](#4-recipes--i-want-to--do-this)
-5. [Sessions are workspaces](#5-sessions-are-workspaces) — plus [Zellij from the shell — CLI flags](#zellij-from-the-shell--cli-flags)
+5. [Sessions are workspaces](#5-sessions-are-workspaces) — plus [fuzzy-jump with choose-tree](#fuzzy-jump-anywhere--ctrlo-f-choose-tree) · [Zellij from the shell — CLI flags](#zellij-from-the-shell--cli-flags)
 6. [Advanced pane craft](#6-advanced-pane-craft)
 7. [Anti-patterns](#7-anti-patterns)
-8. [Living with Claude Code / Neovim + autolock](#8-living-with-claude-code--neovim--autolock)
+8. [Living with Claude Code / Neovim — manual lock](#8-living-with-claude-code--neovim--manual-lock)
 9. [The status bar](#9-the-status-bar) · [The `dev` layout](#10-the-dev-layout)
 10. [Settings reference](#11-settings-reference-config-rationale) · [Reload & verify](#12-reload--verify) · [Install](#13-install)
 
@@ -39,16 +39,16 @@ Normal ──[ Ctrl+<mode> ]──▶ <mode> ──[ act with single keys ]─�
 The **status bar always lists the active mode's keys** — it is the live cheatsheet; the tables below
 are the offline copy (Zellij 0.44.x defaults; this config keeps them, so **no prefix**).
 
-**The one reflex that outranks every hotkey.** This config runs
-[`zellij-autolock`](#8-living-with-claude-code--neovim--autolock): the moment a pane runs
-`nvim`/`claude`/`git`/`fzf`/`zoxide`/`atuin`, Zellij drops to **Locked** mode and hands the app *every*
-keystroke (that's why Claude never loses a `Ctrl`). The cost: **while you're "inside" Claude, no Zellij
-hotkey fires.** Exactly one key is honored:
+**The one reflex that outranks every hotkey.** Zellij and the app inside a pane both want the
+keyboard, and they clash on `Ctrl` keys — Zellij's `Ctrl+t`/`Ctrl+o`/`Ctrl+s` against Claude Code's
+`Ctrl+o`/`Ctrl+t`/`Ctrl+r` and nvim's `Ctrl+n`/`Ctrl+p`. This config gives you **one manual switch** to
+decide who wins ([§8](#8-living-with-claude-code--neovim--manual-lock)):
 
-> **`Alt+z`** — the master switch. From a locked pane it *disables* autolock and drops you to Normal
-> (sticky — it won't re-lock). Now the full multiplexer is yours; press `Alt+z` again to re-arm.
+> **`Alt+d`** — toggle **Locked** ⇄ Normal. In Locked, Zellij hands the pane *every* keystroke (the app
+> gets its `Ctrl`s back); press `Alt+d` again to take the multiplexer back. Home-row, one left hand.
 
-So the first reflex to build: **a Zellij key "didn't work"? The pane was locked — `Alt+z` first.**
+So the reflex to build: **entered nvim/Claude and its `Ctrl` keys "don't work"? Zellij is eating them —
+`Alt+d` to lock the pane.** There is **no** auto-locking here; you hold the lock yourself, by choice.
 
 ---
 
@@ -59,7 +59,7 @@ per-mode tables are in [§3](#3-complete-keybinding-reference).)
 
 | Reflex | Keys |
 |---|---|
-| Escape a locked app → full Zellij | `Alt+z` |
+| Lock ⇄ unlock a pane (hand keys to the app, or take Zellij back) | `Alt+d` |
 | Jump **straight** to a tab | `Ctrl+t` then `1`…`9` |
 | Toggle to the last tab (A↔B) | `Ctrl+t` then `Tab` |
 | Glide focus across panes *and* tabs | `Alt+h` / `Alt+l` (rolls into the next tab at the edge) |
@@ -69,6 +69,7 @@ per-mode tables are in [§3](#3-complete-keybinding-reference).)
 | New split | `Alt+n` |
 | Name this tab (so `Ctrl+t N` means something) | `Ctrl+t` then `r` |
 | See / switch / resurrect sessions | `Ctrl+o` then `w` |
+| Fuzzy-jump to any tab / pane (even in another session) | `Ctrl+o` then `f` |
 
 > `Alt+i` / `Alt+o` **move** (reorder) the tab — they don't switch to it. Mnemonic: `h/l` = go,
 > `i/o` = shove.
@@ -89,7 +90,7 @@ Scroll/Search):
 | `Ctrl+s` | **Scroll** | scrollback · search · edit-scrollback in nvim |
 | `Ctrl+o` | **Session** | detach · session / plugin manager · config |
 
-**Pane** (`Ctrl+p`) · move focus with `h/j/k/l` or arrows:
+**Pane** (`Ctrl+p`) — move focus with `h/j/k/l` or arrows:
 
 | Key | Action | Key | Action |
 |---|---|---|---|
@@ -159,11 +160,12 @@ Scroll/Search):
 | `o` | toggle whole-word |
 | `Ctrl+c` | exit to the bottom |
 
-**Session** (`Ctrl+o`) — the session *itself*, not its panes.
+**Session** (`Ctrl+o`) — the session and the tree beneath it.
 
 | Key | Action |
 |---|---|
 | `w` | **session manager** — fuzzy-switch between / resurrect past sessions |
+| `f` | **choose-tree** (plugin) — fuzzy tree of *sessions → tabs → panes*; `1-9`/`A-Z` jump straight to one. The pane-level finder `w` isn't — see [§5](#5-sessions-are-workspaces) |
 | `d` | detach (leave it running; reattach later with `zellij attach`) |
 | `c` | configuration |
 | `p` | plugin manager |
@@ -184,7 +186,7 @@ Normal and act in one stroke:
 | `Alt+[` / `Alt+]` | previous / next swap-layout |
 
 > These `Alt` keys are deliberately swallowed inside a **locked** Claude/nvim pane (that's the point —
-> the app gets them). Use them from a shell pane, or `Alt+z` out of lock first ([§8](#8-living-with-claude-code--neovim--autolock)).
+> the app gets them). Use them from a shell pane, or `Alt+d` out of lock first ([§8](#8-living-with-claude-code--neovim--manual-lock)).
 
 ---
 
@@ -225,10 +227,18 @@ build log, `claude`, a `tail -f`. There are **three tiers**; reach for the light
 | Scroll back and *find* something, keyboard-only | `Ctrl+s` → **Scroll**: `j/k` line · `d/u` half-page · `Ctrl+f`/`Ctrl+b` page. `s` starts a **search** — type, `Enter`, then `n`/`p` walk the hits. `Ctrl+c` snaps to the bottom and exits | Stays in the pane, incremental, no editor spin-up |
 | Yank a stack trace · Vim-select a block · save it out | `Ctrl+s` → `e` — **EditScrollback** dumps the whole buffer into **nvim** (`scrollback_editor`) | The *full* editor: `v`/`V` visual, `/` + `n`, macros, `:w /tmp/err.log` — more than copy-mode ever gave |
 
-> **The locked-pane catch (Claude / nvim).** Those panes are auto-**locked**, so `Ctrl+s` goes *to the
-> app*, not Zellij. Reflex: **`Alt+z` first** (disarm → Normal), *then* `Ctrl+s` `e`; `Alt+z` again to
-> re-arm ([§8](#8-living-with-claude-code--neovim--autolock)). For a one-off grab, skip all that — a
+> **The locked-pane catch (Claude / nvim).** If you've **locked** the pane (`Alt+d`), `Ctrl+s` goes *to
+> the app*, not Zellij. Reflex: **`Alt+d` first** (unlock → Normal), *then* `Ctrl+s` `e`; `Alt+d` again to
+> re-lock ([§8](#8-living-with-claude-code--neovim--manual-lock)). For a one-off grab, skip all that — a
 > **mouse drag** copies without unlocking.
+
+> **The alt-screen catch (Claude in fullscreen rendering).** Claude Code's
+> [fullscreen renderer](https://code.claude.com/docs/en/fullscreen) (`/tui fullscreen`) draws on the
+> *alternate screen*, like nvim — the conversation lives **outside** the pane's scrollback, so `Ctrl+s`
+> Scroll sees only what's on screen, not the history above. Hand it back from *inside Claude*: **`Ctrl+o`**
+> (transcript) then **`[`** dumps the whole conversation into the pane's native scrollback — and now
+> `Ctrl+s` Scroll, its search, the mouse-wheel, and `e`→nvim all reach it again. (The **classic** renderer
+> already keeps the conversation in scrollback, so there Scroll just works — this catch is fullscreen-only.)
 
 **When to pick which — and a few secrets:**
 
@@ -247,10 +257,20 @@ pane running it), `zellij run -f -- htop` (floating), `zellij edit ./src/main.rs
 ([run & edit](https://zellij.dev/documentation/zellij-run-and-edit.html)). Great inside scripts/hooks.
 
 **Make a workspace reproducible.** You already have [`layouts/dev.kdl`](./layouts/dev.kdl) —
-`zellij --layout dev` rebuilds the editor │ agent split every time. To capture a layout you arranged by
-hand: `zellij action dump-layout > zellij/layouts/mine.kdl`
-([dump-layout](https://zellij.dev/documentation/cli-actions)) — **not** the old `zellij layout dump`
-from stale blog posts; Zellij layouts are KDL now.
+`zellij --layout dev` rebuilds the editor │ agent split every time. To keep a layout you arranged **by
+hand**, dump it to a file from *inside* that session: `zellij action dump-layout >
+zellij/layouts/mine.kdl` ([dump-layout](https://zellij.dev/documentation/cli-actions)) — **not** the old
+`zellij layout dump` from stale blog posts; Zellij layouts are KDL now. Then `zellij --layout mine`
+(name = filename, no `.kdl`) rebuilds it into any new session. `dump-layout` captures the **shape** —
+panes, tabs, and the `command` for panes you launched with one — **not** scrollback or a running
+program's state, and it bakes in each pane's absolute `cwd`; trim those for a portable, general-purpose
+layout (compare the deliberately minimal `dev.kdl`). Validate with `zellij setup --check` before commit.
+
+> **A layout outlives every session — once you commit it.** A layout is a *file*, not session state:
+> `kill-all-sessions`, `delete-all-sessions`, clearing the cache — none of it touches the layout. And
+> because `install.sh` symlinks `zellij/` into `~/.config/zellij`, the dump above already landed in the
+> repo working tree. **Commit it** and the layout returns on every machine `install.sh` runs on, whatever
+> you deleted — that, not session metadata, is how a hand-built workspace becomes truly permanent.
 
 ---
 
@@ -271,6 +291,33 @@ terminal tabs.
 
 > *Resurrection* = rebuilding a session from saved layout metadata, not from a live process. The
 > processes are gone; the shape (and the commands to relaunch them) comes back.
+
+### Fuzzy-jump anywhere — `Ctrl+o f` (choose-tree)
+
+The built-in manager (`Ctrl+o w`) stops at the **session** level. To jump *inside* — to a named tab or
+pane, or across sessions in one motion — this stack adds **choose-tree**
+([laperlej/zellij-choose-tree](https://github.com/laperlej/zellij-choose-tree), a clone of tmux's
+`choose-tree`) on **`Ctrl+o f`**. It opens a floating **tree of every session → its tabs → their
+panes**:
+
+| In the finder | Does |
+|---|---|
+| *type* | fuzzy-filter the whole tree by name |
+| `↑`/`↓` (or `k`/`j`) | move the cursor |
+| `→`/`←` (or `l`/`h`) | unfold / fold a session or a tab |
+| `1`–`9`, `A`–`Z` | **jump straight** to that row — the label-jump muscle memory from tmux `display-panes` |
+| `Enter` | switch to the selection — session, tab, **or pane** |
+| `x` | kill the selected session |
+
+Name your tabs (`Ctrl+t` `r`) and panes (`Ctrl+p` `c`) so the filter has something to match — then
+`Ctrl+o f` → type `db` → `Enter` drops you on the `db` pane wherever it lives.
+
+> **It is a picker, not a literal `display-panes` overlay.** tmux flashes a number *on each pane*; a
+> Zellij plugin can only paint its own pane, so it can't — native support is
+> [issue #790, still open](https://github.com/zellij-org/zellij/issues/790). choose-tree gives the same
+> reflex (a labelled list you filter and jump from) as a floating list instead. The `.wasm` is vendored
+> in [`plugins/`](./plugins/) so it travels with the repo (`install.sh` symlinks it into place); the
+> first launch may pause a beat while Zellij compiles it.
 
 ### Zellij from the shell — CLI flags
 
@@ -369,36 +416,29 @@ this stack: **`zja`** = `zellij attach`, **`zjd`** = `zellij --layout dev` (zsh)
 | Don't | Do instead |
 |---|---|
 | Arrow through tabs `→ → →` to find one | Name tabs, `Ctrl+t N` or `go-to-tab-name` |
-| Fight a locked pane when a hotkey "won't work" | `Alt+z` out first |
+| Fight a locked pane when a hotkey "won't work" | `Alt+d` to unlock (or lock) |
 | Rebuild your layout by hand every morning | `zellij --layout dev`, or resurrect via `Ctrl+o w` |
 | Cram 12 panes into one tab | Split across named tabs / a session per project |
 | `exit` a session you'll want back | `Ctrl+o d` detach — processes keep running |
 
 ---
 
-## 8. Living with Claude Code / Neovim + autolock
+## 8. Living with Claude Code / Neovim — manual lock
 
-[`zellij-autolock`](https://github.com/fresh2dev/zellij-autolock) auto-enters **locked** mode (every
-key passes straight through to the running app) when it sees
-`nvim`/`vim`/`git`/`fzf`/`zoxide`/`atuin`/`claude` focused — so Zellij never eats a Neovim or Claude
-Code keystroke, and you don't lock/unlock by hand. Two rebinds make a locked pane cooperate with both
-the app and you:
+Zellij's modal keys (`Ctrl+p`/`Ctrl+t`/`Ctrl+n`/`Ctrl+s`/`Ctrl+o`) sit on the same `Ctrl` chords that
+the app *inside* a pane wants — Claude Code's `Ctrl+o`/`Ctrl+t`/`Ctrl+r`, nvim's `Ctrl+n`/`Ctrl+p`.
+Whoever isn't locked out wins. You arbitrate with **one manual switch** — there is **no** auto-locking
+plugin (a deliberate choice: predictable control over convenience):
 
-- **`Ctrl+g` is freed** (unbound from Zellij's lock toggle) so Claude Code's own `Ctrl+g` — *edit
-  prompt in `$EDITOR`* — reaches it. `Ctrl+g` is the one key Locked mode can't otherwise pass through.
-- **`Alt+z` is the master switch** (see [§1](#1-the-mental-model)): from a locked pane it disables
-  autolock and drops to Normal — sticky, won't re-lock. `Alt+z` again re-arms.
+- **`Alt+d` toggles Locked ⇄ Normal.** In **Locked**, Zellij hands the pane *every* keystroke, so the
+  app's `Ctrl` keys reach it; press `Alt+d` again to take the multiplexer back. It's on the home row
+  (Option + `D`, one left hand) — the one key Locked mode honours, so it's always your way out.
+- **`Ctrl+g` is freed** (unbound from Zellij's default lock toggle) so Claude Code's own `Ctrl+g` —
+  *edit prompt in `$EDITOR`* — reaches it. Leave Locked with `Alt+d`, not `Ctrl+g`.
 
-It's **enabled in `config.kdl`**, and `install.sh` fetches the plugin binary to
-`~/.config/zellij/plugins/zellij-autolock.wasm` automatically. **No wasm = no problem:** if the fetch is
-skipped (offline) the keybinds stay harmless (Enter still types; the plugin message is a no-op), so the
-config is valid either way. To fetch it manually:
-
-```sh
-mkdir -p ~/.config/zellij/plugins
-curl -fsSL -o ~/.config/zellij/plugins/zellij-autolock.wasm \
-  https://github.com/fresh2dev/zellij-autolock/releases/latest/download/zellij-autolock.wasm
-```
+> ⚠️ **The trade-off you chose.** With no autolock, entering nvim/Claude/fzf does **not** lock the pane
+> for you — until you press `Alt+d`, Zellij keeps eating those apps' `Ctrl` keys. The reflex: **`Alt+d`
+> the moment a nested app's `Ctrl` key "doesn't work."** Lock it once on entry, `Alt+d` again on exit.
 
 ---
 
@@ -406,8 +446,8 @@ curl -fsSL -o ~/.config/zellij/plugins/zellij-autolock.wasm \
 
 The bar is Zellij's built-in [`compact-bar`](https://zellij.dev/documentation/plugin-aliases) — a
 single line that is **theme-aware**: it follows `theme_dark`/`theme_light`, so it lightens with the rest
-of the stack in Latte and darkens in Mocha (this is what closes the auto-theme loop — a plugin bar with
-hard-coded colours could not). For the current mode it shows the **mode name, that mode's keybinding
+of the stack in light appearance and darkens in dark (this is what closes the auto-theme loop — a plugin
+bar with hard-coded colours could not). For the current mode it shows the **mode name, that mode's keybinding
 hints, and the tabs** — the live cheatsheet the tables above summarise. It ships with Zellij (no wasm,
 no permission grant) and loads via `default_layout "compact"` for every session.
 
@@ -431,8 +471,8 @@ The *why* behind each key in [`config.kdl`](./config.kdl) — the config states 
 
 | Key | Value | Why |
 |---|---|---|
-| `theme` | `catppuccin-mocha` | Fallback palette if the terminal reports no appearance — defined **in-config** (themes block) so it doesn't depend on a built-in. |
-| `theme_dark` / `theme_light` | `catppuccin-mocha` / `catppuccin-latte` | Auto-switch with the OS: Ghostty follows the macOS appearance and reports it via **CSI 2031 / DSR 997**; Zellij picks the matching palette live. |
+| `theme` | *(dark palette)* | Fallback if the terminal reports no appearance — defined **in-config** (themes block) so it doesn't depend on a built-in. |
+| `theme_dark` / `theme_light` | *(dark / light palette)* | Auto-switch with the OS: Ghostty follows the macOS appearance and reports it via **CSI 2031 / DSR 997**; Zellij picks the matching palette live. Both are named in the `themes { … }` block below. |
 | `default_layout` | `compact` | Built-in **compact-bar** — theme-aware, shows mode + keys + tabs ([§9](#9-the-status-bar)). |
 | `pane_frames` | `true` | Frames on so splits read as distinct cards; the frame lends a 1-cell content offset (Zellij has no native inner padding). |
 | `ui.pane_frames.rounded_corners` | `true` | Round the frame corners — softer look; inert without `pane_frames true`. |
@@ -440,9 +480,10 @@ The *why* behind each key in [`config.kdl`](./config.kdl) — the config states 
 | `scrollback_editor` | `nvim` | "Edit scrollback" (`Ctrl+s` `e`) opens in the stack's editor. |
 | `mouse_mode` | `true` | Scroll/select — and click a tab/pane to focus it. |
 
-Both palettes — Catppuccin **Mocha** and **Latte** — are the official
-[catppuccin/zellij](https://github.com/catppuccin/zellij) mappings, embedded in the `themes { … }` block
-so the config is self-contained.
+Both palettes are embedded directly in the `themes { … }` block — their ANSI slots mirrored from
+Ghostty's active theme so the terminal and multiplexer render one identical palette — which keeps the
+config self-contained (no built-in dependency). Re-theme by editing the two palettes there; the `bg`
+slot is deliberately a lifted tone (not the darkest) so pane frames stay visible.
 
 ## 12. Reload & verify
 

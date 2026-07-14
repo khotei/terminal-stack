@@ -3,7 +3,7 @@
 The "IDE in the terminal." [LazyVim](https://www.lazyvim.org) is a curated [Neovim](https://neovim.io)
 distribution on the [lazy.nvim](https://github.com/folke/lazy.nvim) plugin manager — LSP, Treesitter, a
 fuzzy picker, which-key, git, and a discoverable **`<Space>`-leader** keymap out of the box. This layer
-is the official **starter** plus a few opinionated overrides (Catppuccin auto-theme, diffview, dropbar,
+is the official **starter** plus a few opinionated overrides (a shared auto light/dark theme, diffview, dropbar,
 TypeScript/DAP/test extras).
 
 **This file is the single source for Neovim in this stack** — the mental model, the highest-value keys,
@@ -21,11 +21,12 @@ manual to start working.
 3. [Complete keybinding reference](#3-complete-keybinding-reference) — by area
 4. [Recipes — "I want to… → do this"](#4-recipes--i-want-to--do-this)
 5. [The picker is the command palette](#5-the-picker-is-the-command-palette)
-6. [Advanced craft — LSP, refactor, debug, test](#6-advanced-craft--lsp-refactor-debug-test)
-7. [Anti-patterns](#7-anti-patterns)
-8. [Living inside Zellij (autolock + the leader)](#8-living-inside-zellij-autolock--the-leader)
-9. [What we changed vs. the stock starter](#9-what-we-changed-vs-the-stock-starter) · [Layout](#10-layout)
-10. [Settings reference](#11-settings-reference-config-rationale) · [Reload & verify](#12-reload--verify) · [Install](#13-install)
+6. [Inside the floats — each embedded tool is its own app](#6-inside-the-floats--each-embedded-tool-is-its-own-app) — explorer · lazygit · diffview · flash
+7. [Advanced craft — LSP, refactor, debug, test](#7-advanced-craft--lsp-refactor-debug-test)
+8. [Anti-patterns](#8-anti-patterns)
+9. [Living inside Zellij (the manual lock + the leader)](#9-living-inside-zellij-the-manual-lock--the-leader)
+10. [What we changed vs. the stock starter](#10-what-we-changed-vs-the-stock-starter) · [Layout](#11-layout)
+11. [Settings reference](#12-settings-reference-config-rationale) · [Reload & verify](#13-reload--verify) · [Install](#14-install)
 
 ---
 
@@ -75,7 +76,7 @@ LazyVim defaults unless the row says otherwise — the exhaustive tables are in
 | Fix-it menu (imports, quick-fixes) | `<leader>ca` (code action) |
 | Full git UI in a float | `<leader>gg` (lazygit) |
 | Move focus between splits | `<C-h/j/k/l>` |
-| Leave insert without reaching for Esc | `jk` *(this repo — [§9](#9-what-we-changed-vs-the-stock-starter))* |
+| Leave insert without reaching for Esc | `jk` *(this repo — [§10](#10-what-we-changed-vs-the-stock-starter))* |
 
 > `<leader>` is `<Space>`. Where a key is a *chord* (`<C-h>` = Ctrl+h), the whole chord is one press;
 > where it's a *sequence* (`<leader>gg`), tap the keys in order and which-key guides the rest.
@@ -86,7 +87,7 @@ LazyVim defaults unless the row says otherwise — the exhaustive tables are in
 
 Everything below is a **LazyVim default** (source: [lazyvim.org/keymaps](https://www.lazyvim.org/keymaps)
 and the enabled [extras](https://www.lazyvim.org/extras)) **except** rows tagged *(repo)*, which this
-stack adds in [`lua/plugins/`](./lua/plugins) — see [§9](#9-what-we-changed-vs-the-stock-starter).
+stack adds in [`lua/plugins/`](./lua/plugins) — see [§10](#10-what-we-changed-vs-the-stock-starter).
 
 **Find & navigate** (the [snacks picker](https://www.lazyvim.org/keymaps#snackspicker)):
 
@@ -136,8 +137,8 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§9](#9-what-we-changed-v
 | `]h` / `[h` | Next / prev hunk | `<leader>ghs` | Stage hunk |
 | `<leader>ghr` | Reset hunk | `<leader>ghp` | Preview hunk inline |
 | `<leader>ghb` | Blame line (full) | `<leader>ghS` | Stage buffer |
-| `<leader>gv` | Diffview: review changes *(repo)* | `<leader>gh` | Diffview: file history (cwd) *(repo)* |
-| `<leader>gH` | Diffview: this file's history *(repo)* | | |
+| `<leader>gv` | Diffview: working tree *(repo)* | `<leader>gm` | Diffview: branch vs main *(repo)* |
+| `<leader>gh` | Diffview: file history (cwd) *(repo)* | `<leader>gH` | Diffview: this file's history *(repo)* |
 
 **Diagnostics, search, edit:**
 
@@ -147,7 +148,7 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§9](#9-what-we-changed-v
 | `gcc` / `gc` | Toggle comment (line / motion) | `gsa` / `gsd` / `gsr` | Surround add / delete / replace *(surround extra)* |
 | `]t` / `[t` | Next / prev TODO comment | `<leader>sr` | Search & replace (grep) |
 
-**Debug & test** (from the enabled extras — [§6](#6-advanced-craft--lsp-refactor-debug-test)):
+**Debug & test** (from the enabled extras — [§7](#7-advanced-craft--lsp-refactor-debug-test)):
 
 | Keys | Action | Keys | Action |
 |---|---|---|---|
@@ -165,7 +166,8 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§9](#9-what-we-changed-v
 | `<leader>uf` | Toggle auto-format | `<leader>uw` | Toggle wrap |
 | `<leader>ul` | Toggle line numbers | `<leader>ud` | Toggle diagnostics |
 | `<leader>ub` | Toggle dark background | `<C-/>` | Terminal (root) |
-| `<leader>qq` | Quit all | `<leader>qs` / `<leader>ql` | Restore session / last session |
+| `<leader>um` | Toggle Render Markdown *(markdown extra)* | `<leader>qq` | Quit all |
+| `<leader>qs` / `<leader>ql` | Restore session / last session | | |
 
 ---
 
@@ -187,15 +189,25 @@ site updates as you type ([inc-rename extra](https://www.lazyvim.org/extras/edit
 import or a lint the LSP can fix? `<leader>ca` (code action) offers the menu — "Add import", "Organize
 imports", quick-fixes — apply and move on.
 
-**Review a diff — especially Claude Code's.** `<leader>gv` opens **diffview** *(repo)*: a side-by-side of
-all working-tree changes with a file list you page through. `<leader>gh` shows the repo's commit
-*history*; `<leader>gH` narrows it to the current file ([diffview.nvim](https://github.com/sindrets/diffview.nvim)).
+**Review a diff — especially Claude Code's.** `<leader>gv` opens **diffview** *(repo)* on the working
+tree; `<leader>gm` reviews the whole branch vs main (`origin/main...HEAD`). Both open with
+`--imply-local`, so the working-tree file is on the right side and **LSP works inside the diff**
+(`gd`/`gr`/`K` — no jump to the real file needed). `<leader>gh` shows the repo's commit *history*;
+`<leader>gH` narrows it to the current file ([diffview.nvim](https://github.com/sindrets/diffview.nvim)).
+Full review workflow: [reviewing-changes.md](../docs/reviewing-changes.md).
 For a stray line, stage it straight from the buffer: cursor on a hunk, `<leader>ghs`; jump between hunks
 with `]h` / `[h`. Need the full git TUI? `<leader>gg` floats **lazygit**.
 
 **Run and debug a test at the cursor.** `<leader>tr` runs the nearest test; `<leader>ts` opens the
 summary panel; `<leader>td` runs it *under the debugger*. This stack wires the [Vitest and Jest
 adapters](./lua/plugins/neotest.lua) *(repo)* so tests are discovered whichever a repo uses.
+
+**Read a Markdown file as a document, not source.** Open any `.md` and `<leader>um` toggles
+**render-markdown** *(repo — [markdown extra](https://www.lazyvim.org/extras/lang/markdown))*: headings,
+tables, checkboxes and fenced code render *inline, in the buffer* — no browser, no second window. Put the
+cursor on a line and it unfolds back to raw Markdown to edit; move off and it re-renders. Press `<leader>um`
+again for plain source. *(The extra's browser preview, `markdown-preview.nvim`, is disabled by choice —
+[§10](#10-what-we-changed-vs-the-stock-starter).)*
 
 **Format on demand.** `<leader>cf` formats the buffer (or selection) via the LSP/formatter. Auto-format
 on save is on by default — toggle it per-session with `<leader>uf` when a repo's formatter fights you.
@@ -219,10 +231,116 @@ you left it with **`<leader>sR`** (resume) — the fast path back after a detour
 
 ---
 
-## 6. Advanced craft — LSP, refactor, debug, test
+## 6. Inside the floats — each embedded tool is its own app
+
+The picker taught the trick ([§5](#5-the-picker-is-the-command-palette)): a float is a *separate
+application*, and learning its keymap once unlocks all of it. Everything here opens **on top of** the
+editor — the `<leader>` tree and `gd`/`K` don't apply; you're driving *that tool* now. Two reflexes
+carry across almost all of them: **`?` (or `g?`) opens the tool's own help**, and `q` / `<Esc>` closes
+it. Every key below is the tool's own **default** — cited, never invented
+([config.md](../.claude/rules/config.md)); the source is linked per tool.
+
+### The explorer (`<leader>e`) — a file manager, not just a tree
+
+`<leader>e` is the [snacks.nvim](https://github.com/folke/snacks.nvim/blob/main/docs/explorer.md)
+explorer — the picker in tree form, so it *manages* files, not only opens them. Cursor inside the tree:
+
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `l` / `<CR>` · `h` | open / expand · collapse | `a` · `d` · `r` | add (`/` = folder) · delete · rename |
+| `c` · `m` · `p` | copy · move · paste here | `y` | yank the file **path** to a register |
+| `<C-s>` / `<C-v>` | open in split / vsplit | `.` · `<BS>` | folder-under-cursor as root · go up |
+| `H` · `I` | toggle hidden · git-ignored | `<Tab>` | select / deselect (multi-select) |
+| `<leader>/` | live-grep **the folder under the cursor** | `<C-c>` | `cd` nvim into that folder |
+
+**Secrets.**
+- **Bulk ops.** Mark files with `<Tab>`, move into the target folder, then `m` (move) or `c` (copy)
+  acts on the whole selection.
+- **Scoped grep.** `<leader>/` greps *from the folder under the cursor* — a fast "search only this
+  module."
+- **Reroot on the fly.** `.` makes that folder the tree root; `<BS>` climbs back up.
+- **The tree follows your buffer** — reopen `<leader>e` and you're already on the file you're editing.
+- Gotcha: the explorer remaps `<C-t>` to *terminal*, so there is no "open in a new tab" from the tree.
+
+### Lazygit (`<leader>gg`) — the git TUI, its own world
+
+A standalone TUI ([lazygit](https://github.com/jesseduffield/lazygit/blob/master/docs/keybindings/Keybindings_en.md))
+that nvim only floats, so **the keys are lazygit's own**. Five side-panels — **Status `1` · Files `2` ·
+Branches `3` · Commits `4` · Stash `5`** — drive a diff view on the right. Jump by number; `[`/`]` cycle
+a panel's sub-tabs; `<enter>` "goes into" the selected item. Keys are **context-dependent** — the same
+letter differs per panel (`s` = stash in Files, squash in Commits).
+
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `1`–`5` | jump to a side-panel | `<space>` | stage/unstage · checkout · apply stash |
+| `a` | stage **all** (Files) | `<enter>` | drill in — on a file → line/hunk staging |
+| `c` · `C` | commit · commit in `$EDITOR` (Files) | `A` | amend into the last commit (Files) |
+| `P` / `p` | push / pull | `b` · `n` · `f` | branch menu · new branch · fetch (Branches) |
+| `d` · `s` | discard menu · stash (Files) | `z` / `Z` | undo / redo the last git action |
+
+**Secrets.**
+- **Partial staging.** `<enter>` on a file opens the staging view; there `<space>` toggles the
+  line/hunk and `v` range-selects — that's how you commit *part* of a file.
+- **Interactive rebase, no ceremony.** In the Commits panel, act on a commit directly: `s` squash,
+  `f` fixup, `r` reword, `e` edit, `d` drop; `m` opens the continue/abort menu.
+- **Cherry-pick by copy/paste.** In Commits, `C` (capital) copies commits and `V` pastes them onto the
+  current branch. Mind the case — in Files, `C` means "commit with editor."
+- **Instant amend.** `A` in Files folds staged changes into `HEAD` with no prompt.
+
+### Diffview (`<leader>gv` · `<leader>gm`) — the review loop *(repo)*
+
+Side-by-side of every change with a file list you page through — `<leader>gv` for the working tree,
+`<leader>gm` for the whole branch vs main. Both use `--imply-local`, so the real file sits on the
+right and **LSP is live in the diff** (`gd`/`gr`/`K`, diagnostics) — the review and the code, one view
+([diffview.nvim](https://github.com/sindrets/diffview.nvim); `<leader>gh`/`gH` show history;
+[full guide](../docs/reviewing-changes.md)). Its default keys, once a diffview panel is focused:
+
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `<Tab>` / `<S-Tab>` | next / prev file (into its diff) | `-` / `s` | stage / unstage the entry |
+| `S` / `U` | stage-all / unstage-all | `X` | restore the entry to the left side |
+| `i` | toggle list ⇄ tree | `R` · `g?` | refresh · help |
+
+> **The whole review loop is two keys:** `-` to stage from the panel, `<Tab>` to step straight into the
+> next file's diff — ideal for reading Claude Code's changes ([§4](#4-recipes--i-want-to--do-this)).
+
+### The other panels — Trouble · Outline · Neotest · DAP-UI
+
+Each is a focused list/tree with its own keys (`?` opens help in all of them):
+
+| Panel (open with) | The keys that matter |
+|---|---|
+| **Trouble** — `<leader>xx` ([docs](https://github.com/folke/trouble.nvim)) | `}` / `{` next/prev item **with preview** (plain `j`/`k` only move the cursor) · `<CR>` jump · `o` jump + close · `q` close |
+| **Outline** — `<leader>cs` | `<CR>` jump to the symbol; move through the tree like any buffer |
+| **Neotest** — `<leader>ts` ([docs](https://github.com/nvim-neotest/neotest)) | `r` run · `d` debug · `o` output · `w` **watch** (re-run on save) · `m` then `R` mark a set & run it · `J`/`K` next/prev failed |
+| **DAP-UI** — `<leader>du` ([docs](https://github.com/rcarriga/nvim-dap-ui)) | `<CR>` expand a variable · `e` edit / set its value · `r` send it to the REPL · `t` toggle a breakpoint |
+
+> **Neotest secret:** `w` turns the summary into a live loop — the test re-runs on every save, so you
+> leave the panel open and just keep editing.
+
+### Bonus — flash: the motion the guide was missing
+
+Not a float, but the highest-leverage *movement* LazyVim ships — and this doc omitted it. `s` + two
+characters paints a one-key **label** on every match; press the label to teleport — in Normal mode to
+move, in operator-pending (`d`/`y`/`c`) to act on a distant target
+([flash.nvim](https://github.com/folke/flash.nvim)).
+
+| Key | Mode | Action |
+|---|---|---|
+| `s` | normal / visual / op | flash jump — type chars, then a label, to teleport |
+| `S` | normal / visual / op | flash Treesitter — label-select a growing syntax node |
+| `r` | operator | remote — jump away, act, return (`yr…`) |
+| `<C-space>` | normal / op / visual | Treesitter incremental select (grow; `<BS>` shrinks) |
+
+Example: `d` then `r` then `s` + a target deletes a far-off word without moving your cursor home.
+(Labels on `f`/`t` are opt-in — LazyVim doesn't enable them by default.)
+
+---
+
+## 7. Advanced craft — LSP, refactor, debug, test
 
 The stack turns LazyVim into a real IDE for **TypeScript/JavaScript** via four
-[extras](https://www.lazyvim.org/extras) plus glue this repo adds ([§9](#9-what-we-changed-vs-the-stock-starter)):
+[extras](https://www.lazyvim.org/extras) plus glue this repo adds ([§10](#10-what-we-changed-vs-the-stock-starter)):
 
 - **Language intelligence** — [`lang.typescript`](https://www.lazyvim.org/extras/lang/typescript) installs
   the **vtsls** server, so `gd`/`gr`/`K`/`gy` and `<leader>ca` work in `.ts`/`.tsx` (they were inert
@@ -243,7 +361,7 @@ The stack turns LazyVim into a real IDE for **TypeScript/JavaScript** via four
 
 ---
 
-## 7. Anti-patterns
+## 8. Anti-patterns
 
 | Don't | Do instead |
 |---|---|
@@ -253,63 +371,65 @@ The stack turns LazyVim into a real IDE for **TypeScript/JavaScript** via four
 | Rename by find-and-replace | `<leader>cr` (LSP rename, live preview) — every call site |
 | Scatter your own maps across files | put them in [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) (the one owning file) |
 | Reach for `<Esc>` a mile away | `jk` *(this repo)* |
-| Wonder why a Zellij key does nothing in nvim | the pane is **locked on purpose** — [§8](#8-living-inside-zellij-autolock--the-leader) |
+| Wonder why a Zellij key does nothing in nvim | the pane is **Locked** (you pressed `Alt+d`) — [§9](#9-living-inside-zellij-the-manual-lock--the-leader) |
 
 ---
 
-## 8. Living inside Zellij (autolock + the leader)
+## 9. Living inside Zellij (the manual lock + the leader)
 
-Neovim runs in a **Zellij pane**, so two keyboard layers share your keyboard. They don't fight, by
-design:
+Neovim runs in a **Zellij pane**, so two keyboard layers share your keyboard — and by default the
+multiplexer's modal keys (`<C-p>` pane, `<C-t>` tab, `<C-n>` resize, `<C-s>` scroll, `<C-o>` session)
+win, so those chords reach *Zellij*, not the editor:
 
-- **Zellij hands nvim *every* keystroke.** The multiplexer runs
-  [`zellij-autolock`](../zellij/README.md#8-living-with-claude-code--neovim--autolock): the moment a pane
-  is running `nvim`, Zellij drops to **Locked** mode and passes keys straight through — so `<Space>`,
-  `<C-w>`, function keys, all of it reach the editor untouched. That's *why* the leader can safely be
-  `<Space>` and the window keys `<C-h/j/k/l>`: the multiplexer isn't listening while you edit.
-- **The escape hatch is `Alt+z`.** If you *do* want a Zellij action (split a pane, switch tabs) while
-  focused in nvim, `Alt+z` disables autolock and gives the multiplexer back; `Alt+z` again re-arms. This
-  is the reflex from the [Zellij doc](../zellij/README.md#1-the-mental-model) — a Zellij key "not
-  working" means the pane is locked to nvim.
+- **`Alt+d` hands nvim *every* keystroke.** There's **no autolock** — you hold the lock by choice. Press
+  `Alt+d` and Zellij drops to **Locked** mode, passing keys straight through, so `<C-n>`/`<C-p>`,
+  `<C-s>`, `<C-w>`, function keys — all of it reaches the editor untouched. `Alt+d` again takes the
+  multiplexer back. `<Space>` (the leader) and the window keys `<C-h/j/k/l>` never collide, so those
+  work whether or not you're locked; the `Ctrl+<mode>` chords are the ones the lock frees.
+- **The gotcha: a `Ctrl` chord "does nothing" in nvim → you're *not* locked.** Enter nvim and its
+  `Ctrl`-keys are eaten by Zellij until you press `Alt+d` — no auto-locking to catch it for you. This is
+  the mirror of the [Zellij reflex](../zellij/README.md#1-the-mental-model).
 - **Add editor maps in one place.** [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) is the sole home
-  for your maps, so a collision with Zellij's prefix or Ghostty stays auditable
+  for your maps, so a collision with Zellij's modal keys or Ghostty stays auditable
   ([keyboard-layer contract](../.claude/rules/config.md)). Add them with `vim.keymap.set`.
 
 ---
 
-## 9. What we changed vs. the stock starter
+## 10. What we changed vs. the stock starter
 
 The config is the [official LazyVim starter](https://github.com/LazyVim/starter) plus these edits — the
 *what* lives in the files; here's the *why*.
 
 | File | Change | Why |
 |---|---|---|
-| [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | `catppuccin/nvim` `flavour="auto"` (`background`→latte/mocha) + `colorscheme = "catppuccin"` | One palette across the stack, auto light/dark. `flavour="auto"` tracks `vim.o.background`. The [LazyVim-documented](https://www.lazyvim.org/configuration/general) way to theme. |
-| [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | add [`f-person/auto-dark-mode.nvim`](https://github.com/f-person/auto-dark-mode.nvim) | Polls the macOS appearance and flips `vim.o.background` → catppuccin recompiles. Works **inside Zellij**, where the terminal's CSI 2031 signal may not reach the editor. |
-| [`lua/config/lazy.lua`](./lua/config/lazy.lua) | `install.colorscheme = { "catppuccin", … }` | Use the real theme during install, not the default tokyonight. |
+| [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | swap LazyVim's default colorscheme for the stack's shared palette + point the `colorscheme` opt at it | One palette across the stack, auto light/dark — the colorscheme reads `vim.o.background`. Which palette (plugin + options) lives in [`colorscheme.lua`](./lua/plugins/colorscheme.lua); the [LazyVim-documented](https://www.lazyvim.org/configuration/general) way to theme. |
+| [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | add [`f-person/auto-dark-mode.nvim`](https://github.com/f-person/auto-dark-mode.nvim) | Polls the macOS appearance, flips `vim.o.background`, and re-applies the colorscheme so it recompiles for the new mode. Works **inside Zellij**, where the terminal's CSI 2031 signal may not reach the editor. |
+| [`lua/config/lazy.lua`](./lua/config/lazy.lua) | point `install.colorscheme` at the stack's palette | Use the real theme during install, not the default tokyonight. |
 | [`lua/config/options.lua`](./lua/config/options.lua) | `relativenumber`, `scrolloff=8`, `confirm` | Small comfort defaults on top of LazyVim's. |
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `jk` → `<Esc>` | One universal comfort bind; this file is where you port IdeaVim maps. |
-| [`lazyvim.json`](./lazyvim.json) | enable `lang.typescript` + `editor.inc-rename` + `editor.outline` + `coding.mini-surround` + `dap.core` + `test.core` extras | TS LSP (`gd`/`gr`/`K`), live rename (`<leader>cr`), outline (`<leader>cs`), surround (`gs*`), debugger (`<leader>d…`), test runner (`<leader>t…`). See [§6](#6-advanced-craft--lsp-refactor-debug-test). |
+| [`lazyvim.json`](./lazyvim.json) | enable `lang.markdown` + `lang.typescript` + `editor.inc-rename` + `editor.outline` + `coding.mini-surround` + `dap.core` + `test.core` extras | In-buffer Markdown render (`<leader>um`), TS LSP (`gd`/`gr`/`K`), live rename (`<leader>cr`), outline (`<leader>cs`), surround (`gs*`), debugger (`<leader>d…`), test runner (`<leader>t…`). See [§7](#7-advanced-craft--lsp-refactor-debug-test). |
+| [`lua/plugins/markdown.lua`](./lua/plugins/markdown.lua) | disable `markdown-preview.nvim` | `lang.markdown` ships two renderers; keep only render-markdown's in-buffer toggle (`<leader>um`). A terminal-first stack wants no browser tab — and skips the plugin's node build step. |
 | [`lua/plugins/dap-node.lua`](./lua/plugins/dap-node.lua) | append an `npm`/`pnpm` "Debug script" dap config | `lang.typescript` covers "Launch file"/"Attach" but not `npm run <script>` under the debugger; appended so its own configs survive. |
 | [`lua/plugins/neotest.lua`](./lua/plugins/neotest.lua) | add Vitest + Jest neotest adapters | `test.core` ships neotest with an *empty* adapter table — no adapter, no tests discovered. |
-| [`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua) | add [`sindrets/diffview.nvim`](https://github.com/sindrets/diffview.nvim) + `<leader>gv`/`gh`/`gH` | Side-by-side diff + file history for reviewing changes — no LazyVim-native equivalent. |
+| [`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua) | add [`sindrets/diffview.nvim`](https://github.com/sindrets/diffview.nvim) + `<leader>gv`/`gm`/`gh`/`gH`, `--imply-local` default | Side-by-side diff + file history for reviewing changes (incl. `origin/main...HEAD`); `--imply-local` puts the working file on the right so LSP works in the diff. No LazyVim-native equivalent. |
 | [`lua/plugins/dropbar.lua`](./lua/plugins/dropbar.lua) | add [`Bekaboo/dropbar.nvim`](https://github.com/Bekaboo/dropbar.nvim) | Breadcrumb winbar (the "Context Info" view). Requires **Neovim ≥ 0.11** — a version floor the stack now depends on. |
 
-## 10. Layout
+## 11. Layout
 
 ```
 nvim/
 ├── init.lua                      # one line: require("config.lazy")
 ├── lua/config/
-│   ├── lazy.lua                  # lazy.nvim bootstrap + LazyVim import (+catppuccin install theme)
+│   ├── lazy.lua                  # lazy.nvim bootstrap + LazyVim import (+ install-time colorscheme)
 │   ├── options.lua               # vim.opt overrides (loaded before lazy)
 │   ├── keymaps.lua               # editor maps — the one place to port IdeaVim habits
 │   └── autocmds.lua              # autocmds (stub)
 ├── lua/plugins/
-│   ├── colorscheme.lua           # Catppuccin (auto latte/mocha) + auto-dark-mode.nvim
+│   ├── colorscheme.lua           # shared palette (auto light/dark via vim.o.background) + auto-dark-mode.nvim
 │   ├── diffview.lua              # side-by-side diff + file history
 │   ├── dropbar.lua               # breadcrumb winbar
 │   ├── dap-node.lua              # npm/pnpm "Debug script" launcher
+│   ├── markdown.lua              # disable browser preview (keep in-buffer render)
 │   └── neotest.lua               # Vitest + Jest adapters
 ├── lazyvim.json                  # enabled LazyVim extras
 ├── stylua.toml                   # 2-space, 120-col (matches the starter)
@@ -318,7 +438,7 @@ nvim/
 
 ---
 
-## 11. Settings reference (config rationale)
+## 12. Settings reference (config rationale)
 
 The *why* behind the non-obvious choices — the files state the *what*.
 
@@ -327,14 +447,14 @@ The *why* behind the non-obvious choices — the files state the *what*.
 | `options.lua` | `relativenumber = true` | Line-relative counts make `j`/`k`-with-a-count motions (`5j`) instant to aim. |
 | `options.lua` | `scrolloff = 8` | Keep 8 lines of context above/below the cursor — never edit at the screen edge. |
 | `options.lua` | `confirm = true` | `:q` with unsaved changes *asks* instead of erroring — one keystroke to save/discard. |
-| `lazy.lua` | `install.colorscheme = { "catppuccin", "habamax" }` | First launch installs plugins under the *real* theme, not the stock tokyonight flash. |
-| `colorscheme.lua` | `flavour = "auto"` | Follows `vim.o.background`; `auto-dark-mode.nvim` flips that on macOS appearance change, so the editor tracks the OS **even inside Zellij**. |
+| `lazy.lua` | `install.colorscheme = { <palette>, "habamax" }` | First launch installs plugins under the *real* theme, not the stock tokyonight flash. |
+| `colorscheme.lua` | the palette + its own options | The one place the theme is named; it reads `vim.o.background`, which `auto-dark-mode.nvim` flips on macOS appearance change, so the editor tracks the OS **even inside Zellij**. Swap the palette here to re-theme. |
 | `stylua.toml` | 2-space, 120-col | Matches the LazyVim starter — `stylua --check nvim/` is the style gate. |
 
 Extras enabled in `lazyvim.json` are the LazyVim [extras manifest](https://www.lazyvim.org/extras); each
 one is a curated bundle of plugin + config + keymaps, opt-in by one line.
 
-## 12. Reload & verify
+## 13. Reload & verify
 
 - **Plugins:** edit a spec, then `:Lazy sync` (or restart). `lazy-lock.json` pins versions — commit it
   after a deliberate `:Lazy update`.
@@ -344,7 +464,7 @@ one is a curated bundle of plugin + config + keymaps, opt-in by one line.
 - **Health:** `:checkhealth` (or `nvim --headless "+checkhealth" +qa`) reports missing providers/deps.
 - **Try it now:** `make try` in the sandbox, then `nvim`.
 
-## 13. Install
+## 14. Install
 
 `./install.sh` (or `make install`) symlinks `nvim/` into `~/.config/nvim`. By hand:
 
@@ -370,8 +490,9 @@ Needs **Neovim ≥ 0.11** (dropbar) and, for the TS/test/debug flow, `node`+`laz
 This README is the per-tool doc pattern: ONE file per tool, at <tool>/README.md (GitHub renders it, the
 root README links it). To enrich another tool's README to this shape, follow the section order:
   1 mental model (the one load-bearing concept) · 2 quick-start "moves that pay rent" · 3 complete
-  reference · 4 task-first recipes · 5 a domain multiplier · 6 advanced craft · 7 anti-patterns ·
-  8 integration/gotchas · what-changed vs. upstream + layout · settings rationale · reload/verify/install
+  reference · 4 task-first recipes · 5 a domain multiplier · 6 driving the embedded tools/floats ·
+  7 advanced craft · 8 anti-patterns · 9 integration/gotchas · what-changed vs. upstream + layout ·
+  settings rationale · reload/verify/install
   · "go deeper" pointers.
 Rules honored: cite every key upstream (config.md · never invent) — LazyVim defaults from lazyvim.org,
 repo keys from lua/plugins/*; config says what, prose says why (claude-md.md); public repo → assume
