@@ -20,7 +20,7 @@ rationale. Nothing to hunt across other files or upstream manuals.
 3. [Complete reference — aliases + shell keys](#3-complete-reference--aliases--shell-keys)
 4. [Recipes — "I want to… → do this"](#4-recipes--i-want-to--do-this)
 5. [Companion CLIs — a card each](#5-companion-clis--a-card-each)
-   · [fzf](#51-fzf--fuzzy-everything) · [fzf-tab](#52-fzf-tab--tab-becomes-a-fuzzy-menu) · [zoxide](#53-zoxide--jump-by-frecency) · [atuin](#54-atuin--history-as-a-database) · [zsh-vi-mode](#55-zsh-vi-mode--vim-on-the-command-line) · [autosuggestions](#56-zsh-autosuggestions--grey-ghost-text) · [syntax-highlighting](#57-zsh-syntax-highlighting--live-colour) · [eza](#58-eza--a-better-ls) · [bat](#59-bat--a-better-cat--pager) · [ripgrep](#510-ripgrep-rg--a-better-grep) · [fd](#511-fd--a-better-find) · [lazygit](#512-lazygit--git-as-a-tui) · [yazi](#513-yazi--a-tui-file-manager) · [fnm](#514-fnm--node-version-manager)
+   · [fzf](#51-fzf--fuzzy-everything) · [fzf-tab](#52-fzf-tab--tab-becomes-a-fuzzy-menu) · [zoxide](#53-zoxide--jump-by-frecency) · [atuin](#54-atuin--history-as-a-database) · [zsh-vi-mode](#55-zsh-vi-mode--vim-on-the-command-line) · [autosuggestions](#56-zsh-autosuggestions--grey-ghost-text) · [syntax-highlighting](#57-zsh-syntax-highlighting--live-colour) · [eza](#58-eza--a-better-ls) · [bat](#59-bat--a-better-cat--pager) · [ripgrep](#510-ripgrep-rg--a-better-grep) · [fd](#511-fd--a-better-find) · [lazygit](#512-lazygit--git-as-a-tui) · [yazi](#513-yazi--a-tui-file-manager) · [fnm](#514-fnm--node-version-manager) · [gh](#515-gh--github-from-the-terminal)
 6. [Anti-patterns](#6-anti-patterns)
 7. [The prompt (Starship)](#7-the-prompt-starship)
 8. [Keeping `$HOME` tidy — XDG](#8-keeping-home-tidy--xdg-base-directories)
@@ -598,6 +598,49 @@ here because Neovim's LSP tooling launched from this shell needs a runtime. Docs
 | What's installed | `fnm list` | List local versions (`list-remote` shows installable ones) |
 | What's active now | `fnm current` | Print the version in use |
 | Pin a project | write `.node-version` | Then `--use-on-cd` switches to it automatically on entry |
+
+### 5.15 gh — GitHub from the terminal
+
+The GitHub CLI — PRs, reviews, CI, and the raw API without leaving the shell. **Not wired into zsh**
+(no alias/init — a standalone tool), but core to the review loop
+([reviewing-changes.md](../docs/reviewing-changes.md)) and the SDD flow; it's in the Brewfile. Needs
+`gh auth login` once. Docs: <https://cli.github.com/manual/>.
+
+**Review a PR (the LSP-first path):**
+
+| Task / goal | Command | What it does |
+|---|---|---|
+| Pull a PR local to review | `gh pr checkout <N>` | Check out its branch — real files, full LSP (`-f` re-syncs after a push) |
+| Read a PR diff in the terminal | `gh pr diff <N>` | The diff (`--patch`, `--name-only` for scope; pipe `\| delta` for colour) |
+| See a PR's description + state | `gh pr view <N>` | Body, checks, comments (`--web` opens the browser) |
+| CI status of a PR | `gh pr checks <N>` | Per-check pass/fail (`--watch` to follow) |
+| Leave a review verdict | `gh pr review <N> --approve` | or `--request-changes -b "…"` / `--comment -b "…"` |
+
+**Day-to-day PRs & CI:**
+
+| Task / goal | Command | What it does |
+|---|---|---|
+| Your PRs at a glance | `gh pr status` | Created by you · review-requested · current-branch |
+| Open a PR | `gh pr create` | `--fill` from commits · `--web` · `--draft` |
+| List / merge | `gh pr list` · `gh pr merge <N>` | Filter (`--search`, `--label`); merge (`--squash`, `--auto`) |
+| Watch a CI run | `gh run watch` | Live-follow the latest run (`gh run view --log-failed` for a failure) |
+| Issues | `gh issue list` · `create` · `view` | Same verbs, for issues |
+
+**The power tools:**
+
+| Task / goal | Command | What it does |
+|---|---|---|
+| Open the thing in a browser | `gh browse` | Current repo / file / line on GitHub |
+| Raw GitHub API + jq | `gh api <endpoint> --jq '…'` | Any REST/GraphQL call — scripts, or a command gh lacks |
+| Search across GitHub | `gh search prs/issues/code` | Query without the web UI |
+| Extend it | `gh extension install <repo>` | e.g. `dlvhdr/gh-dash` — a PR/issue dashboard TUI |
+
+> **Review recipe (all terminal, no browser):** `gh pr checkout <N>` → in nvim `<leader>gm`
+> (diffview vs main, LSP live) → read → `gh pr review <N> --approve` (or `--request-changes`). See
+> [reviewing-changes.md](../docs/reviewing-changes.md).
+
+> ⚠️ `gh pr checks --watch` and `gh run watch` are the "is CI green yet?" pollers — the thing to run
+> before a merge instead of refreshing the browser.
 
 ---
 
