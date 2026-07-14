@@ -121,14 +121,55 @@ Scroll/Search):
 > Mirror image of the `Alt+…` shortcuts, which fire *one* hop from Normal: the modes are for
 > *repeating* — hunting, sizing, sculpting.
 
-**Resize** (`Ctrl+n`): `h/j/k/l` (or arrows) grow a side · `H/J/K/L` shrink · `=` / `-` all sides.
-**Move** (`Ctrl+h`): `h/j/k/l` (or arrows) push the pane · `n`/`Tab` next slot · `p` previous.
-**Scroll** (`Ctrl+s`): `j/k` line · `d/u` half-page · `PageUp/PageDown` (or `Ctrl+b`/`Ctrl+f`) page ·
-`s` search · `e` open scrollback in nvim · `Ctrl+c` jump to bottom and exit.
-**Search** (`s` from Scroll): type the term · `Enter` · `n` / `p` next / prev hit · `c` case · `w` wrap
-· `o` whole-word · `Ctrl+c` exit to bottom. (Prev is `p`, **not** Vim's `N`.)
-**Session** (`Ctrl+o`): `w` **session manager** (fuzzy-switch/resurrect) · `d` detach · `c`
-configuration · `p` plugin manager · `l` layout manager · `a` about · `s` share (web).
+**Resize** (`Ctrl+n`) — grow / shrink the focused pane in steps (sticky: keep tapping).
+
+| Key | Action |
+|---|---|
+| `h/j/k/l` (or arrows) | grow the pane toward that side |
+| `H/J/K/L` | shrink from that side |
+| `=` / `-` | grow / shrink on **all** sides at once |
+
+**Move** (`Ctrl+h`) — relocate the *pane itself* (not the focus) within the layout.
+
+| Key | Action |
+|---|---|
+| `h/j/k/l` (or arrows) | push the pane that way |
+| `n` / `Tab` | send it to the next slot |
+| `p` | send it to the previous slot |
+
+**Scroll** (`Ctrl+s`) — read back through a pane's output; also the gateway to search and the nvim dump.
+
+| Key | Action |
+|---|---|
+| `j` / `k` | one line down / up |
+| `d` / `u` | half-page down / up |
+| `PageDown` / `PageUp` (or `Ctrl+f` / `Ctrl+b`) | full page down / up |
+| `s` | enter **Search** (below) |
+| `e` | dump the scrollback into nvim — read/copy it as a file (copy-mode) |
+| `Ctrl+c` | jump to bottom and exit |
+
+**Search** (`s` from Scroll) — live find within the scrollback.
+
+| Key | Action |
+|---|---|
+| type term + `Enter` | search |
+| `n` / `p` | next / **previous** hit — it's `p`, **not** Vim's `N` |
+| `c` | toggle case-sensitivity |
+| `w` | toggle wrap-around |
+| `o` | toggle whole-word |
+| `Ctrl+c` | exit to the bottom |
+
+**Session** (`Ctrl+o`) — the session *itself*, not its panes.
+
+| Key | Action |
+|---|---|
+| `w` | **session manager** — fuzzy-switch between / resurrect past sessions |
+| `d` | detach (leave it running; reattach later with `zellij attach`) |
+| `c` | configuration |
+| `p` | plugin manager |
+| `l` | layout manager |
+| `a` | about |
+| `s` | share the session over the web |
 
 **Skip the mode dance — direct `Alt` shortcuts.** For the moves you make constantly, hold `Alt` from
 Normal and act in one stroke:
