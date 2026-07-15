@@ -33,22 +33,14 @@
       "Grep(*)",
       "Edit(*)",
       "Write(*)",
-      "WebFetch(domain:ghostty.org)",
-      "WebFetch(domain:zellij.dev)",
-      "WebFetch(domain:lazyvim.org)",
-      "WebFetch(domain:neovim.io)",
-      "WebFetch(domain:starship.rs)",
-      "WebFetch(domain:github.com)",
-      "WebFetch(domain:docs.claude.com)",
-      "WebFetch(domain:code.claude.com)"
+      "WebFetch(*)",
+      "WebSearch(*)"
     ],
     "ask": [
       "Bash(git checkout *)",
       "Bash(git branch *)",
       "Bash(git rebase*)",
-      "Bash(git reset *)",
-      "WebFetch(*)",
-      "WebSearch(*)"
+      "Bash(git reset *)"
     ],
     "deny": [
       "Bash(git push --force*)",
