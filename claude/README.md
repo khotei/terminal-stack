@@ -116,8 +116,15 @@ lists its keys. The tables below are the offline copy
 | `Ctrl+G` *(or `Ctrl+X Ctrl+E`)* | Open the prompt in your default `$EDITOR` |
 | `Ctrl+T` | Toggle Claude's to-do checklist (not the background-task view — that's `/tasks`) |
 | `Ctrl+B` | Background the running Bash command / agent (**tmux: press twice**) |
+| `Ctrl+V` | Paste an image from the clipboard — screenshot / mockup, inserts an `[Image #N]` chip |
+| `Ctrl+X Ctrl+K` | Stop **all** background subagents in the session (press twice to confirm) |
+| `Option+T` / `Option+P` | Toggle extended thinking / switch model without clearing the draft |
+| `?` *(empty input)* | Toggle the keyboard-shortcut help panel |
 | `Up`/`Down` | Move the cursor in multiline input; at the edge, step through history |
 | `Shift+Tab` | Cycle permission mode (**default → acceptEdits → plan → …**) |
+
+> macOS: `Option+…` shortcuts may need **Option as Meta** set in the terminal (Ghostty / iTerm2) —
+> see [terminal-config](https://code.claude.com/docs/en/terminal-config).
 
 ### Keyboard shortcuts — editing the prompt
 
@@ -143,6 +150,8 @@ need it, run `/terminal-setup` to install the `Shift+Enter` binding.
 | `/clear` | Start a new conversation with empty context |
 | `/compact [hint]` | Summarize the conversation to free context (thread continues) |
 | `/context` | Visualize context-window usage as a colored grid |
+| `/btw <q>` | Side question — ephemeral, no context pollution; works even while Claude is busy (`f` forks it) |
+| `/recap` | One-line recap of the session so far (also auto-appears when you return) |
 | `/model [name]` | Switch the model and save it as default |
 | `/config` | Open the settings UI (or `/config <key> <value>` to set one directly) |
 | `/agents` | Manage subagent configurations |
@@ -276,9 +285,18 @@ in an isolated git worktree, no editor pane
   reaching for `Esc` (Claude Code ≥ 2.1.208; read from user settings only). Matches Neovim muscle
   memory across the stack.
 - **Transcript viewer** (`Ctrl+O`) — the full tool-by-tool record; expands MCP calls that otherwise
-  collapse to one line. `?` inside it lists its own keys.
+  collapse to one line. `?` lists its own keys; inside it `v` opens the whole conversation in your
+  `$EDITOR` (nvim), `[` dumps it to terminal scrollback for `Cmd+F` search, and `{`/`}` jump between
+  your prompts ([interactive-mode](https://code.claude.com/docs/en/interactive-mode#transcript-viewer)).
 - **Background work** — `Ctrl+B` pushes a long Bash command or agent to the background and hands you the
   prompt back; `/tasks` shows what's still running.
+- **Side questions** (`/btw`) — ask a quick question without touching the conversation history; it sees
+  the full session but has **no tools**, runs even while Claude is busy, and `f` forks it into a real
+  session. The inverse of a subagent
+  ([interactive-mode](https://code.claude.com/docs/en/interactive-mode#side-questions-with-btw)).
+- **Paste an image** — `Ctrl+V` drops a screenshot / mockup / diagram straight into the prompt as an
+  `[Image #N]` chip, so Claude can read an error shot or match a design
+  ([common-workflows](https://code.claude.com/docs/en/common-workflows#work-with-images)).
 
 ---
 
