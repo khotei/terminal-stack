@@ -41,7 +41,9 @@ head "Neovim"
 if [ -f nvim/init.lua ]; then
   if have nvim; then
     tmpcfg=$(mktemp -d); ln -s "$(pwd)/nvim" "$tmpcfg/nvim"
-    out=$(XDG_CONFIG_HOME="$tmpcfg" timeout 300 nvim --headless "+qa" 2>&1); rc=$?
+    # portable timeout: GNU `timeout` (Linux/CI) or `gtimeout` (macOS coreutils); skip the cap if neither
+    if have timeout; then to="timeout 300"; elif have gtimeout; then to="gtimeout 300"; else to=""; fi
+    out=$(XDG_CONFIG_HOME="$tmpcfg" $to nvim --headless "+qa" 2>&1); rc=$?
     rm -rf "$tmpcfg"
     case "$rc" in
       0)   pass "nvim loads (LazyVim bootstrap ok)" ;;
