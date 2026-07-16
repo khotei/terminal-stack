@@ -402,6 +402,7 @@ The *why* behind each key — the file states the *what*
 | `typescript-lsp` | TS/JS go-to-definition, find-references, post-edit diagnostics — a **plugin**, not an MCP, so it costs no MCP slot |
 | `commit-commands` | `/commit`, `/push`, create-PR commands |
 | `pr-review-toolkit` | PR-review agents / `/code-review` |
+| `frontend-design` | Design-first skill for UI work — sets an aesthetic direction (typography, palette, motion) before generating React/Vue/Svelte/HTML, dodging generic "AI-slop" output |
 
 **Why no GitHub MCP.** `gh` is already installed and authed ([`Brewfile`](../Brewfile)); for a fluent
 `gh` user the GitHub MCP is heavier (more tokens, PR flakiness) for no gain. Git + GitHub run through
