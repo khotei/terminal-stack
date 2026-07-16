@@ -4,12 +4,12 @@
 // Validate: `zellij --config zellij/config.kdl setup --check` (run by /check + CI)
 
 // ── options ───────────────────────────────────────────────────────────
-theme "gruvbox-material-dark"   // fallback if the terminal reports no appearance
+theme "catppuccin-mocha"        // fallback if the terminal reports no appearance
 // Auto-switch with the OS: Ghostty follows macOS appearance and reports it via
 // CSI 2031 / DSR 997; Zellij picks theme_dark/theme_light accordingly. Both
 // palettes are defined in the themes block below (self-contained).
-theme_dark "gruvbox-material-dark"
-theme_light "gruvbox-material-light"
+theme_dark "catppuccin-mocha"
+theme_light "catppuccin-latte"
 default_layout "compact"        // built-in compact-bar — theme-aware, shows mode + keys + tabs
 pane_frames true                // on so the rounded corners below can draw; frame = 1-cell content breathing room
 copy_on_select true             // select = copy, tmux-like
@@ -61,36 +61,269 @@ keybinds {
     }
 }
 
-// ── themes: dark + light (names below) ────────────────────────────────
-// ANSI colours lifted verbatim from Ghostty's active bundled theme, so the
-// terminal and the multiplexer render one identical palette. bg is a *lifted*
-// background tone (not the darkest) so pane frames stay visible against the base
-// — that legibility, not any one palette, is why these are hand-mapped here.
+// ── themes: dark + light (Catppuccin, component spec) ─────────────────
+// Verbatim from Zellij's upstream Catppuccin assets — the COMPONENT format, not
+// the 10-colour palette. Only components can theme the pane frames; with a palette
+// present Zellij ignores component overrides and derives frames from it, so palette
+// form gives no frame control at all.
+// github.com/zellij-org/zellij/tree/main/zellij-utils/assets/themes
+//
+// Local change per theme: both frame bases. Rule — the FOCUSED frame takes the
+// strongest contrast to the background (near-black on light, near-white on dark),
+// the IDLE frame nearly dissolves into it. Upstream paints focus the accent green
+// and omits frame_unselected (idle falls back to fg); we split them hard so which
+// pane holds focus is unmistakable in either appearance.
 themes {
-    gruvbox-material-dark {
-        bg "#504945"      // bg4 — lifted so pane frames read against bg0
-        fg "#d4be98"      // fg0
-        red "#ea6962"
-        green "#a9b665"
-        blue "#7daea3"
-        yellow "#d8a657"
-        magenta "#d3869b"
-        orange "#e78a4e"
-        cyan "#89b482"    // aqua
-        black "#282828"   // bg0
-        white "#d4be98"   // fg0
+    catppuccin-mocha {
+        text_unselected {
+            base 205 214 244
+            background 24 24 37
+            emphasis_0 250 179 135
+            emphasis_1 137 220 235
+            emphasis_2 166 227 161
+            emphasis_3 245 194 231
+        }
+        text_selected {
+            base 205 214 244
+            background 88 91 112
+            emphasis_0 250 179 135
+            emphasis_1 137 220 235
+            emphasis_2 166 227 161
+            emphasis_3 245 194 231
+        }
+        ribbon_selected {
+            base 24 24 37
+            background 166 227 161
+            emphasis_0 243 139 168
+            emphasis_1 250 179 135
+            emphasis_2 245 194 231
+            emphasis_3 137 180 250
+        }
+        ribbon_unselected {
+            base 24 24 37
+            background 205 214 244
+            emphasis_0 243 139 168
+            emphasis_1 205 214 244
+            emphasis_2 137 180 250
+            emphasis_3 245 194 231
+        }
+        table_title {
+            base 166 227 161
+            background 0
+            emphasis_0 250 179 135
+            emphasis_1 137 220 235
+            emphasis_2 166 227 161
+            emphasis_3 245 194 231
+        }
+        table_cell_selected {
+            base 205 214 244
+            background 88 91 112
+            emphasis_0 250 179 135
+            emphasis_1 137 220 235
+            emphasis_2 166 227 161
+            emphasis_3 245 194 231
+        }
+        table_cell_unselected {
+            base 205 214 244
+            background 24 24 37
+            emphasis_0 250 179 135
+            emphasis_1 137 220 235
+            emphasis_2 166 227 161
+            emphasis_3 245 194 231
+        }
+        list_selected {
+            base 205 214 244
+            background 88 91 112
+            emphasis_0 250 179 135
+            emphasis_1 137 220 235
+            emphasis_2 166 227 161
+            emphasis_3 245 194 231
+        }
+        list_unselected {
+            base 205 214 244
+            background 24 24 37
+            emphasis_0 250 179 135
+            emphasis_1 137 220 235
+            emphasis_2 166 227 161
+            emphasis_3 245 194 231
+        }
+        frame_selected {
+            base 205 214 244       // Text — near-white: focus takes max contrast on dark
+            background 0
+            emphasis_0 250 179 135
+            emphasis_1 137 220 235
+            emphasis_2 245 194 231
+            emphasis_3 0
+        }
+        frame_unselected {
+            base 49 50 68          // Surface0 — idle frame nearly dissolves into the bg
+            background 0
+            emphasis_0 250 179 135
+            emphasis_1 137 220 235
+            emphasis_2 245 194 231
+            emphasis_3 0
+        }
+        frame_highlight {
+            base 250 179 135
+            background 0
+            emphasis_0 245 194 231
+            emphasis_1 250 179 135
+            emphasis_2 250 179 135
+            emphasis_3 250 179 135
+        }
+        exit_code_success {
+            base 166 227 161
+            background 0
+            emphasis_0 137 220 235
+            emphasis_1 24 24 37
+            emphasis_2 245 194 231
+            emphasis_3 137 180 250
+        }
+        exit_code_error {
+            base 243 139 168
+            background 0
+            emphasis_0 249 226 175
+            emphasis_1 0
+            emphasis_2 0
+            emphasis_3 0
+        }
+        multiplayer_user_colors {
+            player_1 245 194 231
+            player_2 137 180 250
+            player_3 0
+            player_4 249 226 175
+            player_5 137 220 235
+            player_6 0
+            player_7 243 139 168
+            player_8 0
+            player_9 0
+            player_10 0
+        }
     }
-    gruvbox-material-light {
-        bg "#d5c4a1"      // bg2 — lifted so frames read against the light base
-        fg "#654735"      // fg0
-        red "#c14a4a"
-        green "#6c782e"
-        blue "#45707a"
-        yellow "#b47109"
-        magenta "#945e80"
-        orange "#c35e0a"
-        cyan "#4c7a5d"    // aqua
-        black "#fbf1c7"   // bg0 (lightest)
-        white "#654735"   // fg0
+    catppuccin-latte {
+        text_unselected {
+            base 76 79 105
+            background 220 224 232
+            emphasis_0 254 100 11
+            emphasis_1 4 165 229
+            emphasis_2 64 160 43
+            emphasis_3 210 15 57
+        }
+        text_selected {
+            base 76 79 105
+            background 172 176 190
+            emphasis_0 254 100 11
+            emphasis_1 4 165 229
+            emphasis_2 64 160 43
+            emphasis_3 234 118 203
+        }
+        ribbon_selected {
+            base 220 224 232
+            background 64 160 43
+            emphasis_0 210 15 57
+            emphasis_1 254 100 11
+            emphasis_2 234 118 203
+            emphasis_3 30 102 245
+        }
+        ribbon_unselected {
+            base 220 224 232
+            background 92 95 119
+            emphasis_0 234 118 203
+            emphasis_1 76 79 105
+            emphasis_2 30 102 245
+            emphasis_3 234 118 203
+        }
+        table_title {
+            base 64 160 43
+            background 0
+            emphasis_0 254 100 11
+            emphasis_1 4 165 229
+            emphasis_2 64 160 43
+            emphasis_3 234 118 203
+        }
+        table_cell_selected {
+            base 76 79 105
+            background 172 176 190
+            emphasis_0 254 100 11
+            emphasis_1 4 165 229
+            emphasis_2 64 160 43
+            emphasis_3 234 118 203
+        }
+        table_cell_unselected {
+            base 76 79 105
+            background 220 224 232
+            emphasis_0 254 100 11
+            emphasis_1 4 165 229
+            emphasis_2 64 160 43
+            emphasis_3 234 118 203
+        }
+        list_selected {
+            base 76 79 105
+            background 172 176 190
+            emphasis_0 254 100 11
+            emphasis_1 4 165 229
+            emphasis_2 64 160 43
+            emphasis_3 234 118 203
+        }
+        list_unselected {
+            base 76 79 105
+            background 220 224 232
+            emphasis_0 254 100 11
+            emphasis_1 4 165 229
+            emphasis_2 64 160 43
+            emphasis_3 234 118 203
+        }
+        frame_selected {
+            base 76 79 105         // Text — near-black: focus takes max contrast on light
+            background 0
+            emphasis_0 254 100 11
+            emphasis_1 4 165 229
+            emphasis_2 234 118 203
+            emphasis_3 0
+        }
+        frame_unselected {
+            base 204 208 218       // Surface0 — idle frame nearly dissolves into the bg
+            background 0
+            emphasis_0 254 100 11
+            emphasis_1 4 165 229
+            emphasis_2 234 118 203
+            emphasis_3 0
+        }
+        frame_highlight {
+            base 254 100 11
+            background 0
+            emphasis_0 210 15 57
+            emphasis_1 136 57 239
+            emphasis_2 254 100 11
+            emphasis_3 254 100 11
+        }
+        exit_code_success {
+            base 64 160 43
+            background 0
+            emphasis_0 4 165 229
+            emphasis_1 220 224 232
+            emphasis_2 234 118 203
+            emphasis_3 30 102 245
+        }
+        exit_code_error {
+            base 210 15 57
+            background 0
+            emphasis_0 223 142 29
+            emphasis_1 0
+            emphasis_2 0
+            emphasis_3 0
+        }
+        multiplayer_user_colors {
+            player_1 234 118 203
+            player_2 30 102 245
+            player_3 0
+            player_4 223 142 29
+            player_5 4 165 229
+            player_6 0
+            player_7 210 15 57
+            player_8 0
+            player_9 0
+            player_10 0
+        }
     }
 }

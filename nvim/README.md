@@ -70,12 +70,16 @@ LazyVim defaults unless the row says otherwise — the exhaustive tables are in
 | Search the whole project by content | `<leader>/` (Grep) |
 | Flip to the file I just left | `<S-h>` / `<S-l>` (prev / next buffer) |
 | Toggle the file tree | `<leader>e` (explorer) |
+| Jump *into* the file tree — and back | `<leader>E` *(repo)* |
 | Jump to a symbol's definition · back | `gd` · `<C-o>` |
 | See what's under the cursor | `K` (hover docs) |
 | Rename a symbol everywhere (live preview) | `<leader>cr` |
 | Fix-it menu (imports, quick-fixes) | `<leader>ca` (code action) |
+| Comment a line / a motion or selection | `gcc` / `gc` |
+| Flip an editor option (wrap, numbers, diagnostics…) | `<leader>u` then a letter |
 | Full git UI in a float | `<leader>gg` (lazygit) |
 | Move focus between splits | `<C-h/j/k/l>` |
+| Flip back to the last window I was in | `<C-w>p` |
 | Leave insert without reaching for Esc | `jk` *(this repo — [§10](#10-what-we-changed-vs-the-stock-starter))* |
 
 > `<leader>` is `<Space>`. Where a key is a *chord* (`<C-h>` = Ctrl+h), the whole chord is one press;
@@ -98,7 +102,8 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§10](#10-what-we-changed
 | `<leader>,` | Buffers | `<leader>fr` | Recent files |
 | `<leader>fc` | Find config file | `<leader>sR` | Resume last picker |
 | `<leader>sk` | Search keymaps | `<leader>ss` | Symbols (this file) |
-| `<leader>e` | Explorer (root) | `<leader>E` | Explorer (cwd) |
+| `<leader>e` | Explorer toggle (root) | `<leader>E` | Explorer focus ⇄ back *(repo)* |
+| `<leader>fe` | Explorer (root) | `<leader>fE` | Explorer (cwd) |
 
 **Buffers, windows, tabs:**
 
@@ -107,7 +112,8 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§10](#10-what-we-changed
 | `<S-h>` / `<S-l>` | Prev / next buffer | `]b` / `[b` | Prev / next buffer |
 | `<leader>bd` | Delete buffer | `<leader>bp` | Toggle pin buffer |
 | `<C-h/j/k/l>` | Move focus between splits | `<C-↑/↓/←/→>` | Resize split |
-| `<leader>-` | Split below | `<leader>\|` | Split right |
+| `<C-w>p` | Focus last-active window | `<leader>-` | Split below |
+| `<leader>\|` | Split right | | |
 | `<leader>wd` | Close split | `<leader>wm` | Zoom (maximize) split |
 | `<leader><tab><tab>` | New tab | `<leader><tab>d` | Close tab |
 | `<leader><tab>]` / `[` | Next / prev tab | | |
@@ -184,6 +190,17 @@ file's shape? `<leader>cs` opens the **Outline** (this repo's [outline extra](ht
 — a symbol tree you can jump around; the **dropbar** winbar *(repo)* shows the symbol path at the cursor
 like JetBrains' "Context Info", no keypress needed.
 
+**Flip an editor setting without touching config.** `<leader>u` is a whole *namespace* of on/off
+switches — wrap (`uw`), line numbers (`ul`), diagnostics (`ud`), inlay hints (`uh`), indent guides
+(`ug`), conceal (`uc`), zen mode (`uz`), light/dark (`ub`). Press `<leader>u` and which-key lists every
+toggle; each remembers its state, so you flip a thing on, work, and flip it back — no `:set` from memory.
+
+**Comment and move through problems without leaving home row.** `gcc` toggles a line comment; `gc`
+takes a motion or a visual selection (`gco` / `gcO` open a fresh comment below / above). Step between
+issues with `]d` / `[d` (diagnostics), `]e` (next error), `]t` (next TODO), `]q` (next quickfix). Need a
+throwaway buffer? `<leader>.` toggles a **per-project scratchpad**; `<leader>n` reopens a notification you
+dismissed too fast.
+
 **Refactor safely.** `<leader>cr` renames the symbol under the cursor with **live preview** — every call
 site updates as you type ([inc-rename extra](https://www.lazyvim.org/extras/editor/inc-rename)). Broken
 import or a lint the LSP can fix? `<leader>ca` (code action) offers the menu — "Add import", "Organize
@@ -242,25 +259,30 @@ it. Every key below is the tool's own **default** — cited, never invented
 
 ### The explorer (`<leader>e`) — a file manager, not just a tree
 
-`<leader>e` is the [snacks.nvim](https://github.com/folke/snacks.nvim/blob/main/docs/explorer.md)
-explorer — the picker in tree form, so it *manages* files, not only opens them. Cursor inside the tree:
+`<leader>e` is [neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim), the LazyVim default
+explorer — it *manages* files, not only opens them. `<leader>e` **toggles** it; `<leader>E` **focuses**
+it from any split and, pressed again from inside, hops back (`<C-w>p`) — *(repo,
+[§10](#10-what-we-changed-vs-the-stock-starter))*. The authoritative key list is **`?` inside the
+tree**; the moves worth memorizing (a few — `l h Y O P` — are LazyVim's additions on top of neo-tree's
+own defaults):
 
 | Key | Action | Key | Action |
 |---|---|---|---|
-| `l` / `<CR>` · `h` | open / expand · collapse | `a` · `d` · `r` | add (`/` = folder) · delete · rename |
-| `c` · `m` · `p` | copy · move · paste here | `y` | yank the file **path** to a register |
-| `<C-s>` / `<C-v>` | open in split / vsplit | `.` · `<BS>` | folder-under-cursor as root · go up |
-| `H` · `I` | toggle hidden · git-ignored | `<Tab>` | select / deselect (multi-select) |
-| `<leader>/` | live-grep **the folder under the cursor** | `<C-c>` | `cd` nvim into that folder |
+| `l` / `<CR>` · `h` | open · close node | `a` · `A` | add file · add folder |
+| `S` / `s` | open in split / vsplit | `d` · `r` | delete · rename |
+| `t` | open in a new tab | `y` · `x` · `p` | copy · cut · paste (tree clipboard) |
+| `Y` · `O` | copy **path** · open in system app | `c` · `m` | copy / move to a typed path |
+| `.` · `<BS>` | folder under cursor as root · up | `H` · `P` | toggle hidden · preview |
+| `/` | fuzzy-filter **within the tree** | `[g` / `]g` | prev / next git-changed |
 
 **Secrets.**
-- **Bulk ops.** Mark files with `<Tab>`, move into the target folder, then `m` (move) or `c` (copy)
-  acts on the whole selection.
-- **Scoped grep.** `<leader>/` greps *from the folder under the cursor* — a fast "search only this
-  module."
-- **Reroot on the fly.** `.` makes that folder the tree root; `<BS>` climbs back up.
-- **The tree follows your buffer** — reopen `<leader>e` and you're already on the file you're editing.
-- Gotcha: the explorer remaps `<C-t>` to *terminal*, so there is no "open in a new tab" from the tree.
+- **Reveal-follows-buffer.** `follow_current_file` is on *(repo, via LazyVim)* — the tree always
+  highlights the file you're editing; reopen `<leader>e` and you're already on it.
+- **Two clipboards.** `y`/`x`/`p` copy/cut/paste files *within* the tree; `Y` puts the file's **path**
+  on the system clipboard, and `O` hands the file to the OS's default app.
+- **Splits are letters, not chords.** Open a file beside the current one with `S` (horizontal) / `s`
+  (vertical) — not `<C-…>`. And `t` opens it in a **new tab**.
+- **Reroot on the fly.** `.` makes the folder under the cursor the tree root; `<BS>` climbs back up.
 
 ### Lazygit (`<leader>gg`) — the git TUI, its own world
 
@@ -386,6 +408,10 @@ win, so those chords reach *Zellij*, not the editor:
   `<C-s>`, `<C-w>`, function keys — all of it reaches the editor untouched. `Alt+d` again takes the
   multiplexer back. `<Space>` (the leader) and the window keys `<C-h/j/k/l>` never collide, so those
   work whether or not you're locked; the `Ctrl+<mode>` chords are the ones the lock frees.
+- **A few nvim *defaults* live on `Alt` — Zellij eats those too.** LazyVim binds move-line to `<A-j>` /
+  `<A-k>`, but those are exactly Zellij's *focus-pane-down/up* keys, so from an unlocked pane they move
+  the Zellij focus, not the line. Lock the pane (`Alt+d`) and they reach the editor. It's the only
+  default collision — the rest of the keymap is leader / `Ctrl` / `g`-based.
 - **The gotcha: a `Ctrl` chord "does nothing" in nvim → you're *not* locked.** Enter nvim and its
   `Ctrl`-keys are eaten by Zellij until you press `Alt+d` — no auto-locking to catch it for you. This is
   the mirror of the [Zellij reflex](../zellij/README.md#1-the-mental-model).
@@ -407,6 +433,7 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/config/lazy.lua`](./lua/config/lazy.lua) | point `install.colorscheme` at the stack's palette | Use the real theme during install, not the default tokyonight. |
 | [`lua/config/options.lua`](./lua/config/options.lua) | `relativenumber`, `scrolloff=8`, `confirm` | Small comfort defaults on top of LazyVim's. |
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `jk` → `<Esc>` | One universal comfort bind; this file is where you port IdeaVim maps. |
+| [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `<leader>E` → focus / return the neo-tree sidebar | Stock `<leader>e` only *toggles* the tree (closes it from the editor); this **focuses** it from any split in one key — no `<C-h>` hop across splits — and a second press returns to the origin window (`<C-w>p`). Overrides LazyVim's `<leader>E` (cwd explorer, still on `<leader>fE`). |
 | [`lazyvim.json`](./lazyvim.json) | enable `lang.markdown` + `lang.typescript` + `editor.inc-rename` + `editor.outline` + `coding.mini-surround` + `dap.core` + `test.core` extras | In-buffer Markdown render (`<leader>um`), TS LSP (`gd`/`gr`/`K`), live rename (`<leader>cr`), outline (`<leader>cs`), surround (`gs*`), debugger (`<leader>d…`), test runner (`<leader>t…`). See [§7](#7-advanced-craft--lsp-refactor-debug-test). |
 | [`lua/plugins/markdown.lua`](./lua/plugins/markdown.lua) | disable `markdown-preview.nvim` | `lang.markdown` ships two renderers; keep only render-markdown's in-buffer toggle (`<leader>um`). A terminal-first stack wants no browser tab — and skips the plugin's node build step. |
 | [`lua/plugins/dap-node.lua`](./lua/plugins/dap-node.lua) | append an `npm`/`pnpm` "Debug script" dap config | `lang.typescript` covers "Launch file"/"Attach" but not `npm run <script>` under the debugger; appended so its own configs survive. |

@@ -396,6 +396,12 @@ this stack: **`zja`** = `zellij attach`, **`zjd`** = `zellij --layout dev` (zsh)
   squeezing everything ([stacked resize](https://zellij.dev/tutorials/stacked-resize/)).
 - **Swap layouts** — `Alt+[` / `Alt+]` cycle *predefined arrangements* of the current panes, so you
   reflow a tab instead of hand-resizing ([swap layouts](https://zellij.dev/documentation/swap-layouts.html)).
+  The mental model: panes aren't a "group" — they just belong to the **tab**; a swap layout is a
+  *template* for arranging however many panes the tab holds, and cycling reshapes them **all at once**
+  (this is how you turn a top/bottom split into side-by-side without `Move`). The label at the far
+  right of the status bar (`VERTICAL`, `HORIZONTAL`, …) names the active template. Hand-resize or
+  `Move` a pane and you drift *off-template* — the next `Alt+]` snaps everything back into a template,
+  which is why a hand-tuned layout can seem to "jump".
 - **Embed ↔ float** — `Ctrl+p` `e` turns a floating pane into a tiled one (or back); `Ctrl+p` `w`
   toggles the whole floating layer.
 - **Break a pane out** — `Ctrl+t` `b` moves the focused pane into its own tab; `Ctrl+t` `[` / `]` sends
@@ -448,8 +454,10 @@ The bar is Zellij's built-in [`compact-bar`](https://zellij.dev/documentation/pl
 single line that is **theme-aware**: it follows `theme_dark`/`theme_light`, so it lightens with the rest
 of the stack in light appearance and darkens in dark (this is what closes the auto-theme loop — a plugin
 bar with hard-coded colours could not). For the current mode it shows the **mode name, that mode's keybinding
-hints, and the tabs** — the live cheatsheet the tables above summarise. It ships with Zellij (no wasm,
-no permission grant) and loads via `default_layout "compact"` for every session.
+hints, and the tabs** — the live cheatsheet the tables above summarise. At the far right it also names
+the active **swap layout** (`VERTICAL`, `HORIZONTAL`, …) — the template `Alt+[` / `Alt+]` cycle
+([§6](#6-advanced-pane-craft)). It ships with Zellij (no wasm, no permission grant) and loads via
+`default_layout "compact"` for every session.
 
 ## 10. The `dev` layout
 

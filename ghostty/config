@@ -13,11 +13,10 @@ font-size = 18
 font-thicken = true
 
 # ── theme ─────────────────────────────────────────────────────────────
-# Gruvbox Material ships bundled with Ghostty; the stack reuses it across
-# Zellij / LazyVim / Starship for one warm, high-contrast palette with clear
-# UI borders. Light is auto-selected to follow the macOS appearance.
-# Verify: ghostty +list-themes
-theme = light:Gruvbox Material Light,dark:Gruvbox Material Dark
+# One palette reused across Zellij / LazyVim / Starship, so the whole stack shares
+# a single scheme. The light:…,dark:… pair auto-follows the macOS appearance
+# (Ghostty reports it via CSI 2031). Verify: ghostty +list-themes
+theme = light:Catppuccin Latte,dark:Catppuccin Mocha
 
 # ── window ────────────────────────────────────────────────────────────
 # Opaque by choice (readability over glass). To enable translucency add
