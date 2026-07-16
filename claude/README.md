@@ -33,6 +33,7 @@ and slash command, the fast recipes, the parallel-agent workflow, and this repo'
 8. [Living in a Zellij pane](#8-living-in-a-zellij-pane) — the manual lock · `Ctrl+G` · `Alt+d` · voice
 9. [The status line](#9-the-status-line) · [Settings, plugins & MCP](#10-settings-plugins--mcp) · [Global rules](#11-global-rules--rules)
 10. [Verify](#12-verify) · [Install](#13-install) · [Go deeper](#go-deeper)
+11. [Optional power-ups](#14-optional-power-ups-not-wired-here) — hooks · fast mode · routines · `/loop` · more
 
 ---
 
@@ -468,6 +469,25 @@ Run `claude` once and log in ([overview](https://code.claude.com/docs/en/overvie
 - Rewind / checkpoints → [checkpointing](https://code.claude.com/docs/en/checkpointing)
 - Memory & `CLAUDE.md` → [memory](https://code.claude.com/docs/en/memory) · Rebind keys → [keybindings](https://code.claude.com/docs/en/keybindings)
 - Voice dictation → [voice-dictation](https://code.claude.com/docs/en/voice-dictation) · MCP → [mcp](https://code.claude.com/docs/en/mcp)
+
+---
+
+## 14. Optional power-ups (not wired here)
+
+Features worth knowing but **deliberately not wired** into this stack's config — reach for them when the
+need arises. All cited upstream; none are set in `settings.json` here (hooks and fast mode would need a
+config edit — ask and we'll wire them).
+
+| Feature | What it gives you | How to reach it |
+|---|---|---|
+| **Hooks** | Deterministic automation on lifecycle events — auto-`stylua`/`shfmt` after an edit, a notification on `Stop`, or a guard blocking edits to protected paths. Fires regardless of what the model remembers | `hooks` block in `settings.json` · [hooks-guide](https://code.claude.com/docs/en/hooks-guide) |
+| **Fast mode** (`/fast`, `Option+O`) | Opus with **faster output** — the model is *not* downgraded; the interactive loop just feels snappier | toggle live · [fast-mode](https://code.claude.com/docs/en/fast-mode) |
+| **Prompt suggestions** | A grey next-step suggestion drawn from your git history / the conversation; `Tab` or `→` accepts it | on by default · [interactive-mode](https://code.claude.com/docs/en/interactive-mode#prompt-suggestions) |
+| `claude --from-pr <N>` | Resume the session linked to a GitHub PR — pairs with the `gh` review loop ([reviewing-changes](../docs/reviewing-changes.md)) | CLI flag · [common-workflows](https://code.claude.com/docs/en/common-workflows#create-pull-requests) |
+| **`/loop [interval] <cmd>`** | Repeat a prompt or slash-command on an interval **in this session** (polling; stops on `/clear`) | in-session · [scheduled-tasks](https://code.claude.com/docs/en/scheduled-tasks) |
+| **Routines** | Scheduled agents that run **in the cloud** — even with the laptop closed (morning PR review, weekly dependency audit) | [claude.ai/code/routines](https://claude.ai/code/routines) · [routines](https://code.claude.com/docs/en/routines) |
+| **`/powerup`** | Interactive lessons with animated demos of Claude Code's features — a way to discover more of them | in-session |
+| **Output styles** (`/output-style`) | Reshape Claude's output register per task (e.g. terse-only). *Overlaps* this stack's `rules/communication-style.md`, which already holds the tone | [output-styles](https://code.claude.com/docs/en/output-styles) |
 
 ---
 
