@@ -146,6 +146,8 @@ apply "No open/close window animations" \
   defaults write NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
 apply "Faster Mission Control animation (0.1s)" \
   defaults write com.apple.dock expose-animation-duration -float 0.1
+apply "Reduce Motion: swap the Spaces slide for a quick fade (snappier ctrl+←/→ desktop switching; needs logout)" \
+  defaults write com.apple.universalaccess reduceMotion -bool true
 apply "Save/Print dialogs open in their expanded (detailed) state" \
   bash -c 'defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true; defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true'
 

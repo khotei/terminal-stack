@@ -27,7 +27,7 @@ script in the spirit of [mathiasbynens/.macos](https://github.com/mathiasbynens/
 | **Trackpad** | tap-to-click · three-finger drag · two-finger secondary click | all the gestures, on the built-in **and** Bluetooth trackpad |
 | **Finder** | show all extensions · hidden files · path & status bar · list view · search current folder · folders-first · no ext-change warning · no `.DS_Store` on network/USB | see what a developer needs; stop Finder hiding things |
 | **Screenshots** | save to `~/Screenshots` · PNG · no window shadow | keep the Desktop clean |
-| **UI speed** | instant window resize · no window animations · faster Mission Control · expanded save/print panels | snappier, less waiting |
+| **UI speed** | instant window resize · no window animations · faster Mission Control · **Reduce Motion** · expanded save/print panels | snappier, less waiting — Reduce Motion swaps the Spaces slide for a fast fade (macOS Tahoe's `ctrl+←/→` desktop switch, needs logout) |
 | **Friction** | `LSQuarantine = false` | no "are you sure you want to open this app?" dialog |
 | **Shortcuts** | disable **Show Help menu** (`⌘⇧/`, hotkey 98) | it steals `⌘⇧/`; useless in a terminal/editor |
 | | disable Terminal **Open man Page** (`⌘⇧M`) + **Search man Page Index** (`⌘⇧A`) services | they hijack those chords system-wide (e.g. fight JetBrains/editor binds) |
@@ -68,6 +68,7 @@ Each setting is a `defaults` key — flip it back, or just toggle it in **System
 | Finder (hidden files, view, …) | `defaults delete com.apple.finder <key> && killall Finder`, or toggle in Finder → Settings + the View menu |
 | Screenshots location | `defaults delete com.apple.screencapture location && killall SystemUIServer` |
 | UI animations | `defaults delete NSGlobalDomain NSAutomaticWindowAnimationsEnabled` (etc.) |
+| Reduce Motion | `defaults write com.apple.universalaccess reduceMotion -bool false` (then log out/in), or System Settings → Accessibility → Motion → Reduce Motion |
 | Quarantine dialog | `defaults write com.apple.LaunchServices LSQuarantine -bool true` |
 | Show Help menu | System Settings → Keyboard → Keyboard Shortcuts → App Shortcuts (re-enable), or `defaults delete com.apple.symbolichotkeys AppleSymbolicHotKeys` |
 | man-page Services | System Settings → Keyboard → Keyboard Shortcuts → Services → Text, re-check them |
