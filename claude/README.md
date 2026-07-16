@@ -84,7 +84,7 @@ Ten moves that cover ~90% of real use. (Exhaustive tables in [§3](#3-complete-r
 | Reference a file in your prompt | type `@` then the path |
 | Run a shell command into context, get a reply | type `!` then the command |
 | Edit a long prompt in your `$EDITOR` | `Ctrl+G` |
-| Speak your prompt (this stack: tap to toggle) | `Ctrl+F` ([§8](#8-living-in-a-zellij-pane)) |
+| Speak your prompt (hold to talk, release to send) | `Ctrl+F` ([§8](#8-living-in-a-zellij-pane)) |
 | Free context without losing the thread | `/compact` |
 | Fresh conversation, empty context | `/clear` |
 | Toggle the pane's Zellij lock (hand keys to Claude ⇄ back) | `Alt+d` |
@@ -271,8 +271,10 @@ in an isolated git worktree, no editor pane
 - **Vim input mode** — this stack sets `"editorMode": "vim"` in [`settings.json`](./settings.json), so
   the prompt box has vim NORMAL/INSERT/VISUAL modes, motions, and text objects
   ([interactive-mode](https://code.claude.com/docs/en/interactive-mode#vim-editor-mode)). `Esc` in
-  INSERT drops to NORMAL — it does **not** interrupt Claude (that's `Esc` at the app level). Matches
-  Neovim muscle memory across the stack.
+  INSERT drops to NORMAL — it does **not** interrupt Claude (that's `Esc` at the app level). This stack
+  also sets `"vimInsertModeRemaps": { "jk": "<Esc>" }`, so **`jk`** in INSERT drops to NORMAL without
+  reaching for `Esc` (Claude Code ≥ 2.1.208; read from user settings only). Matches Neovim muscle
+  memory across the stack.
 - **Transcript viewer** (`Ctrl+O`) — the full tool-by-tool record; expands MCP calls that otherwise
   collapse to one line. `?` inside it lists its own keys.
 - **Background work** — `Ctrl+B` pushes a long Bash command or agent to the background and hands you the
@@ -310,19 +312,23 @@ couplings make that cohabitation work — the exact behavior lives in the
   Claude's `Ctrl+G` (*edit prompt in `$EDITOR`*). The Zellij config unbinds it so the keystroke reaches
   Claude; leave Locked with `Alt+d` instead.
 
-**Voice — why `Ctrl+F`, not `Space`.** Voice dictation's push-to-talk key
-([`voice:pushToTalk`](https://code.claude.com/docs/en/voice-dictation)) defaults to **`Space`** — which
-would eat every space you type in vim NORMAL mode and the prompt. So this stack rebinds it in
+**Voice — why `Ctrl+F`, and hold-to-talk.** Voice dictation's push-to-talk key
+([`voice:pushToTalk`](https://code.claude.com/docs/en/voice-dictation#rebind-the-dictation-key))
+defaults to **`Space`**, and its default mode is **hold** (push-to-talk: record while held, send on
+release). On a bare key like `Space`, hold detection leans on terminal key-repeat — a brief warmup,
+and the first repeat chars type into the prompt before recording takes over. So this stack rebinds it in
 [`keybindings.json`](./keybindings.json):
 
 ```json
 { "context": "Chat", "bindings": { "space": null, "ctrl+f": "voice:pushToTalk" } }
 ```
 
-`space` is unbound (freed for normal typing) and **`Ctrl+F`** drives push-to-talk. This stack's `voice`
-block sets **tap mode** (`mode: "tap"`) — tap `Ctrl+F` to start, speak, tap again to send
-([voice-dictation](https://code.claude.com/docs/en/voice-dictation#tap-to-record-and-send)) — so it's
-on by default; the first `/voice` run asks for microphone permission. Rebinding is live — no restart
+**`Ctrl+F`** — a modifier combo — starts recording on the *first* keypress, no warmup
+([voice-dictation](https://code.claude.com/docs/en/voice-dictation#hold-to-record)). Binding it already
+**replaces** the default `Space` trigger (`voice:pushToTalk` takes one key at a time), so `"space":
+null` is kept only for clarity — omitting it changes nothing. The stack keeps the upstream **hold** mode
+(`mode: "hold"` in [`settings.json`](./settings.json)): hold `Ctrl+F`, speak, release to insert. Voice
+is on by default; the first `/voice` run asks for microphone permission. Rebinding is live — no restart
 ([keybindings](https://code.claude.com/docs/en/keybindings)).
 
 ---
@@ -361,9 +367,10 @@ The *why* behind each key — the file states the *what*
 |---|---|---|
 | `statusLine` | `command` → `~/.claude/statusline.sh` | The model · dir · git · ctx% · cost line ([§9](#9-the-status-line)). |
 | `editorMode` | `vim` | Vim motions in the prompt box — matches Neovim across the stack ([§6](#6-advanced-craft)). |
+| `vimInsertModeRemaps` | `{ "jk": "<Esc>" }` | `jk` in INSERT → NORMAL, no reach for `Esc` (Claude Code ≥ 2.1.208; user-settings only) ([§6](#6-advanced-craft)). |
 | `theme` | `auto` | Follows the OS light/dark appearance, like the rest of the stack. |
 | `language` | `Русский` | Response **and voice-dictation** language ([voice-dictation](https://code.claude.com/docs/en/voice-dictation#change-the-dictation-language)). |
-| `voice` | `enabled: true, mode: tap` | Voice dictation on by default ([§8](#8-living-in-a-zellij-pane)). |
+| `voice` | `enabled: true, mode: hold` | Push-to-talk voice, on by default — `hold` is upstream's default mode ([§8](#8-living-in-a-zellij-pane)). |
 | `worktree.baseRef` | `head` | Native worktrees branch from *current* work, not the remote default ([§5](#5-parallel-agents--git-worktrees)). |
 | `permissions.defaultMode` | `default` | Start with the brakes on — ask before edits ([permission-modes](https://code.claude.com/docs/en/permission-modes)). |
 | `permissions.allow` | `WebFetch`, `WebSearch` | Pre-allow the two read-only web tools; everything else still prompts. |
