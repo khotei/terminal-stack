@@ -17,7 +17,7 @@ and slash command, the fast recipes, the parallel-agent workflow, and this repo'
   [`statusline.sh`](./statusline.sh) → `~/.claude/statusline.sh`,
   [`keybindings.json`](./keybindings.json) → `~/.claude/keybindings.json`,
   [`rules/*.md`](./rules/) → `~/.claude/rules/`, [`cc-worktree.sh`](./cc-worktree.sh) → a `$PATH` dir,
-  [`mcp-setup.sh`](./mcp-setup.sh) → run once
+  [`mcp-setup.sh`](./mcp-setup.sh) · [`plugins-setup.sh`](./plugins-setup.sh) → run once (by `install.sh`)
 - **Validate:** `bash -n` (shell syntax) + valid JSON (`jq`) + a mock-input status-line render — run by `/check` + CI
 - **Feature:** `F-AGENT-001` … `F-AGENT-004` · **Upstream:** <https://code.claude.com/docs/en>
 
@@ -393,10 +393,13 @@ The *why* behind each key — the file states the *what*
 | `worktree.baseRef` | `head` | Native worktrees branch from *current* work, not the remote default ([§5](#5-parallel-agents--git-worktrees)). |
 | `permissions.defaultMode` | `default` | Start with the brakes on — ask before edits ([permission-modes](https://code.claude.com/docs/en/permission-modes)). |
 | `permissions.allow` | `WebFetch`, `WebSearch` | Pre-allow the two read-only web tools; everything else still prompts. |
-| `enabledPlugins` | see below | Reinstall the stack's plugins on a fresh machine. |
+| `enabledPlugins` | see below | *Enables* the stack's plugins. The fetch is separate — [`plugins-setup.sh`](./plugins-setup.sh) does it; enabling alone doesn't install them on a fresh machine. |
 
-**Plugins** — a trusted fresh machine reinstalls these from the **preloaded**
-`claude-plugins-official` marketplace ([plugins](https://code.claude.com/docs/en/plugins)):
+**Plugins** — [`plugins-setup.sh`](./plugins-setup.sh) installs these (user scope, idempotent) from the
+**preloaded** `claude-plugins-official` marketplace, and `install.sh` runs it best-effort. `enabledPlugins`
+only *enables* them: on a fresh machine an enabled-but-absent plugin is **silently skipped**
+([#32607](https://github.com/anthropics/claude-code/issues/32607)), so the install must be explicit
+([plugins](https://code.claude.com/docs/en/plugins)):
 
 | Plugin | What it adds |
 |---|---|

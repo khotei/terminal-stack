@@ -134,6 +134,16 @@ install_claude_mcp() {
   "$REPO/claude/mcp-setup.sh" || note "skipped: mcp-setup.sh did not complete (harmless; re-run later)"
 }
 
+# Install the user-scope plugins (enabled in settings.json) via claude/plugins-setup.sh.
+# Same best-effort contract as install_claude_mcp: needs the claude CLI, idempotent,
+# skipped on --dry-run. enabledPlugins only *enables* — it does not fetch on a fresh machine.
+install_claude_plugins() {
+  echo "• Claude Code — plugins"
+  if $DRY_RUN; then note "would run: claude/plugins-setup.sh (install 4 plugins, user scope)"; return 0; fi
+  if ! command -v claude >/dev/null 2>&1; then note "skipped: claude CLI not found (run after 'brew bundle')"; return 0; fi
+  "$REPO/claude/plugins-setup.sh" || note "skipped: plugins-setup.sh did not complete (harmless; re-run later)"
+}
+
 echo "terminal-stack → installing from $REPO"
 $DRY_RUN && echo "(dry run — no changes)"
 
@@ -151,6 +161,7 @@ echo "• Claude Code"; link "$REPO/claude/statusline.sh" "$HOME/.claude/statusl
                       for f in "$REPO"/claude/rules/*.md; do link "$f" "$HOME/.claude/rules/$(basename "$f")"; done
 
 install_fonts
+install_claude_plugins
 install_claude_mcp
 $PRUNE && prune
 
