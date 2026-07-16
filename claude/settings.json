@@ -29,6 +29,5 @@
   "skipWorkflowUsageWarning": true,
   "theme": "auto",
   "editorMode": "vim",
-  "vimInsertModeRemaps": { "jk": "<Esc>" },
-  "voiceEnabled": true
+  "vimInsertModeRemaps": { "jk": "<Esc>" }
 }
