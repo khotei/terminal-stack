@@ -25,6 +25,7 @@ alias gp='git push'
 alias gco='git checkout'
 
 # stack tools (guarded — alias only if installed)
+command -v nvim    >/dev/null && alias v='nvim'
 command -v lazygit >/dev/null && alias lg='lazygit'
 command -v yazi    >/dev/null && alias y='yazi'
 

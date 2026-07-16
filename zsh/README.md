@@ -78,6 +78,7 @@ Learn these before anything else; they cover ~90% of real use. (Per-tool detail 
 | Long listing with git status | `ll` | eza |
 | Git, visually | `lg` | lazygit |
 | File manager | `y` | yazi |
+| Open a file in Neovim | `v` | nvim |
 | Vim editing on the prompt | `Esc` then `ci"`, `daw`, … | zsh-vi-mode |
 
 > **`Ctrl-R` is atuin's, not fzf's, in this setup.** Both bind `Ctrl-R`; because `tools.zsh` runs
@@ -106,6 +107,7 @@ Everything defined in this repo's config. The config file is the contract; this 
 | `zj` | `zellij` | multiplexer CLI (attach/list/kill) |
 | `zjd` | `zellij --layout dev` | the editor │ agent workspace, one command |
 | `zja` | `zellij attach` | re-enter a detached session |
+| `v` | `nvim` | only if installed |
 | `lg` | `lazygit` | only if installed |
 | `y` | `yazi` | only if installed |
 | `yolo` | `claude --dangerously-skip-permissions` | opt-in, **never** a shadow of bare `claude` |
