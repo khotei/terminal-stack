@@ -239,9 +239,28 @@ half the keymap comes for free, because the same UI drives files (`<leader><spac
 buffers (`<leader>,`), recent (`<leader>fr`), **keymaps** (`<leader>sk`), symbols (`<leader>ss`), git log,
 diagnostics, and more.
 
-Inside any picker: type to filter, `<C-n>`/`<C-p>` (or `↓`/`↑`) to move, `<CR>` to accept, `<C-v>` /
-`<C-s>` to open in a vertical / horizontal split, `<Esc>` to cancel. Reopen the last one exactly where
-you left it with **`<leader>sR`** (resume) — the fast path back after a detour.
+**One keymap, every source.** The picker's keys live in *its* window, not in each source — so this
+table is identical whether you opened files, grep, or buffers (a source may add a couple of its own —
+see below). It's **two windows**: an *input* prompt that opens in **insert** (you type the filter) and
+the *list*. The `<C-…>` chords below drive everything **without leaving the filter** — internalize those
+and you never switch modes. Prefer Vim motions (`j`/`k`, `gg`/`G`) on the list? `<a-w>` hops focus into
+the **list** window (it's in normal mode there); `i` hops back to typing. `<Esc>` **closes** the picker,
+it does *not* drop you to normal — so focus, don't Esc. **`?` toggles a live cheatsheet** of these keys
+in any picker (source: [snacks.nvim](https://github.com/folke/snacks.nvim/blob/main/docs/picker.md)).
+
+| Key | Action | Key | Action |
+|---|---|---|---|
+| `<C-n>` / `<C-p>` · `↓` / `↑` | next / prev item | `<CR>` | open (current window) |
+| `<C-s>` / `<C-v>` | open in split / vsplit | `<C-t>` | open in a **new tab** |
+| `<Tab>` / `<S-Tab>` | multi-select an item | `<C-a>` | select all |
+| `<C-q>` | send matches → quickfix | `<C-f>` / `<C-b>` | scroll the **preview** |
+| `<C-d>` / `<C-u>` | half-page down / up (list) | `<a-p>` | toggle the preview pane |
+| `<C-Up>` / `<C-Down>` | prev / next query from history | `<Esc>` · `<C-c>` · `q` | close |
+
+Reopen the last picker exactly where you left it with **`<leader>sR`** (resume) — the fast path back
+after a detour. **A source may add its own keys** atop these: the buffers picker binds `<C-x>` to
+*delete the buffer* (that "`<ctrl-x> to close`" hint), and git-status binds `<Tab>` to *stage* / `<C-r>`
+to *restore*. When unsure which apply, `?`.
 
 > Reflex: *"I need to get *to* something"* → it's a `<leader>f…` or `<leader>s…` picker. When unsure,
 > `<leader>` and read the `f` / `s` branches which-key prints.
@@ -431,7 +450,7 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | swap LazyVim's default colorscheme for the stack's shared palette + point the `colorscheme` opt at it | One palette across the stack, auto light/dark — the colorscheme reads `vim.o.background`. Which palette (plugin + options) lives in [`colorscheme.lua`](./lua/plugins/colorscheme.lua); the [LazyVim-documented](https://www.lazyvim.org/configuration/general) way to theme. |
 | [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | add [`f-person/auto-dark-mode.nvim`](https://github.com/f-person/auto-dark-mode.nvim) | Polls the macOS appearance, flips `vim.o.background`, and re-applies the colorscheme so it recompiles for the new mode. Works **inside Zellij**, where the terminal's CSI 2031 signal may not reach the editor. |
 | [`lua/config/lazy.lua`](./lua/config/lazy.lua) | point `install.colorscheme` at the stack's palette | Use the real theme during install, not the default tokyonight. |
-| [`lua/config/options.lua`](./lua/config/options.lua) | `relativenumber`, `scrolloff=8`, `confirm` | Small comfort defaults on top of LazyVim's. |
+| [`lua/config/options.lua`](./lua/config/options.lua) | `number`/`relativenumber` off, `wrap` on, `scrolloff=8`, `confirm` | Small comfort defaults on top of LazyVim's. |
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `jk` → `<Esc>` | One universal comfort bind; this file is where you port IdeaVim maps. |
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `<leader>E` → focus / return the neo-tree sidebar | Stock `<leader>e` only *toggles* the tree (closes it from the editor); this **focuses** it from any split in one key — no `<C-h>` hop across splits — and a second press returns to the origin window (`<C-w>p`). Overrides LazyVim's `<leader>E` (cwd explorer, still on `<leader>fE`). |
 | [`lazyvim.json`](./lazyvim.json) | enable `lang.markdown` + `lang.typescript` + `editor.inc-rename` + `editor.outline` + `coding.mini-surround` + `dap.core` + `test.core` extras | In-buffer Markdown render (`<leader>um`), TS LSP (`gd`/`gr`/`K`), live rename (`<leader>cr`), outline (`<leader>cs`), surround (`gs*`), debugger (`<leader>d…`), test runner (`<leader>t…`). See [§7](#7-advanced-craft--lsp-refactor-debug-test). |
@@ -471,7 +490,8 @@ The *why* behind the non-obvious choices — the files state the *what*.
 
 | Where | Setting | Why |
 |---|---|---|
-| `options.lua` | `relativenumber = true` | Line-relative counts make `j`/`k`-with-a-count motions (`5j`) instant to aim. |
+| `options.lua` | `number = false`, `relativenumber = false` | Start with a clean gutter — no line numbers; flip either on for the buffer with `<leader>ul` / `<leader>uL` when a count motion needs them. LazyVim turns both on by default. |
+| `options.lua` | `wrap = true` | Soft-wrap long lines by default so nothing runs off-screen; LazyVim ships wrap off. Toggle with `<leader>uw`. |
 | `options.lua` | `scrolloff = 8` | Keep 8 lines of context above/below the cursor — never edit at the screen edge. |
 | `options.lua` | `confirm = true` | `:q` with unsaved changes *asks* instead of erroring — one keystroke to save/discard. |
 | `lazy.lua` | `install.colorscheme = { <palette>, "habamax" }` | First launch installs plugins under the *real* theme, not the stock tokyonight flash. |
