@@ -359,6 +359,31 @@ Each is a focused list/tree with its own keys (`?` opens help in all of them):
 > **Neotest secret:** `w` turns the summary into a live loop — the test re-runs on every save, so you
 > leave the panel open and just keep editing.
 
+### Scratch buffers (`<leader>.` toggle · `<leader>S` list) — a per-project notebook
+
+Two keys, but **two different objects**. `<leader>.` toggles a **scratch buffer** — a real, editable
+float ([snacks.scratch](https://github.com/folke/snacks.nvim/blob/main/docs/scratch.md)); `<leader>S`
+opens a **picker** of every scratch you own, so it obeys the whole [§5](#5-the-picker-is-the-command-palette)
+keymap (`<C-s>` / `<C-v>` / `<C-t>` to open one in a split / tab). The float itself is just a buffer —
+you edit it with plain Vim; only a few keys are its own:
+
+| Key | Action |
+|---|---|
+| `q` | close the float (it auto-saves first) |
+| `<leader>.` | toggle it shut again |
+| `R` | reset to the template *(only if a `template` is set — none by default)* |
+| `<CR>` | **lua scratch only** — run the buffer / selection, output inline (`Snacks.debug.run`) |
+
+**Secrets.**
+- **A notebook, not a new file each press.** A scratch's identity is a *key* — `name + filetype + count
+  + cwd + git-branch` — so the same context always reopens the **same** buffer with last time's notes
+  still in it. Files live in `~/.local/share/nvim/scratch/` and **auto-save when hidden** (no `:w`).
+- **Want a second one? Count it.** `2<leader>.` opens scratch №2, `3<leader>.` №3 (`vim.v.count1`) — the
+  title shows "Scratch 2". A different filetype, project, or branch also spawns its own.
+- **No interactive rename.** The filename is a hash of that key, not free text. To label one, bind
+  `Snacks.scratch({ name = "notes", ft = "markdown" })` in [`keymaps.lua`](./lua/config/keymaps.lua), or
+  rename the file on disk. `<leader>S` lists them newest-first.
+
 ### Bonus — flash: the motion the guide was missing
 
 Not a float, but the highest-leverage *movement* LazyVim ships — and this doc omitted it. `s` + two
