@@ -484,6 +484,7 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/plugins/neotest.lua`](./lua/plugins/neotest.lua) | add Vitest + Jest neotest adapters | `test.core` ships neotest with an *empty* adapter table — no adapter, no tests discovered. |
 | [`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua) | add [`sindrets/diffview.nvim`](https://github.com/sindrets/diffview.nvim) + `<leader>gv`/`gm`/`gh`/`gH`, `--imply-local` default | Side-by-side diff + file history for reviewing changes (incl. `origin/main...HEAD`); `--imply-local` puts the working file on the right so LSP works in the diff. No LazyVim-native equivalent. |
 | [`lua/plugins/dropbar.lua`](./lua/plugins/dropbar.lua) | add [`Bekaboo/dropbar.nvim`](https://github.com/Bekaboo/dropbar.nvim) | Breadcrumb winbar (the "Context Info" view). Requires **Neovim ≥ 0.11** — a version floor the stack now depends on. |
+| [`lua/plugins/typescript.lua`](./lua/plugins/typescript.lua) | max out `vtsls` inlay hints (`variableTypes`, `parameterNames = "all"`) + noise suppressors | `lang.typescript` ships variable-type hints off and parameter names at `"literals"` only, so `<leader>uh` reveals little. All six hint categories on (suppressing the redundant ones) so one toggle shows everything, JetBrains-style. |
 
 ## 11. Layout
 
