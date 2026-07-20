@@ -71,7 +71,7 @@ row: *I used to press X in the IDE — what do I do here?*
 | Next / Prev change | `]h` / `[h` | Jump between git hunks (gitsigns) | ✅ |
 | — | `<leader>ghp` | Preview hunk inline | ✅ |
 | Side-by-side diff | `<leader>gv` | diffview: review all changes | 🧩 diffview |
-| File history | `<leader>gh` / `<leader>gH` | diffview: cwd / current-file history | 🧩 diffview |
+| File history | `<leader>gV` / `<leader>gF` | diffview: repo / current-file history | 🧩 diffview |
 
 ## Refactor — mostly ask Claude
 

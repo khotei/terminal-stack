@@ -11,8 +11,11 @@ return {
     keys = {
       { "<leader>gv", "<cmd>DiffviewOpen<cr>", desc = "Diff: working tree (review)" },
       { "<leader>gm", "<cmd>DiffviewOpen origin/main...HEAD<cr>", desc = "Diff: branch vs main (review)" },
-      { "<leader>gh", "<cmd>DiffviewFileHistory<cr>", desc = "Diff: file history (cwd)" },
-      { "<leader>gH", "<cmd>DiffviewFileHistory %<cr>", desc = "Diff: current file history" },
+      -- History on gV/gF, NOT gh/gH: <leader>gh is gitsigns' hunks-group prefix, so a
+      -- standalone <leader>gh binding shadows it (which-key stalls on timeout). gf is taken
+      -- by LazyVim (git_log_file), so the current-file view uses gF.
+      { "<leader>gV", "<cmd>DiffviewFileHistory<cr>", desc = "Diff: repo history" },
+      { "<leader>gF", "<cmd>DiffviewFileHistory %<cr>", desc = "Diff: current file history" },
     },
     opts = { default_args = { DiffviewOpen = { "--imply-local" } } },
   },

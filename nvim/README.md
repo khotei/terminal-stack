@@ -184,7 +184,7 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§10](#10-what-we-changed
 | `<leader>ghd` · `<leader>ghD` | Diff the file vs HEAD · vs the previous commit (`~`) |
 | `<leader>ghu` | Un-stage the last staged hunk |
 | `<leader>gv` · `<leader>gm` | Diffview: working tree · whole branch vs `main` *(repo)* |
-| `<leader>gh` · `<leader>gH` | Diffview: file history — repo · current file *(repo)* |
+| `<leader>gV` · `<leader>gF` | Diffview history — whole repo · current file *(repo)* |
 
 > A **hunk** is a contiguous block of changed lines (a git-diff term — literally a "chunk"). `ghp` peeks
 > the pre-change version inline; `ghd`/`ghD` open a full diff vs HEAD / the previous commit. (The
@@ -291,8 +291,8 @@ imports", quick-fixes — apply and move on.
 **Review a diff — especially Claude Code's.** `<leader>gv` opens **diffview** *(repo)* on the working
 tree; `<leader>gm` reviews the whole branch vs main (`origin/main...HEAD`). Both open with
 `--imply-local`, so the working-tree file is on the right side and **LSP works inside the diff**
-(`gd`/`gr`/`K` — no jump to the real file needed). `<leader>gh` shows the repo's commit *history*;
-`<leader>gH` narrows it to the current file ([diffview.nvim](https://github.com/sindrets/diffview.nvim)).
+(`gd`/`gr`/`K` — no jump to the real file needed). `<leader>gV` shows the repo's commit *history*;
+`<leader>gF` narrows it to the current file ([diffview.nvim](https://github.com/sindrets/diffview.nvim)).
 Full review workflow: [reviewing-changes.md](../docs/reviewing-changes.md).
 For a stray line, stage it straight from the buffer: cursor on a hunk, `<leader>ghs`; jump between hunks
 with `]h` / `[h`. Need the full git TUI? `<leader>gg` floats **lazygit**.
@@ -427,7 +427,7 @@ letter differs per panel (`s` = stash in Files, squash in Commits).
 Side-by-side of every change with a file list you page through — `<leader>gv` for the working tree,
 `<leader>gm` for the whole branch vs main. Both use `--imply-local`, so the real file sits on the
 right and **LSP is live in the diff** (`gd`/`gr`/`K`, diagnostics) — the review and the code, one view
-([diffview.nvim](https://github.com/sindrets/diffview.nvim); `<leader>gh`/`gH` show history;
+([diffview.nvim](https://github.com/sindrets/diffview.nvim); `<leader>gV`/`gF` show history;
 [full guide](../docs/reviewing-changes.md)). Its default keys, once a diffview panel is focused:
 
 | Key | What it does |
@@ -581,7 +581,7 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/plugins/markdown.lua`](./lua/plugins/markdown.lua) | disable `markdown-preview.nvim` | `lang.markdown` ships two renderers; keep only render-markdown's in-buffer toggle (`<leader>um`). A terminal-first stack wants no browser tab — and skips the plugin's node build step. |
 | [`lua/plugins/dap-node.lua`](./lua/plugins/dap-node.lua) | append an `npm`/`pnpm` "Debug script" dap config | `lang.typescript` covers "Launch file"/"Attach" but not `npm run <script>` under the debugger; appended so its own configs survive. |
 | [`lua/plugins/neotest.lua`](./lua/plugins/neotest.lua) | add Vitest + Jest neotest adapters | `test.core` ships neotest with an *empty* adapter table — no adapter, no tests discovered. |
-| [`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua) | add [`sindrets/diffview.nvim`](https://github.com/sindrets/diffview.nvim) + `<leader>gv`/`gm`/`gh`/`gH`, `--imply-local` default | Side-by-side diff + file history for reviewing changes (incl. `origin/main...HEAD`); `--imply-local` puts the working file on the right so LSP works in the diff. No LazyVim-native equivalent. |
+| [`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua) | add [`sindrets/diffview.nvim`](https://github.com/sindrets/diffview.nvim) + `<leader>gv`/`gm`/`gV`/`gF`, `--imply-local` default | Side-by-side diff + file history for reviewing changes (incl. `origin/main...HEAD`); `--imply-local` puts the working file on the right so LSP works in the diff. No LazyVim-native equivalent. |
 | [`lua/plugins/dropbar.lua`](./lua/plugins/dropbar.lua) | add [`Bekaboo/dropbar.nvim`](https://github.com/Bekaboo/dropbar.nvim) | Breadcrumb winbar (the "Context Info" view). Requires **Neovim ≥ 0.11** — a version floor the stack now depends on. |
 | [`lua/plugins/typescript.lua`](./lua/plugins/typescript.lua) | max out `vtsls` inlay hints (`variableTypes`, `parameterNames = "all"`) + noise suppressors | `lang.typescript` ships variable-type hints off and parameter names at `"literals"` only, so `<leader>uh` reveals little. All six hint categories on (suppressing the redundant ones) so one toggle shows everything, JetBrains-style. |
 
