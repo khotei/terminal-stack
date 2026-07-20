@@ -161,9 +161,17 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§10](#10-what-we-changed
 | `<leader>gb` | Blame line | `<leader>gB` | Git browse (open on host) |
 | `]h` / `[h` | Next / prev hunk | `<leader>ghs` | Stage hunk |
 | `<leader>ghr` | Reset hunk | `<leader>ghp` | Preview hunk inline |
-| `<leader>ghb` | Blame line (full) | `<leader>ghS` | Stage buffer |
+| `<leader>ghb` | Blame line (full) | `<leader>ghB` | Blame buffer |
+| `<leader>ghS` | Stage buffer | `<leader>ghu` | Undo stage hunk |
+| `<leader>ghd` | Diff this (vs HEAD) | `<leader>ghD` | Diff this (vs prev commit, `~`) |
+| `<leader>ghR` | Reset buffer | | |
 | `<leader>gv` | Diffview: working tree *(repo)* | `<leader>gm` | Diffview: branch vs main *(repo)* |
 | `<leader>gh` | Diffview: file history (cwd) *(repo)* | `<leader>gH` | Diffview: this file's history *(repo)* |
+
+> A **hunk** is a contiguous block of changed lines (a git-diff term — literally a "chunk"). The
+> `<leader>gh…` keys act on **one hunk**; the capital variant acts on the **whole buffer** — `s`/`S`
+> stage, `r`/`R` reset, `b`/`B` blame. `ghp` peeks the pre-change version inline (non-destructive);
+> `ghd`/`ghD` open a full diff against HEAD / the previous commit.
 
 **Diagnostics, search, edit:**
 
