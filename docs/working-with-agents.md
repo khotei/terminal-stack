@@ -1,5 +1,15 @@
 # 🤝 Working with agents — a repeatable skill, not a feature tour
 
+> *"Programs must be written for people to read, and only incidentally for machines to execute."*
+> — Harold Abelson & Gerald Jay Sussman, *SICP*, preface
+>
+> That was always the quiet truth of the craft. Agents make it the loud one. The machine now writes;
+> the reading is yours — and reading, it turns out, was the whole job. This guide is about doing that
+> reading well, at speed, without ceding the one thing you cannot delegate: **vouching for the result.**
+
+*(Русская версия: [working-with-agents.ru.md](working-with-agents.ru.md). English is canonical; the
+translation may lag.)*
+
 Claude Code lives in a Zellij pane and writes code fast. That was always the easy half. This guide is
 the **skill** that makes it pay: a repeatable loop for *shaping* work, *delegating* it, and *proving*
 it correct — so a long agent session ships code you can actually vouch for, and several agents at once
