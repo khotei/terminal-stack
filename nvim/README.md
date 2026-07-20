@@ -519,8 +519,39 @@ The stack turns LazyVim into a real IDE for **TypeScript/JavaScript** via four
   this repo supplies the *(repo)* [Vitest + Jest adapters](./lua/plugins/neotest.lua) so `<leader>tr` /
   `<leader>ts` actually discover tests (the extra ships an empty adapter table).
 
-> Depth beyond this doc — the `node:test`/Bun gaps, attach-to-process, `.vscode/launch.json` reuse — is
-> in [Debugging your code](../docs/jetbrains-to-stack-review.md#debugging-your-code).
+### Debugging — the deep guide
+
+The loop: breakpoint `<leader>db` → start `<leader>dc` (a config picker) → step `<leader>di`/`dO`/`do`
+→ inspect in the dap-ui panels (`<leader>du`). Pick the row for your target:
+
+| Debug target | How | Notes |
+|---|---|---|
+| **A test** (Vitest · Jest · @effect/vitest) | cursor in the test → `<leader>td` | neotest runs it under dap; @effect/vitest rides the Vitest path |
+| **The current file** | `<leader>dc` → **Launch file** | from `lang.typescript`; runs `${file}` under node |
+| **An npm / pnpm script** | `<leader>dc` → **Debug npm/pnpm script** → type the script | runs it under the debugger *(repo)* |
+| **A VS Code-style config** | drop `.vscode/launch.json` in the project | js-debug configs auto-read into the `<leader>dc` picker, zero setup |
+| **Anything already running** | `node --inspect-brk <entry>` in a Zellij pane → `<leader>dc` → **Attach** | the universal escape hatch |
+
+**How it works — the `--inspect` server ↔ client.** Node ships its own debugger; nothing extra to
+install. `--inspect` (`--inspect-brk` to pause on line 1) raises an **Inspector** — a debug server
+(default `127.0.0.1:9229`) speaking the **Chrome DevTools Protocol**. Any CDP client attaches:
+nvim-dap's `js-debug`, `chrome://inspect`, or VS Code.
+
+- **Launch** — the editor starts node for you (`Launch file`, `Debug npm script`); nothing to raise.
+- **Attach** — you raise the process with `--inspect`, the editor connects; the universal path.
+- **Dev servers** (Next, Vite, Nest…) are node underneath — `NODE_OPTIONS='--inspect' npm run dev` in a
+  pane → `<leader>dc` → **Attach**.
+- `js-debug` adds source-maps (TS→JS) and child-process auto-attach on top of raw CDP.
+
+**Reliability.** Node must be on `PATH` (the stack supplies it via fnm — `fnm use default` if Neovim
+started without the shell env). "Green" ≠ "works": `/check` only proves the dap config *parses*; a
+session is proven only when a breakpoint is **hit** — verify interactively. `<leader>dc` failing with
+`ECONNREFUSED 127.0.0.1:<port>` is a known js-debug handshake flake
+([LazyVim #5913](https://github.com/LazyVim/LazyVim/issues/5913)) — terminate (`<leader>dt`) and retry.
+
+**Known gaps.** `node:test` / `node --test` has no mature neotest adapter (no `<leader>td`) — run it in
+a pane, or `node --inspect-brk --test <file>` → **Attach**. **Bun** isn't debuggable from nvim (WebKit
+inspector, not CDP) — run `bun test` in a pane, or run the code under node.
 
 ---
 

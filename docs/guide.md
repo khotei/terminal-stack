@@ -386,7 +386,6 @@ above stay the source of truth). Pick one that fits; skim, don't memorize.
   [claude](../claude/README.md) · [fonts](../fonts/README.md)
 - Setup + ops: [install](install.md) · [sandbox](sandbox.md)
 - Running many agents at once: [parallel-agents](parallel-agents.md)
-- Coming from an IDE: [JetBrains → stack map](jetbrains-to-stack-review.md)
 - How the repo is built (the SDD loop + commands): [`.claude/commands/README.md`](../.claude/commands/README.md)
 
 ---

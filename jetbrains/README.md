@@ -9,8 +9,7 @@ definition, `gr` find usages — so the keys you learn in Neovim survive in the 
 - **Run:** `make jetbrains` (or `./jetbrains/install.sh`) · **preview:** `./jetbrains/install.sh --dry-run`
 
 > ⚠️ **Opt-in — `bootstrap.sh` / `install.sh` never touch this.** It's for the IDE you keep *around*;
-> the stack's primary editor is Neovim. Already migrated? You want
-> [`docs/jetbrains-to-stack-review.md`](../docs/jetbrains-to-stack-review.md) instead.
+> the stack's primary editor is [Neovim](../nvim/README.md).
 
 ---
 

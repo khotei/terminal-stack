@@ -33,9 +33,6 @@ top-to-bottom and come out knowing the stack — not just copying it.
 
 > 🧭 **New to the stack? Start with the [Developer's Guide](docs/guide.md)** — the mental model, how the
 > tools combine into one workflow, and scenario-by-scenario walkthroughs of how a developer works in it.
->
-> ⌨️ **Coming from JetBrains/IntelliJ?** The [JetBrains → stack review map](docs/jetbrains-to-stack-review.md)
-> translates the IDE hotkeys you know (definition, usages, docs, structure, diff review) into this stack.
 
 ## ✦ The stack
 
