@@ -19,7 +19,7 @@ manual to start working.
 1. [The mental model](#1-the-mental-model) — which-key makes this self-documenting
 2. [Quick start: the moves that pay rent](#2-quick-start--the-moves-that-pay-rent)
 3. [Complete keybinding reference](#3-complete-keybinding-reference) — by area
-4. [Recipes — "I want to… → do this"](#4-recipes--i-want-to--do-this)
+4. [Recipes — "I want to… → do this"](#4-recipes--i-want-to--do-this) — incl. **the navigation set** (name → code → deps → back)
 5. [The picker is the command palette](#5-the-picker-is-the-command-palette)
 6. [Inside the floats — each embedded tool is its own app](#6-inside-the-floats--each-embedded-tool-is-its-own-app) — explorer · lazygit · diffview · flash
 7. [Advanced craft — LSP, refactor, debug, test](#7-advanced-craft--lsp-refactor-debug-test)
@@ -112,110 +112,165 @@ Everything below is a **LazyVim default** (source: [lazyvim.org/keymaps](https:/
 and the enabled [extras](https://www.lazyvim.org/extras)) **except** rows tagged *(repo)*, which this
 stack adds in [`lua/plugins/`](./lua/plugins) — see [§10](#10-what-we-changed-vs-the-stock-starter).
 
-**Find & navigate** (the [snacks picker](https://www.lazyvim.org/keymaps#snackspicker)):
+> **How to read these tables** *(the conventions, stated once)*: `<leader>` = `<Space>`. A **chord**
+> (`<C-h>`) is one press; a **sequence** (`<leader>gg`) is keys tapped in turn — which-key guides the
+> rest. `·` separates related keys. Two case-symmetries run through the whole keymap — **lowercase acts
+> on one, UPPERCASE on the whole** (`ghs`/`ghS` = stage hunk/buffer), and **lowercase goes, UPPERCASE
+> moves** (`<C-w>h`/`H` = focus/relocate a split). Rows tagged *(repo)* are this stack's additions.
 
-| Keys | Action | Keys | Action |
-|---|---|---|---|
-| `<leader><space>` | Find files (root) | `<leader>/` | Grep (root) |
-| `<leader>ff` | Find files (root) | `<leader>fg` | Find files (git-files) |
-| `<leader>,` | Buffers | `<leader>fr` | Recent files |
-| `<leader>fc` | Find config file | `<leader>sR` | Resume last picker |
-| `<leader>sk` | Search keymaps | `<leader>ss` | Symbols (this file) |
-| `<leader>e` | Explorer toggle (root) | `<leader>E` | Explorer focus ⇄ back *(repo)* |
-| `<leader>fe` | Explorer (root) | `<leader>fE` | Explorer (cwd) |
+**Find & navigate** — one [snacks picker](https://www.lazyvim.org/keymaps#snackspicker), many sources ([§5](#5-the-picker-is-the-command-palette)):
+
+| Keys | What it does |
+|---|---|
+| `<leader><space>` · `<leader>ff` | Find a file by fuzzy name (project root) |
+| `<leader>/` | Grep the whole project by content — jump to the match |
+| `<leader>sw` · `<leader>sW` | Grep the **word / selection under the cursor** (root · cwd) |
+| `<leader>,` | Switch buffer — pick from the open files |
+| `<leader>fr` | Recent files (across projects) |
+| `<leader>ss` · `<leader>sS` | Symbols in **this file** · in the **whole project** (jump by name) |
+| `<leader>sm` | **Marks** — list every bookmark and jump to it |
+| `<leader>su` | **Undo history** as a picker — browse and restore a past state |
+| `<leader>sR` | Resume the last picker exactly where you left it |
+| `<leader>sk` | Search all keymaps by name (the "what was that key?" escape hatch) |
+| `<leader>fc` | Open one of this stack's config files |
+| `<leader>e` · `<leader>E` | Explorer: toggle · focus ⇄ back *(repo)* |
 
 **Buffers, windows, tabs:**
 
-| Keys | Action | Keys | Action |
-|---|---|---|---|
-| `<S-h>` / `<S-l>` | Prev / next buffer | `]b` / `[b` | Prev / next buffer |
-| `<leader>bd` | Delete buffer | `<leader>bo` | Delete other buffers |
-| `<C-h/j/k/l>` | Move focus between splits | `<C-↑/↓/←/→>` | Resize split |
-| `<C-w>p` | Focus last-active window | `<leader>-` | Split below |
-| `<leader>\|` | Split right | | |
-| `<leader>wd` | Close split | `<leader>wm` | Zoom (maximize) split |
-| `<leader><tab><tab>` | New tab | `<leader><tab>d` | Close tab |
-| `<leader><tab>]` / `[` | Next / prev tab | | |
+| Keys | What it does |
+|---|---|
+| `<S-h>` / `<S-l>` · `]b` / `[b` | Previous / next buffer |
+| `<leader>bd` · `<leader>bo` | Close this buffer · close all **other** buffers |
+| `<C-h/j/k/l>` | Move focus between splits |
+| `<C-↑/↓/←/→>` | Resize the current split |
+| `<C-w>p` | Jump back to the last-active window |
+| `<leader>-` · `<leader>\|` | Split below · split right |
+| `<leader>wd` · `<leader>wm` | Close the split · zoom it full-screen (toggle) |
+| `<leader><tab><tab>` · `<leader><tab>d` | New Neovim tab · close it |
+| `<leader><tab>]` / `[` | Next / prev Neovim tab |
+| `<C-w>` then a key | The window namespace — split, move, resize (see [§1](#1-the-mental-model)) |
 
 > **Neovim tabs vs. Zellij tabs.** `<leader><tab>*` are Neovim *tabpages* (viewport arrangements inside
 > the editor). Your project tabs — editor │ agent — are **Zellij's** (`Ctrl+t`); see the
 > [multiplexer doc](../zellij/README.md). Different layers, different keys — no collision.
 
-**Code / LSP** (active wherever a language server is attached):
+**Code / LSP** — active wherever a language server is attached (`.ts`/`.tsx` via vtsls, [§7](#7-advanced-craft--lsp-refactor-debug-test)):
 
-| Keys | Action | Keys | Action |
-|---|---|---|---|
-| `gd` | Goto definition | `gr` | References |
-| `gI` | Goto implementation | `gy` | Goto type definition |
-| `K` | Hover docs | `gK` | Signature help |
-| `<leader>ca` | Code action | `<leader>cA` | Source action |
-| `<leader>cr` | Rename (live preview) *(inc-rename extra)* | `<leader>cf` | Format |
-| `<leader>cs` | Outline (symbols) *(outline extra)* | `<leader>cd` | Line diagnostics |
-| `]d` / `[d` | Next / prev diagnostic | `]e` / `[e` | Next / prev error |
+| Keys | What it does |
+|---|---|
+| `gd` · `gr` | Jump to the **definition** · list every **reference** (where it's used) |
+| `gI` · `gy` | Jump to **implementations** · to the symbol's **type** |
+| `]]` / `[[` | Hop to the next / prev **use** of the symbol under the cursor, in-file (`<a-n>`/`<a-p>` cycle) |
+| `K` · `gK` | Hover docs · signature help (parameter hints) — a peek, no jump |
+| `<leader>ca` · `<leader>cA` | Code action (add import, quick-fix) · source action (whole-file, e.g. organize imports) |
+| `<leader>cr` | Rename the symbol everywhere, live preview *(inc-rename extra)* |
+| `<leader>cf` | Format the buffer or selection |
+| `<leader>cs` · `<leader>cd` | Outline — a symbol tree of the file *(outline extra)* · line diagnostics |
+| `]d` / `[d` · `]e` / `[e` | Next / prev diagnostic · next / prev error |
 
 **Git:**
 
-| Keys | Action | Keys | Action |
-|---|---|---|---|
-| `<leader>gg` | Lazygit (root) | `<leader>gG` | Lazygit (cwd) |
-| `<leader>gb` | Blame line | `<leader>gB` | Git browse (open on host) |
-| `]h` / `[h` | Next / prev hunk | `<leader>ghs` | Stage hunk |
-| `<leader>ghr` | Reset hunk | `<leader>ghp` | Preview hunk inline |
-| `<leader>ghb` | Blame line (full) | `<leader>ghB` | Blame buffer |
-| `<leader>ghS` | Stage buffer | `<leader>ghu` | Undo stage hunk |
-| `<leader>ghd` | Diff this (vs HEAD) | `<leader>ghD` | Diff this (vs prev commit, `~`) |
-| `<leader>ghR` | Reset buffer | | |
-| `<leader>gv` | Diffview: working tree *(repo)* | `<leader>gm` | Diffview: branch vs main *(repo)* |
-| `<leader>gh` | Diffview: file history (cwd) *(repo)* | `<leader>gH` | Diffview: this file's history *(repo)* |
+| Keys | What it does |
+|---|---|
+| `<leader>gg` · `<leader>gG` | Lazygit — the full git TUI (root · cwd), see [§6](#6-inside-the-floats--each-embedded-tool-is-its-own-app) |
+| `<leader>gs` | **Changed files** as a picker — jump straight to what moved |
+| `<leader>gl` | Git **log** — browse commits and what each one changed |
+| `<leader>gb` · `<leader>gB` | Blame the line inline · open the line on the host (GitHub/…) |
+| `]h` / `[h` | Jump to the next / prev **hunk** (a changed block) |
+| `<leader>ghp` | **Preview** a hunk's pre-change version inline (non-destructive) |
+| `<leader>ghs` · `<leader>ghS` | Stage the **hunk** · the whole **buffer** |
+| `<leader>ghr` · `<leader>ghR` | Reset (discard) the **hunk** · the whole **buffer** |
+| `<leader>ghb` · `<leader>ghB` | Full blame of the **line** · the whole **buffer** |
+| `<leader>ghd` · `<leader>ghD` | Diff the file vs HEAD · vs the previous commit (`~`) |
+| `<leader>ghu` | Un-stage the last staged hunk |
+| `<leader>gv` · `<leader>gm` | Diffview: working tree · whole branch vs `main` *(repo)* |
+| `<leader>gh` · `<leader>gH` | Diffview: file history — repo · current file *(repo)* |
 
-> A **hunk** is a contiguous block of changed lines (a git-diff term — literally a "chunk"). The
-> `<leader>gh…` keys act on **one hunk**; the capital variant acts on the **whole buffer** — `s`/`S`
-> stage, `r`/`R` reset, `b`/`B` blame. `ghp` peeks the pre-change version inline (non-destructive);
-> `ghd`/`ghD` open a full diff against HEAD / the previous commit.
+> A **hunk** is a contiguous block of changed lines (a git-diff term — literally a "chunk"). `ghp` peeks
+> the pre-change version inline; `ghd`/`ghD` open a full diff vs HEAD / the previous commit. (The
+> lower/UPPERCASE = hunk/buffer symmetry is the one from the [§3 legend](#3-complete-keybinding-reference).)
 
 **Diagnostics, search, edit:**
 
-| Keys | Action | Keys | Action |
-|---|---|---|---|
-| `<leader>xx` | Diagnostics (Trouble) | `<leader>xX` | Buffer diagnostics (Trouble) |
-| `gcc` / `gc` | Toggle comment (line / motion) | `gsa` / `gsd` / `gsr` | Surround add / delete / replace *(surround extra)* |
-| `]t` / `[t` | Next / prev TODO comment | `<leader>sr` | Search & replace (grep) |
+| Keys | What it does |
+|---|---|
+| `<leader>xx` · `<leader>xX` | All diagnostics · this buffer's, in a Trouble panel |
+| `gcc` · `gc` | Toggle a line comment · comment a motion / visual selection |
+| `gsa` · `gsd` · `gsr` | Surround: add · delete · replace (`gsaiw"` wraps a word in quotes) *(surround extra)* |
+| `]t` / `[t` | Next / prev TODO / FIX comment |
+| `<leader>sr` | Project-wide search & replace |
 
 **Debug & test** (from the enabled extras — [§7](#7-advanced-craft--lsp-refactor-debug-test)):
 
-| Keys | Action | Keys | Action |
-|---|---|---|---|
-| `<leader>db` | Toggle breakpoint | `<leader>dB` | Conditional breakpoint |
-| `<leader>dc` | Run / continue | `<leader>di/dO/do` | Step into / over / out |
-| `<leader>du` | Toggle DAP UI | `<leader>de` | Eval expression |
-| `<leader>tr` | Run nearest test | `<leader>tt` | Run file |
-| `<leader>ts` | Toggle test summary | `<leader>to` | Show test output |
-| `<leader>td` | Debug nearest test | `<leader>tw` | Toggle watch |
+| Keys | What it does |
+|---|---|
+| `<leader>db` · `<leader>dB` | Toggle a breakpoint · a conditional breakpoint |
+| `<leader>dc` · `<leader>di`/`dO`/`do` | Run / continue · step into / over / out |
+| `<leader>du` · `<leader>de` | Toggle the DAP UI panels · evaluate an expression |
+| `<leader>tr` · `<leader>tt` | Run the nearest test · every test in the file |
+| `<leader>ts` · `<leader>to` | Toggle the test summary panel · show test output |
+| `<leader>td` · `<leader>tw` | Debug the nearest test · toggle watch (re-run on save) |
 
-**UI toggles & session:**
+**UI toggles & session** — `<leader>u` + a letter flips an option (each remembers its state, [§4](#4-recipes--i-want-to--do-this)):
 
-| Keys | Action | Keys | Action |
-|---|---|---|---|
-| `<leader>uf` | Toggle auto-format | `<leader>uw` | Toggle wrap |
-| `<leader>ul` | Toggle line numbers | `<leader>ud` | Toggle diagnostics |
-| `<leader>ub` | Toggle dark background | `<C-/>` | Terminal (root) |
-| `<leader>um` | Toggle Render Markdown *(markdown extra)* | `<leader>qq` | Quit all |
-| `<leader>qs` / `<leader>ql` | Restore session / last session | | |
+| Keys | What it does |
+|---|---|
+| `<leader>uw` · `<leader>ul` · `<leader>uL` | Toggle wrap · line numbers · relative numbers |
+| `<leader>uf` · `<leader>ud` | Toggle auto-format-on-save · diagnostics |
+| `<leader>uh` · `<leader>uc` | Toggle inlay hints · conceal |
+| `<leader>uA` · `<leader>uD` | Toggle the tab-bar · scope-dimming *(defaults set in [§10](#10-what-we-changed-vs-the-stock-starter))* |
+| `<leader>ub` · `<leader>um` | Toggle dark background · in-buffer Markdown render *(markdown extra)* |
+| `<C-/>` | Toggle a terminal at the project root |
+| `<leader>qq` · `<leader>qs` / `<leader>ql` | Quit all · restore session / last session |
 
 ---
 
 ## 4. Recipes — "I want to… → do this"
 
-**Open the right file without knowing its path.** `<leader><space>` fuzzy-matches filenames from the
-project root; type fragments (`usrctrl` → `user_controller.ts`). Don't know the name but know a string
-inside? `<leader>/` greps content across the tree and drops you on the match. Both are the
-[snacks picker](#5-the-picker-is-the-command-palette) — same picker, different source.
+### The navigation set — from a name to the code, its deps, and back
 
-**Understand code you didn't write.** Cursor on a symbol: `K` shows its docs/signature; `gd` jumps to
-its definition (`<C-o>` hops back); `gr` lists every reference; `gy` goes to its *type*. Want the whole
-file's shape? `<leader>cs` opens the **Outline** (this repo's [outline extra](https://www.lazyvim.org/extras/editor/outline))
-— a symbol tree you can jump around; the **dropbar** winbar *(repo)* shows the symbol path at the cursor
-like JetBrains' "Context Info", no keypress needed.
+Most work starts from a **name** you already see — a file in a diff, a symbol in a review, a component
+you half-remember. The loop is always the same: **land on it → see what it touches → jump around → get
+back → mark the spot.** This is the ready-made key set for each step.
+
+**1 · Land on it — you have a name.**
+
+| You have… | Get there |
+|---|---|
+| a rough **file name** | `<leader><space>` fuzzy-find · `<leader>fr` recent · `<leader>,` open buffers |
+| a **changed** file | `<leader>gs` (changed-files picker) · `<leader>gg` lazygit · `<leader>gv` diffview |
+| a **symbol / component** name | `<leader>sS` project symbols · `<leader>ss` this file · `<leader>sw` grep the word |
+| the cursor already **on** it | `gd` — jump to its definition |
+
+**2 · See what it touches — dependencies.**
+
+| You want… | Key |
+|---|---|
+| every place it's **used** | `gr` — references, in a picker |
+| to hop **use → use in this file** | `]]` / `[[` (next / prev reference; `<a-n>`/`<a-p>` cycle) |
+| its **type** · its **implementations** | `gy` · `gI` |
+| the file's **shape** | `<leader>cs` Outline (symbol tree); the **dropbar** winbar shows the path with no keypress |
+
+**3 · Jump around — and get back.**
+
+| Move | Key |
+|---|---|
+| teleport to any visible spot | `s` (flash) + 2 chars + the label |
+| back / forward through your jumps | `<C-o>` / `<C-i>` |
+| to the spot you *just* left | `` `` `` (backtick backtick) |
+| between changed **hunks** | `]h` / `[h` — `<leader>ghp` peeks the old version |
+
+**4 · Bookmark a spot — marks are Vim's built-in bookmarks.**
+
+| Do | Key |
+|---|---|
+| drop a mark **in this file** | `ma` (any letter `a`–`z`) |
+| drop a **global** mark (survives across files) | `mA` (any capital `A`–`Z`) |
+| leap to a mark | `` `a `` (backtick + its letter) |
+| list & pick from every mark | `<leader>sm` |
+
+> **The whole loop in one breath:** `<leader>sS` land on a symbol → `gr` / `]]` see its uses → `gd` in,
+> `<C-o>` back out → `ma` to bookmark base camp before a deep dive.
 
 **Flip an editor setting without touching config.** `<leader>u` is a whole *namespace* of on/off
 switches — wrap (`uw`), line numbers (`ul`), diagnostics (`ud`), inlay hints (`uh`), indent guides
@@ -275,14 +330,17 @@ the **list** window (it's in normal mode there); `i` hops back to typing. `<Esc>
 it does *not* drop you to normal — so focus, don't Esc. **`?` toggles a live cheatsheet** of these keys
 in any picker (source: [snacks.nvim](https://github.com/folke/snacks.nvim/blob/main/docs/picker.md)).
 
-| Key | Action | Key | Action |
-|---|---|---|---|
-| `<C-n>` / `<C-p>` · `↓` / `↑` | next / prev item | `<CR>` | open (current window) |
-| `<C-s>` / `<C-v>` | open in split / vsplit | `<C-t>` | open in a **new tab** |
-| `<Tab>` / `<S-Tab>` | multi-select an item | `<C-a>` | select all |
-| `<C-q>` | send matches → quickfix | `<C-f>` / `<C-b>` | scroll the **preview** |
-| `<C-d>` / `<C-u>` | half-page down / up (list) | `<a-p>` | toggle the preview pane |
-| `<C-Up>` / `<C-Down>` | prev / next query from history | `<Esc>` · `<C-c>` · `q` | close |
+| Key | What it does |
+|---|---|
+| `<C-n>` / `<C-p>` · `↓` / `↑` | Next / prev item |
+| `<CR>` | Open in the current window |
+| `<C-s>` / `<C-v>` · `<C-t>` | Open in split / vsplit · in a new tab |
+| `<Tab>` / `<S-Tab>` · `<C-a>` | Multi-select an item · select all |
+| `<C-q>` | Send all matches → the quickfix list |
+| `<C-f>` / `<C-b>` · `<a-p>` | Scroll the preview · toggle the preview pane |
+| `<C-d>` / `<C-u>` | Half-page down / up in the list |
+| `<C-Up>` / `<C-Down>` | Prev / next query from history |
+| `<Esc>` · `<C-c>` · `q` | Close the picker |
 
 Reopen the last picker exactly where you left it with **`<leader>sR`** (resume) — the fast path back
 after a detour. **A source may add its own keys** atop these: the buffers picker binds `<C-x>` to
@@ -312,14 +370,18 @@ it from any split and, pressed again from inside, hops back (`<C-w>p`) — *(rep
 tree**; the moves worth memorizing (a few — `l h Y O P` — are LazyVim's additions on top of neo-tree's
 own defaults):
 
-| Key | Action | Key | Action |
-|---|---|---|---|
-| `l` / `<CR>` · `h` | open · close node | `a` · `A` | add file · add folder |
-| `S` / `s` | open in split / vsplit | `d` · `r` | delete · rename |
-| `t` | open in a new tab | `y` · `x` · `p` | copy · cut · paste (tree clipboard) |
-| `Y` · `O` | copy **path** · open in system app | `c` · `m` | copy / move to a typed path |
-| `.` · `<BS>` | folder under cursor as root · up | `H` · `P` | toggle hidden · preview |
-| `/` | fuzzy-filter **within the tree** | `[g` / `]g` | prev / next git-changed |
+| Key | What it does |
+|---|---|
+| `l` / `<CR>` · `h` | Open · close the node under the cursor |
+| `S` · `s` · `t` | Open in split · vsplit · new tab (letters, not chords) |
+| `a` · `A` | Add a file · a folder |
+| `d` · `r` | Delete · rename |
+| `y` · `x` · `p` | Copy · cut · paste files — the tree's own clipboard |
+| `Y` · `O` | Copy the **path** to the system clipboard · open in the OS app |
+| `c` · `m` | Copy / move to a path you type |
+| `.` · `<BS>` | Make the folder under the cursor the root · climb back up |
+| `H` · `P` | Toggle hidden files · a preview pane |
+| `/` · `[g` / `]g` | Fuzzy-filter within the tree · prev / next git-changed file |
 
 **Secrets.**
 - **Reveal-follows-buffer.** `follow_current_file` is on *(repo, via LazyVim)* — the tree always
@@ -338,13 +400,18 @@ Branches `3` · Commits `4` · Stash `5`** — drive a diff view on the right. J
 a panel's sub-tabs; `<enter>` "goes into" the selected item. Keys are **context-dependent** — the same
 letter differs per panel (`s` = stash in Files, squash in Commits).
 
-| Key | Action | Key | Action |
-|---|---|---|---|
-| `1`–`5` | jump to a side-panel | `<space>` | stage/unstage · checkout · apply stash |
-| `a` | stage **all** (Files) | `<enter>` | drill in — on a file → line/hunk staging |
-| `c` · `C` | commit · commit in `$EDITOR` (Files) | `A` | amend into the last commit (Files) |
-| `P` / `p` | push / pull | `b` · `n` · `f` | branch menu · new branch · fetch (Branches) |
-| `d` · `s` | discard menu · stash (Files) | `z` / `Z` | undo / redo the last git action |
+| Key | What it does |
+|---|---|
+| `1`–`5` | Jump to a side-panel (Status · Files · Branches · Commits · Stash) |
+| `<space>` | Context action — stage/unstage · checkout · apply stash |
+| `<enter>` | Drill in — on a file, opens line/hunk staging |
+| `a` | Stage **all** (Files panel) |
+| `c` · `C` | Commit · commit in `$EDITOR` (Files) |
+| `A` | Amend into the last commit (Files) |
+| `P` / `p` | Push / pull |
+| `b` · `n` · `f` | Branch menu · new branch · fetch (Branches) |
+| `d` · `s` | Discard menu · stash (Files) |
+| `z` / `Z` | Undo / redo the last git action |
 
 **Secrets.**
 - **Partial staging.** `<enter>` on a file opens the staging view; there `<space>` toggles the
@@ -363,11 +430,14 @@ right and **LSP is live in the diff** (`gd`/`gr`/`K`, diagnostics) — the revie
 ([diffview.nvim](https://github.com/sindrets/diffview.nvim); `<leader>gh`/`gH` show history;
 [full guide](../docs/reviewing-changes.md)). Its default keys, once a diffview panel is focused:
 
-| Key | Action | Key | Action |
-|---|---|---|---|
-| `<Tab>` / `<S-Tab>` | next / prev file (into its diff) | `-` / `s` | stage / unstage the entry |
-| `S` / `U` | stage-all / unstage-all | `X` | restore the entry to the left side |
-| `i` | toggle list ⇄ tree | `R` · `g?` | refresh · help |
+| Key | What it does |
+|---|---|
+| `<Tab>` / `<S-Tab>` | Next / prev file — steps straight into its diff |
+| `-` · `s` | Stage · unstage the entry |
+| `S` · `U` | Stage-all · unstage-all |
+| `X` | Restore the entry to the left side (discard the change) |
+| `i` | Toggle the file list between list ⇄ tree |
+| `R` · `g?` | Refresh · open help |
 
 > **The whole review loop is two keys:** `-` to stage from the panel, `<Tab>` to step straight into the
 > next file's diff — ideal for reading Claude Code's changes ([§4](#4-recipes--i-want-to--do-this)).
