@@ -52,6 +52,25 @@ wear grooves into, not a flashcard deck.
 Two more discovery aids, both LazyVim defaults: **`<leader>?`** lists every keymap active in *this*
 buffer, and **`<leader>sk`** searches all keymaps by name.
 
+**`<leader>` is one namespace of many.** which-key pops over **every prefix key**, not just the leader —
+so the same *press-and-wait* reflex maps the whole keyboard. Most of these are **built-in Vim**, not
+LazyVim; press one and read the popup:
+
+| Prefix | Namespace | A few members |
+|---|---|---|
+| `<leader>` (Space) | LazyVim actions *(the tree above)* | `<leader>ff` find · `<leader>gg` git |
+| `<C-w>` | **windows** (splits inside nvim) | `<C-w>v` vsplit · `<C-w>h` focus left · `<C-w>=` equalize |
+| `g` | **goto & extended** | `gd` definition · `gg` top · `gc` comment · `gu`/`gU` case · `gx` open URL |
+| `z` | **folds · view · spelling** | `zz`/`zt`/`zb` recenter · `za` fold · `zg` add-to-dict |
+| `]` / `[` | **next / prev** pairs | `]d`/`[d` diagnostic · `]h`/`[h` hunk · `]b`/`[b` buffer · `]t`/`[t` todo |
+| `"` | **registers** | `"ay` yank to `a` · `"+p` paste from clipboard |
+| `` ` `` / `'` · `m` | **marks** (jump · set) | `` `a `` jump to mark · `ma` set mark `a` |
+| `q` / `@` | **macros** (record · replay) | `qa`…`q` record to `a` · `@a` replay |
+
+*(Insert mode has two more: `<C-x>` completion sub-modes — `<C-x><C-f>` files — and `<C-r>` insert-a-register.)*
+Distinct from all of these are the **operators** (`d` `c` `y` `>` `gu`…), which take a *motion* (`dw`,
+`ci"`) rather than opening a menu — a different mechanism, next note.
+
 > Motions and operators (`w`, `ciw`, `%`, `f`, …) are Vim itself — this doc covers the *LazyVim* layer.
 > For the raw editor, `:Tutor` inside nvim, or [neovim.io/doc](https://neovim.io/doc/).
 
