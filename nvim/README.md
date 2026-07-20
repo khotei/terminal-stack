@@ -129,7 +129,7 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§10](#10-what-we-changed
 | Keys | Action | Keys | Action |
 |---|---|---|---|
 | `<S-h>` / `<S-l>` | Prev / next buffer | `]b` / `[b` | Prev / next buffer |
-| `<leader>bd` | Delete buffer | `<leader>bp` | Toggle pin buffer |
+| `<leader>bd` | Delete buffer | `<leader>bo` | Delete other buffers |
 | `<C-h/j/k/l>` | Move focus between splits | `<C-↑/↓/←/→>` | Resize split |
 | `<C-w>p` | Focus last-active window | `<leader>-` | Split below |
 | `<leader>\|` | Split right | | |
@@ -494,7 +494,8 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | swap LazyVim's default colorscheme for the stack's shared palette + point the `colorscheme` opt at it | One palette across the stack, auto light/dark — the colorscheme reads `vim.o.background`. Which palette (plugin + options) lives in [`colorscheme.lua`](./lua/plugins/colorscheme.lua); the [LazyVim-documented](https://www.lazyvim.org/configuration/general) way to theme. |
 | [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | add [`f-person/auto-dark-mode.nvim`](https://github.com/f-person/auto-dark-mode.nvim) | Polls the macOS appearance, flips `vim.o.background`, and re-applies the colorscheme so it recompiles for the new mode. Works **inside Zellij**, where the terminal's CSI 2031 signal may not reach the editor. |
 | [`lua/config/lazy.lua`](./lua/config/lazy.lua) | point `install.colorscheme` at the stack's palette | Use the real theme during install, not the default tokyonight. |
-| [`lua/config/options.lua`](./lua/config/options.lua) | `number`/`relativenumber` off, `wrap` on, `showtabline` off, `scrolloff=8`, `confirm` | Small comfort defaults on top of LazyVim's; hide the bufferline tab-bar (bring it back with `<leader>uA`). |
+| [`lua/config/options.lua`](./lua/config/options.lua) | `number`/`relativenumber` off, `wrap` on, `showtabline` off, `scrolloff=8`, `confirm` | Small comfort defaults on top of LazyVim's. |
+| [`lua/plugins/bufferline.lua`](./lua/plugins/bufferline.lua) | disable `bufferline.nvim` | Keep the buffer tab-bar hidden for good — `showtabline = 0` alone doesn't stick because bufferline re-enables it on startup. Buffer cycling stays on native `<S-h>`/`<S-l>`, `[b`/`]b`. |
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `jk` → `<Esc>` | One universal comfort bind; this file is where you port IdeaVim maps. |
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `<leader>E` → focus / return the neo-tree sidebar | Stock `<leader>e` only *toggles* the tree (closes it from the editor); this **focuses** it from any split in one key — no `<C-h>` hop across splits — and a second press returns to the origin window (`<C-w>p`). Overrides LazyVim's `<leader>E` (cwd explorer, still on `<leader>fE`). |
 | [`lazyvim.json`](./lazyvim.json) | enable `lang.markdown` + `lang.typescript` + `editor.inc-rename` + `editor.outline` + `coding.mini-surround` + `dap.core` + `test.core` extras | In-buffer Markdown render (`<leader>um`), TS LSP (`gd`/`gr`/`K`), live rename (`<leader>cr`), outline (`<leader>cs`), surround (`gs*`), debugger (`<leader>d…`), test runner (`<leader>t…`). See [§7](#7-advanced-craft--lsp-refactor-debug-test). |
