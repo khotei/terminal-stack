@@ -605,7 +605,7 @@ here because Neovim's LSP tooling launched from this shell needs a runtime. Docs
 
 The GitHub CLI — PRs, reviews, CI, and the raw API without leaving the shell. **Not wired into zsh**
 (no alias/init — a standalone tool), but core to the review loop
-([reviewing-changes.md](../docs/reviewing-changes.md)) and the SDD flow; it's in the Brewfile. Needs
+([working-with-agents.md](../docs/working-with-agents.md)) and the SDD flow; it's in the Brewfile. Needs
 `gh auth login` once. Docs: <https://cli.github.com/manual/>.
 
 **Review a PR (the LSP-first path):**
@@ -639,7 +639,7 @@ The GitHub CLI — PRs, reviews, CI, and the raw API without leaving the shell. 
 
 > **Review recipe (all terminal, no browser):** `gh pr checkout <N>` → in nvim `<leader>gm`
 > (diffview vs main, LSP live) → read → `gh pr review <N> --approve` (or `--request-changes`). See
-> [reviewing-changes.md](../docs/reviewing-changes.md).
+> [working-with-agents.md](../docs/working-with-agents.md).
 
 > ⚠️ `gh pr checks --watch` and `gh run watch` are the "is CI green yet?" pollers — the thing to run
 > before a merge instead of refreshing the browser.

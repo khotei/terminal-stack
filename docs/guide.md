@@ -235,7 +235,7 @@ cc-worktree fix/rate-limit origin/main
 **Why this way:** worktrees give each agent an isolated working tree, so "two features at once" is
 real parallelism, not branch-switch thrashing. The full model — *why* a shared tree collides, when to
 split by file instead, native `claude --worktree`, and the merge-back — is
-[`docs/parallel-agents.md`](parallel-agents.md).
+[`docs/working-with-agents.md` §4](working-with-agents.md#4-run-many-without-collisions).
 
 ### 6. Move around (history, dirs, files)
 *You need that `docker run …` from yesterday and a deeply-nested folder.*
@@ -385,7 +385,7 @@ above stay the source of truth). Pick one that fits; skim, don't memorize.
   [zellij](../zellij/README.md) · [nvim](../nvim/README.md) · [zsh](../zsh/README.md) ·
   [claude](../claude/README.md) · [fonts](../fonts/README.md)
 - Setup + ops: [install](install.md) · [sandbox](sandbox.md)
-- Running many agents at once: [parallel-agents](parallel-agents.md)
+- Working with agents (the loop, review, parallel worktrees): [working-with-agents](working-with-agents.md)
 - How the repo is built (the SDD loop + commands): [`.claude/commands/README.md`](../.claude/commands/README.md)
 
 ---

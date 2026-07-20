@@ -293,7 +293,7 @@ tree; `<leader>gm` reviews the whole branch vs main (`origin/main...HEAD`). Both
 `--imply-local`, so the working-tree file is on the right side and **LSP works inside the diff**
 (`gd`/`gr`/`K` — no jump to the real file needed). `<leader>gV` shows the repo's commit *history*;
 `<leader>gF` narrows it to the current file ([diffview.nvim](https://github.com/sindrets/diffview.nvim)).
-Full review workflow: [reviewing-changes.md](../docs/reviewing-changes.md).
+Full review workflow: [working-with-agents.md](../docs/working-with-agents.md).
 For a stray line, stage it straight from the buffer: cursor on a hunk, `<leader>ghs`; jump between hunks
 with `]h` / `[h`. Need the full git TUI? `<leader>gg` floats **lazygit**.
 
@@ -428,7 +428,7 @@ Side-by-side of every change with a file list you page through — `<leader>gv` 
 `<leader>gm` for the whole branch vs main. Both use `--imply-local`, so the real file sits on the
 right and **LSP is live in the diff** (`gd`/`gr`/`K`, diagnostics) — the review and the code, one view
 ([diffview.nvim](https://github.com/sindrets/diffview.nvim); `<leader>gV`/`gF` show history;
-[full guide](../docs/reviewing-changes.md)). Its default keys, once a diffview panel is focused:
+[full guide](../docs/working-with-agents.md)). Its default keys, once a diffview panel is focused:
 
 | Key | What it does |
 |---|---|

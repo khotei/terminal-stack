@@ -2,7 +2,7 @@
 -- (especially Claude Code's). `--imply-local` (default arg) puts the working-tree
 -- file on the diff's RIGHT side, so LSP (gd/gr/diagnostics) works INSIDE the review,
 -- not only after jumping to the real file. Ships no global keymaps, so we supply the
--- entry keys under the <leader>g git namespace. See ../../docs/reviewing-changes.md.
+-- entry keys under the <leader>g git namespace. See ../../docs/working-with-agents.md.
 -- https://github.com/sindrets/diffview.nvim
 return {
   {

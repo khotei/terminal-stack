@@ -263,8 +263,8 @@ in an isolated git worktree, no editor pane
 > **When to use which:** `cc-worktree.sh` when you want the **editor │ agent split** to code alongside
 > the agent; `claude -w` when you just need an isolated agent and no Neovim pane. The full model — why
 > they collide and how to **merge the parallel branches back** — is
-> [`docs/parallel-agents.md`](../docs/parallel-agents.md). Read it before running two agents on real
-> code at once.
+> [`docs/working-with-agents.md` §4](../docs/working-with-agents.md#4-run-many-without-collisions). Read
+> it before running two agents on real code at once.
 
 ---
 
@@ -486,7 +486,7 @@ config edit — ask and we'll wire them).
 | **Hooks** | Deterministic automation on lifecycle events — auto-`stylua`/`shfmt` after an edit, a notification on `Stop`, or a guard blocking edits to protected paths. Fires regardless of what the model remembers | `hooks` block in `settings.json` · [hooks-guide](https://code.claude.com/docs/en/hooks-guide) |
 | **Fast mode** (`/fast`, `Option+O`) | Opus with **faster output** — the model is *not* downgraded; the interactive loop just feels snappier | toggle live · [fast-mode](https://code.claude.com/docs/en/fast-mode) |
 | **Prompt suggestions** | A grey next-step suggestion drawn from your git history / the conversation; `Tab` or `→` accepts it | on by default · [interactive-mode](https://code.claude.com/docs/en/interactive-mode#prompt-suggestions) |
-| `claude --from-pr <N>` | Resume the session linked to a GitHub PR — pairs with the `gh` review loop ([reviewing-changes](../docs/reviewing-changes.md)) | CLI flag · [common-workflows](https://code.claude.com/docs/en/common-workflows#create-pull-requests) |
+| `claude --from-pr <N>` | Resume the session linked to a GitHub PR — pairs with the `gh` review loop ([working-with-agents](../docs/working-with-agents.md)) | CLI flag · [common-workflows](https://code.claude.com/docs/en/common-workflows#create-pull-requests) |
 | **`/loop [interval] <cmd>`** | Repeat a prompt or slash-command on an interval **in this session** (polling; stops on `/clear`) | in-session · [scheduled-tasks](https://code.claude.com/docs/en/scheduled-tasks) |
 | **Routines** | Scheduled agents that run **in the cloud** — even with the laptop closed (morning PR review, weekly dependency audit) | [claude.ai/code/routines](https://claude.ai/code/routines) · [routines](https://code.claude.com/docs/en/routines) |
 | **`/powerup`** | Interactive lessons with animated demos of Claude Code's features — a way to discover more of them | in-session |
