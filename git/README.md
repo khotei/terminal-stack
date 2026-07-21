@@ -21,6 +21,8 @@ so your name/email/signing config in `~/.gitconfig` stays exactly as it is.
 | `delta.line-numbers` | `true` | Show old/new line numbers beside the diff. |
 | `merge.conflictStyle` | `zdiff3` | 3-way conflict markers with the common ancestor (clearer merges). |
 | `diff.colorMoved` | `default` | Distinguish moved lines from real adds/deletes. |
+| `diff.tool` | `nvimdiff` | `git difftool` (lazygit's "open external diff") opens the pair in Neovim's diff mode — delta only pages inline, so this is a separate role. Avoids the `opendiff`→Xcode fallback. |
+| `difftool.prompt` | `false` | Open the tool straight away — no per-file "launch nvimdiff?" prompt. |
 | `init.defaultBranch` | `main` | New repos start on `main`. |
 | `push.autoSetupRemote` | `true` | First `git push` auto-creates the upstream branch. |
 | `pull.ff` | `only` | `git pull` only fast-forwards — never an implicit merge commit. |

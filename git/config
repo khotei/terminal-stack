@@ -16,6 +16,13 @@
 
 [diff]
 	colorMoved = default
+	# delta (above) only pages unified diffs; `git difftool` needs its own tool.
+	# nvim ships with the stack, so no Xcode/opendiff fallback. lazygit's
+	# "open external diff" runs git difftool → this.
+	tool = nvimdiff
+
+[difftool]
+	prompt = false
 
 [init]
 	defaultBranch = main
