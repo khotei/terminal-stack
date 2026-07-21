@@ -49,6 +49,17 @@ non-colliding and idempotent) and **Validation strategy** — don't drop them.
 
 ## Terminal Stack notes
 
+- **Config decomposition + Key/keybind deltas *are* the feature's contract surface** — read those two
+  sections as the reviewed-**once** skeleton: the complete set of config keys / keybinds / interfaces
+  the feature introduces, plus the non-collision graph across the three keyboard layers (Ghostty /
+  Zellij prefix / nvim leader) and the idempotency/reload constraints. The feature's **heavy review
+  is spent here, on the surface** — not re-spent per task; each Phase-4 task then fills one slice that
+  *conforms* to these agreed keys/binds (per-task review drops to "does this bind match the surface,
+  and does `/check` pass?", not re-deciding the design). If a task **disproves** the surface (a key
+  doesn't exist upstream, a bind collides), revise the surface and let the **Blocks/Blocked-by** graph
+  re-derive the not-yet-built dependent tasks — this propagation is the *exception*, not the routine
+  (if it fires every task, the surface was under-specified). This *supersedes* any "contract per task"
+  reading: the task's contract is its **slice** of this surface.
 - **The plan is where review is cheapest and most leveraged** — scrutinise it *here*, before any
   config exists. A wrong plan multiplies into N wrong tasks; a bad keybind caught in the plan costs
   one edit, caught after Phase 5 it costs a rebind across every keyboard layer.

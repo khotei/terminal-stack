@@ -59,10 +59,15 @@ This checklist is the task's **contract** — commit it first (the failing `/che
 
 ## Contract-first & legacy (Terminal Stack)
 
+- **The task's contract is its SLICE of the plan's contract surface.** The plan already reviewed the
+  full skeleton once (Config decomposition + Key/keybind deltas — the complete key/keybind set + the
+  non-collision graph); this task fills one part that *conforms* to it. So per-task review is
+  **conformance** — "does this slice match the agreed keys/binds, and does the check pass?" — not
+  re-deciding the design (that review was spent on the surface).
 - **Write the contract before the fill.** A task's ACs become a *runnable* check committed **before**
   the implementation. In an app repo that's a failing test / type error; in this **pure-config** repo
   there's no unit test to write — the contract is `/check` (does it load) **plus** the observable
-  keypress. Same discipline, honest about the surface.
+  keypress. Verify by **running** it, not by eyeballing. Same discipline, honest about the surface.
 - **On the application repos this toolkit is used on**, existing/legacy code takes the contract one
   step earlier: the first check is a **characterization test** pinning current behaviour before you
   touch it (Feathers, *Working Effectively with Legacy Code* — established practice), and the change

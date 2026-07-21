@@ -18,9 +18,12 @@ property contract `@.claude/sdd/property-contract.md`, and the data-source IDs
 `@.claude/sdd/data-sources.md` (the Tasks collection id lives there).
 **Fetch live:** the feature's Plan toggle + acceptance criteria (the page body).
 
-> **The AC checklist is the contract.** Each slice's acceptance criteria become a runnable check the
-> implementer commits *before* the fill — in this config repo that's `/check` plus the observable
-> keypress. Keep each slice XS–M **and** its diff reviewable (`<~400 LOC`). See
+> **Tasks conform to the plan's contract surface.** The plan's Config decomposition + Key/keybind
+> deltas are the reviewed-once skeleton; each slice fills one part of it. **The AC checklist is that
+> slice's contract** — the task's slice of the surface — a runnable check the implementer commits
+> *before* the fill (in this config repo, `/check` plus the observable keypress). Per-task review is
+> therefore **conformance** ("does this slice match the agreed keys/binds?"), not re-litigating the
+> design. Keep each slice XS–M **and** its diff reviewable (`<~400 LOC`). See
 > `@.claude/sdd/task-template.md`.
 
 ## Steps

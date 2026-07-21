@@ -19,6 +19,11 @@ existing config in `ghostty/`, `zellij/`, `nvim/`, `zsh/` that grounds the plan.
 > existing surface, run a throwaway **recon spike** first (a `Spike` task — read-only exploration to
 > find the seam), then plan from what you learned, and treat the plan as revisable. See the
 > `@.claude/sdd/plan-template.md` notes.
+>
+> **The plan produces the contract surface** — its **Config decomposition** + **Key/keybind deltas**
+> are the reviewed-**once** skeleton (the full key/keybind set + the non-collision graph) that the
+> Phase-4 tasks *conform* to. Spend the heavy review here, on the surface; per-task review is then
+> conformance, not re-deciding the design.
 
 ## Steps
 

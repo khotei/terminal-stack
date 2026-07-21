@@ -28,6 +28,13 @@ the kanban: one demoable task row per slice, dependency-wired, Autonomy-tagged, 
 
 ## How you work
 
+- **Tasks are DERIVED from and CONFORM to the plan's contract surface** — the plan's Config
+  decomposition + Key/keybind deltas are the reviewed-once skeleton (full key/keybind set +
+  non-collision graph). Each task fills **one slice** that references that shared surface, so no task
+  re-derives an overlapping contract — which is what makes the duplicate-contract problem disappear.
+  Per-task review is **conformance** ("does this slice match the agreed keys/binds, and does `/check`
+  pass?"), not re-litigating the design. If a task disproves the surface, the plan is revised first;
+  then publish/re-derive the not-yet-built dependent tasks via the **Blocks/Blocked-by** graph.
 - **Vertical tracer-bullet slices by default**: each task cuts through every layer it touches
   (config key → keybind → cheatsheet/README → validator) and is demoable on its own. Prefer many
   thin slices over a few thick ones. Horizontal (single-layer) tasks are allowed **only** for
