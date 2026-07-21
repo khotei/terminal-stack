@@ -32,9 +32,11 @@ to install.
 6. [Understand → Analyze → Re-prompt](#6-understand--analyze--re-prompt) — the return trip
 7. [The cognitive edge](#7-the-cognitive-edge) — why the loop works, and how to train
 8. [The frontier](#8-the-frontier) — what you're most likely missing in 2026
-9. [Anti-patterns](#9-anti-patterns) — don't → do
-10. [Cheatsheet](#10-cheatsheet) — the reference layer
-11. [Definition of Done](#11-definition-of-done) — the portable checklist + a retrieval drill
+9. [The spectrum: vibe coding ↔ engineering](#9-the-spectrum-vibe-coding--engineering) — two activities, one name; a decision rule
+10. [Scaling the loop: large features, legacy & SDD](#10-scaling-the-loop-large-features-legacy--sdd) — the loop is fractal
+11. [Anti-patterns](#11-anti-patterns) — don't → do
+12. [Cheatsheet](#12-cheatsheet) — the reference layer
+13. [Definition of Done](#13-definition-of-done) — the portable checklist + a retrieval drill
 
 ---
 
@@ -519,7 +521,177 @@ reliability; the "89% of Devin PRs" figure failed independent verification).
 
 ---
 
-## 9. Anti-patterns
+## 9. The spectrum: vibe coding ↔ engineering
+
+**Most AI-coding argument is a category error: two different activities wearing one name.** Name them
+apart and the fight mostly dissolves — one is a way to *learn fast*, the other a way to *build durable
+things*, and almost every "AI ruins/saves code" claim is really about one being judged by the other's
+standard.
+
+**The definition, and the split that carries it.** Karpathy coined *vibe coding* in Feb 2025: you
+"fully give in to the vibes… and forget that the code even exists" — "'Accept All' always, I don't
+read the diffs anymore" ([Karpathy](https://x.com/karpathy/status/1886192184808149383), practitioner).
+Willison draws the load-bearing line: if you *reviewed, tested, and understood* the output, that is
+**not** vibe coding — it's "using an LLM as a typing assistant"; and "vibe coding your way to a
+production codebase is clearly risky. Most of the work we do as software engineers involves evolving
+existing systems" ([Willison](https://simonwillison.net/2025/Mar/19/vibe-coding/), practitioner). So
+the axis is **not** *how much the AI typed* — it's **whether you kept the comprehension step**. Vibe
+coding is this guide's loop (§2) with **Verify** and **Comprehend** deleted.
+
+**What the measurements say happens when you delete them.** Read every row with its tag — the honest
+weight is *in the tag*, not the number:
+
+| Signal | What the measurement shows | Honest tag |
+|---|---|---|
+| **Copy-paste up, refactor down** | GitClear: copy/pasted lines rose 8.3%→12.3% of changes (2021→2024), 15.7% in H1 2026; "moved"/refactored lines fell ~25%→<10%→3.8%; **2024 was the first year copy-paste exceeded moved lines**; cloned blocks +81% since 2023 | `[vendor, COI · correlational — one diff-analytics seller; no per-repo AI adoption measured (temporal correlation, not causation); "moved" is a heuristic proxy]` |
+| **Churn rising** | Same source: code reverted/reworked within two weeks ~3–4% (2020–22) → 5.5% (2023) → ~7.9% (2024) | `[vendor, COI · correlational — same caveat]` |
+| **Security base rate** | ~40% of 1,689 Copilot programs across 89 CWE scenarios were vulnerable (NYU "Asleep at the Keyboard") | `[peer-reviewed — but a 2021 Codex-era model]` |
+| **Iteration makes it worse** | Unreviewed iterative "improve this" *raised* critical vulnerabilities **+37.6% after five rounds**; the authors blame fundamental LLM limits, not prompt phrasing — so better prompts do **not** close it | `[peer-reviewed, single un-replicated study, small baseline]` |
+| **The speed illusion** | On mature repos they knew well, experienced devs were **19% slower** with AI while forecasting −24% and *feeling* −20% faster | `[RCT, N=16, narrow — the slowdown magnitude is context-bound; the perception gap is the transferable finding]` |
+
+Sources: [GitClear degradation](https://www.gitclear.com/ai_assistant_code_quality_2025_research) ·
+[GitClear maintainability gap](https://www.gitclear.com/the_ai_code_quality_maintainability_gap) ·
+[GitClear churn](https://www.gitclear.com/coding_on_copilot_data_shows_ais_downward_pressure_on_code_quality) ·
+[NYU CACM/S&P 2022](https://arxiv.org/abs/2108.09293) ·
+[Shukla et al., IEEE-ISTAS 2025](https://arxiv.org/abs/2506.11022) ·
+[METR 2025](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) ·
+[arXiv](https://arxiv.org/abs/2507.09089).
+
+**The failure mode has a face.** In a ~12-day vibe-coding run, Replit's AI agent deleted a *production
+database* ([The Register](https://www.theregister.com/2025/07/21/replit_saastr_vibe_coding_incident/),
+secondary press). One anecdote proves nothing alone — but it rhymes with the table: the degradation
+runs in the *durable* direction, and vibe coding removes the exact step (review + comprehension) that
+durable code leans on.
+
+**So place your task on a spectrum, not in a camp.** Five axes tell you which end you're on:
+
+| Axis | Vibe-code it | Engineer it |
+|---|---|---|
+| **Code longevity** | throwaway — gone this week | long-lived, evolved for months/years |
+| **Stakes** | low — a demo, a personal tool | production; real users, real data |
+| **Team size** | just you | team-owned — others must read it |
+| **Reversibility** | delete the branch, no trace | irreversible — migrations, money, prod DB |
+| **Goal** | learning, mapping the shape | shipping something durable |
+
+> **The decision rule, in one line:** *vibe-code the throwaway; engineer the durable.* Vibe coding is
+> legitimate **precisely where comprehension doesn't need to persist** — a spike, a prototype,
+> greenfield, a scratch tool, learning a new API. The moment the code must be *evolved* by someone
+> (future-you included), comprehension has to persist — so Verify and Comprehend come back on, and
+> you're engineering again.
+
+**Verification, not generation, is the binding ceiling** (§1) — and vibe coding removes exactly it.
+But be honest about the *other* side too: **no confirmed study yet isolates "strong specs + tests +
+review" as the intervention that closes the gap.** The "here's when it works" half is the
+thinnest-evidenced — a practitioner assertion, not a measured result — so hold it loosely. *(And
+ignore the widely-repeated "30% of Copilot suggestions are flawed" line — it did not survive
+verification.)* When the shape is unknown, the right move is a **bounded** vibe-coding spike to learn
+it, then a switch back to engineering to ship it — which is where §10 picks up.
+
+> **Retrieval drill.** Close the page: what single step, removed, turns "using an LLM as a typing
+> assistant" into vibe coding — and which end of the spectrum is *learning* on?
+
+---
+
+## 10. Scaling the loop: large features, legacy & SDD
+
+The loop (§2) was drawn around one small slice. The natural fear: *it can't survive a big feature in a
+large, load-bearing codebase — you can't specify all of that up front.* You don't have to. **The loop
+is fractal.**
+
+**SDD is the Frame beat, one floor up.** Spec-driven development (`research → specify → clarify →
+plan → tasks → implement`) is how you Frame at *feature* scale: the plan is where you "see the whole
+picture up front." Each task inside it then runs its own small Frame → Delegate → Verify → Comprehend.
+They are **layers, not alternatives** — §2's highlighted line ("four small beats, each under contract")
+describes the life of *one* slice; the whole picture lives one floor up, in the plan.
+
+**The contract is per-slice and just-in-time — never "all the feature's contracts on day one."** You
+write the contract for the *next* small slice moments before delegating it; the feature-level artifact
+is a **plan-hypothesis** — an ordered list of slices — not a pile of contracts. That is the direct
+answer to "specifying a whole big feature up front is impossible": you never do. You specify the next
+slice, then the one the last slice taught you to write.
+
+### In legacy code: pin, then carve
+
+Greenfield lets you write the contract from pure intent. Existing enterprise code doesn't — the
+behavior is *already there*, often ugly, and someone depends on it. So the first contract isn't a
+wish; it's a **characterization test** — one that pins what the code does *now*, bugs and all
+([Feathers, *Working Effectively with Legacy Code*](https://en.wikipedia.org/wiki/Characterization_test),
+`[established practice]`). You do **not** spec the bad stuff away up front. You *pin* it — so a refactor
+toward a cleaner shape can't silently change behavior — then carve a seam beside it.
+
+> **Glossary.** *Characterization test* — a test written to capture existing behavior exactly as-is, so
+> later change is provably behavior-preserving. *Seam* (Feathers) — a place where you can change
+> behavior **without editing in that place**: a function edge, a module boundary, an existing interface.
+
+**Seams are found, not designed.** In a big codebase you don't invent the perfect insertion point — you
+*locate the least-bad one that already exists* and put the contract there. "Writing seams is hard"
+becomes the far easier "find where a stitch already is."
+
+### The plan is a hypothesis — you verify it by building
+
+**Recon before you plan (Phase 0).** For an unknown-shape or legacy feature, spend a **throwaway recon
+spike** first: a read-only (or delete-the-branch) exploration to map the *real* dependencies before you
+commit to a plan. This is exactly §9's legitimate vibe-coding zone — **learning, not shipping** — so let
+the agent run loose; you're going to throw it away. Then plan against what you *found*, not what you
+*guessed*.
+
+**Grow by thin vertical slices behind a flag — never a big-bang rewrite.** Wrap the old path, stand the
+new one up beside it, and migrate slice by slice behind a **feature-flag**: Fowler's **strangler-fig**
+pattern ([Fowler](https://martinfowler.com/bliki/StranglerFigApplication.html), `[established
+practice]`). Each slice ships behind the flag, reviewable in isolation — the *direct* cure for review
+fatigue (§5): you review one thin slice, not the whole feature at once.
+
+**Re-plan the tail as you learn.** The plan is a hypothesis; the build reveals the real shape. Each
+slice's Comprehend feeds the *next* feature-scale Frame — the loop again, one floor up. A plan you can't
+revise mid-build is a plan you'll follow off a cliff.
+
+### Move the review left
+
+**A wrong plan multiplies into N wrong tasks.** The highest-leverage review is the one you do *before
+any code exists* — on the plan and the acceptance criteria. Anthropic's own edge: *spec precision pays
+off more than watching the implementation* ([best practices](https://code.claude.com/docs/en/best-practices),
+official). Spend your ~4 chunks (§1) where they're freshest — on intent — not on the tail of a diff
+you're too tired to read.
+
+**The honest cost — and why the discipline earns its keep here *most*.** From §9's evidence: on mature
+codebases AI helps *least* (METR −19%) and unreviewed iteration degrades *fastest* (+37.6% vulns after
+five rounds). So enterprise-legacy is exactly where this discipline pays the **most**, not the least.
+And note the trap: the "just let it be as is, it works" urge is strongest *precisely* where the data
+says degradation is fastest. Treat that urge as a **diagnostic** — it almost always means the batch is
+too big or the contract too weak. Shrink the slice; strengthen the pin.
+
+### Where the contract lives in an SDD flow
+
+Map the loop onto any SDD setup without overclaiming — the shape holds tool-agnostically:
+
+| SDD phase | What you review there | Where the contract lives |
+|---|---|---|
+| **research / specify / clarify** | intent & acceptance criteria — **no code yet** | the spec: what "correct" means, in prose |
+| **plan** | the ordering of thin vertical slices; the seams | a plan-hypothesis (a list, not code) |
+| **tasks / implement** | one slice's diff, against its criteria | a **failing test committed before the fill** — the contract-first gate, at the task boundary |
+
+Reviewing at the top costs minutes and nothing is built yet, so there is nothing to redo — the
+cheapest, highest-leverage review in the whole flow. The code (and therefore the tests-as-contract)
+appears only at the task level, which is why "commit the contract first" (§2) belongs at the *task*
+boundary: acceptance criteria → a failing test committed before the fill → contract-review as a
+task-level gate.
+
+### Definition of Done — a large feature
+
+- [ ] **Recon spike done** (for unknown-shape / legacy) — real dependencies mapped, branch thrown away.
+- [ ] **Plan = an ordered list of thin vertical slices**, each shippable behind a flag.
+- [ ] **Per slice:** characterization pin (in legacy) → seam found → contract committed first → verify
+  ran → comprehend → **re-plan the tail**.
+- [ ] **Review spent on the plan and the seams**, not on tail-end diffs.
+- [ ] **The flag stays until the last slice lands** — the old path is removed only when the new one is
+  proven.
+
+> **Retrieval drill.** Close the page: at what scale is SDD the *Frame* beat — and when do you write a
+> slice's contract, on day one or moments before you delegate it?
+
+---
+
+## 11. Anti-patterns
 
 Recognizing the wrong move is half the skill. Each row: the trap → the fix.
 
@@ -537,7 +709,7 @@ Recognizing the wrong move is half the skill. Each row: the trap → the fix.
 
 ---
 
-## 10. Cheatsheet
+## 12. Cheatsheet
 
 The reference layer — the *what*, kept out of the teaching flow above. All keys verified against this
 stack's config.
@@ -567,7 +739,7 @@ stack's config.
 
 ---
 
-## 11. Definition of Done
+## 13. Definition of Done
 
 The portable checklist — the loop compressed to what you verify before a change is *done*:
 
@@ -602,6 +774,16 @@ The portable checklist — the loop compressed to what you verify before a chang
   [Willison — parallel coding agents](https://simonwillison.net/2025/Oct/5/parallel-coding-agents/) ·
   [SmartBear (LOC cliff)](https://smartbear.com/learn/code-review/best-practices-for-peer-code-review/) ·
   [SPACE](https://queue.acm.org/detail.cfm?id=3454124) · [DevEx](https://queue.acm.org/detail.cfm?id=3595878)
+- **Spectrum & scaling (§9–§10):** [Karpathy — vibe coding](https://x.com/karpathy/status/1886192184808149383) ·
+  [Willison — vibe coding defined](https://simonwillison.net/2025/Mar/19/vibe-coding/) ·
+  [GitClear — code quality](https://www.gitclear.com/ai_assistant_code_quality_2025_research) ·
+  [GitClear — maintainability gap](https://www.gitclear.com/the_ai_code_quality_maintainability_gap) ·
+  [GitClear — churn](https://www.gitclear.com/coding_on_copilot_data_shows_ais_downward_pressure_on_code_quality) ·
+  [NYU — Asleep at the Keyboard](https://arxiv.org/abs/2108.09293) ·
+  [Shukla — iterative degradation](https://arxiv.org/abs/2506.11022) ·
+  [Replit incident](https://www.theregister.com/2025/07/21/replit_saastr_vibe_coding_incident/) ·
+  [Feathers — characterization test](https://en.wikipedia.org/wiki/Characterization_test) ·
+  [Fowler — strangler fig](https://martinfowler.com/bliki/StranglerFigApplication.html)
 - **Claude Code (official):** [best practices](https://code.claude.com/docs/en/best-practices) ·
   [worktrees](https://code.claude.com/docs/en/worktrees) · [checkpointing](https://code.claude.com/docs/en/checkpointing) ·
   [hooks](https://code.claude.com/docs/en/hooks) · [monitoring](https://code.claude.com/docs/en/monitoring-usage) ·
