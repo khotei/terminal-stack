@@ -112,6 +112,55 @@ Two design decisions inside the loop earn their own emphasis:
 > can substitute behind. *Contract* — the tests and types that define "correct" independently of the
 > implementation.
 
+### The four artifacts, made concrete
+
+In theory the beats are clear; in code the boundaries blur. Here is one slice — the same email
+validation the walkthrough narrates below — laid out as **four separate artifacts**, so you can see
+exactly where one ends and the next begins. **You write the first three; the agent writes only the
+fourth.**
+
+**1 · The Frame** — the shape, in your words (prose, not code yet):
+
+```text
+Feature: validate an email address
+  Seam:     validate(email: string) → Result<Email, ValidationError>
+  Boundary: reuse the existing Email / Result types; add no dependencies
+  Not this: no inline regex at the call site; no exceptions for control flow
+```
+
+**2 · The seam** — a point *built for substitution*, contrasted with what isn't one:
+
+```ts
+// ✅ Seam — a named boundary you can test, swap, or extend behind.
+export interface EmailValidator {
+  validate(email: string): Result<Email, ValidationError>
+}
+
+// ❌ Not a seam — the rule is fused into the caller. Nothing to test or
+//    replace in isolation, and the next feature can't reuse it.
+if (/^[^@]+@[^@]+$/.test(input)) user.email = input
+```
+
+**3 · The contract** — "correct", committed *before* the fill (these are red first):
+
+```ts
+expect(validate("a@b.com").ok).toBe(true)   // valid
+expect(validate("a@@b").ok).toBe(false)     // malformed
+expect(validate("").ok).toBe(false)         // empty
+```
+
+**4 · The fill** — what the agent pours in, judged *only* against 1–3:
+
+```ts
+export function validate(email: string): Result<Email, ValidationError> {
+  if (email.length === 0) return err(new ValidationError("empty"))
+  // …the agent's body — free to change, as long as the contract stays green…
+}
+```
+
+The line between artifact **3** and artifact **4** *is* the loop's discipline: you own *what "correct"
+means*; the agent owns *how it's met*. Everything else in this guide protects that line.
+
 ### The worked walkthrough (the reasoning shown)
 
 Here is the pain this loop cures, dramatized — then the fix, thinking aloud.
