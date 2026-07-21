@@ -49,6 +49,20 @@ non-colliding and idempotent) and **Validation strategy** — don't drop them.
 
 ## Terminal Stack notes
 
+- **The plan is where review is cheapest and most leveraged** — scrutinise it *here*, before any
+  config exists. A wrong plan multiplies into N wrong tasks; a bad keybind caught in the plan costs
+  one edit, caught after Phase 5 it costs a rebind across every keyboard layer.
+- **Treat the plan as a hypothesis, not a frozen script.** When the feature's shape is unknown or it
+  lands in a large existing/legacy surface, precede planning with a throwaway **recon spike** — a
+  read-only (or delete-the-branch) exploration, filed as a `Spike` task
+  (`@.claude/sdd/property-contract.md`) — to map the real dependencies and find the seam, *then*
+  write the plan from what you learned. Fold `/sdd:implement` and `/sdd:verify` findings back into the
+  still-unbuilt tail rather than executing a stale plan.
+- **Legacy surfaces: find the seam, don't design one.** On the application repos this toolkit plans
+  for, the insertion point in existing code is *found* (the least-bad seam), not freshly designed,
+  and the first contract is a **characterization test** pinning current behaviour before the change
+  (Feathers, *Working Effectively with Legacy Code* — established practice). terminal-stack itself
+  has no legacy app surface — this is guidance the plan carries for those repos.
 - **Cite the upstream doc** behind every config key (`ghostty.org`, `zellij.dev`, `lazyvim.org`,
   `neovim.io`, `starship.rs`). Ground each choice in the existing config in `ghostty/`, `zellij/`,
   `nvim/`, `zsh/` where one exists to imitate.

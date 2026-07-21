@@ -32,6 +32,7 @@ One sentence. The single observable outcome. *"`ghostty +show-config` lists the 
 (Or **Files to touch** if the task modifies existing files. List explicit paths; do not say "see folder X".)
 
 ## Acceptance criteria
+This checklist is the task's **contract** — commit it first (the failing `/check`, the not-yet-working keypress), *then* fill config until it passes. Verified by **running** it, not by eyeballing.
 - [ ] <AC verifiable by running a validator (`/check`), or by observing a keypress / visible behavior.>
 - [ ] <AC...>
 - [ ] Config still validates via `/check` (Ghostty/Zellij/nvim/zsh as applicable).
@@ -50,6 +51,21 @@ One sentence. The single observable outcome. *"`ghostty +show-config` lists the 
   `XL` is refused (it's a hidden mini-feature).
 - A task is correctly scoped when it ships in **one** `/sdd:implement` session with a **single
   verifiable outcome**. Bigger → split; smaller → merge.
+- **A slice must be XS–M *and* keep its diff reviewable** (aim `<~400 LOC`). A 1-day "M" can blow
+  past the review cliff — if it does, split it even when the estimate says it fits.
 - Tag **Autonomy** `AFK` by default; `HITL` only for a real human gate (a keybinding scheme that
   changes muscle memory, a destructive dotfile move, an irreversible config migration). See
   `@.claude/sdd/property-contract.md`.
+
+## Contract-first & legacy (Terminal Stack)
+
+- **Write the contract before the fill.** A task's ACs become a *runnable* check committed **before**
+  the implementation. In an app repo that's a failing test / type error; in this **pure-config** repo
+  there's no unit test to write — the contract is `/check` (does it load) **plus** the observable
+  keypress. Same discipline, honest about the surface.
+- **On the application repos this toolkit is used on**, existing/legacy code takes the contract one
+  step earlier: the first check is a **characterization test** pinning current behaviour before you
+  touch it (Feathers, *Working Effectively with Legacy Code* — established practice), and the change
+  grows as thin vertical slices behind a feature flag (strangler-fig) so each slice reviews in
+  isolation. terminal-stack itself has no legacy app surface — this is guidance the task carries for
+  those repos.

@@ -14,6 +14,12 @@ data-source IDs `@.claude/sdd/data-sources.md`.
 **Fetch live:** the feature spec (the page body), the upstream doc sections it cites, and the
 existing config in `ghostty/`, `zellij/`, `nvim/`, `zsh/` that grounds the plan.
 
+> **Review moves left.** The plan is the cheapest, highest-leverage place to catch a mistake — a
+> wrong plan multiplies into N wrong tasks. If the feature's shape is unknown or it touches a large
+> existing surface, run a throwaway **recon spike** first (a `Spike` task — read-only exploration to
+> find the seam), then plan from what you learned, and treat the plan as revisable. See the
+> `@.claude/sdd/plan-template.md` notes.
+
 ## Steps
 
 1. **Re-read the feature spec** (`$ARGUMENTS`) end to end — goal, scope, ACs, the `Reflects:`
