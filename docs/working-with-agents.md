@@ -666,15 +666,23 @@ Map the loop onto any SDD setup without overclaiming — the shape holds tool-ag
 
 | SDD phase | What you review there | Where the contract lives |
 |---|---|---|
-| **research / specify / clarify** | intent & acceptance criteria — **no code yet** | the spec: what "correct" means, in prose |
-| **plan** | the ordering of thin vertical slices; the seams | a plan-hypothesis (a list, not code) |
-| **tasks / implement** | one slice's diff, against its criteria | a **failing test committed before the fill** — the contract-first gate, at the task boundary |
+| **research / specify / clarify** | intent & acceptance criteria — concrete, down to exact lines, but nothing **built** yet | the spec: what "correct" means, in prose |
+| **plan** | the whole **contract surface** — the interfaces/seams the feature introduces + the graph between them | the reviewed-**once** surface: the heavy review, spent here |
+| **tasks / implement** | one slice that **conforms** to the surface — its diff, against its criteria | a **contract committed before the fill**, derived from the surface — review = conformance |
 
-Reviewing at the top costs minutes and nothing is built yet, so there is nothing to redo — the
-cheapest, highest-leverage review in the whole flow. The code (and therefore the tests-as-contract)
-appears only at the task level, which is why "commit the contract first" (§2) belongs at the *task*
-boundary: acceptance criteria → a failing test committed before the fill → contract-review as a
-task-level gate.
+The heavy review lands **once, on the surface** — at plan, where nothing is built yet, so there is
+nothing to redo; the cheapest, highest-leverage review in the whole flow. (Specify already carries
+concrete detail *down to exact lines* — the implementation-surface sections — but not *executed or
+committed* code; reviewing intent there is still cheap precisely because nothing is built.) Tasks are
+then **derived from** the surface and reviewed only for **conformance**: does this slice match the
+agreed interfaces/keybinds, and does its check pass? — the design review was already spent upstream.
+When a task **disproves** the surface (the shape was wrong — a key doesn't exist, a seam won't hold),
+you revise the surface and let the **Blocks/Blocked-by** dependency graph **re-derive** the
+not-yet-built dependent tasks; this propagation is the *exception*, not the routine (if it fires on
+every task, the surface was under-specified). Because each task references the shared surface instead
+of re-deriving overlapping contracts, per-task contract duplication and review fatigue both
+disappear — which is why "commit the contract first" (§2) still lands at the *task* boundary: it is
+this task's **slice** of the already-agreed surface.
 
 ### Definition of Done — a large feature
 
