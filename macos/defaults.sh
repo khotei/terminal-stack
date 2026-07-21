@@ -169,6 +169,10 @@ apply "Disable Terminal 'Search man Page Index' service (⌘⇧A — frees it fo
   defaults write pbs NSServicesStatus -dict-add \
   '"com.apple.Terminal - Search man Page Index in Terminal - searchManPages"' \
   '{ "enabled_context_menu" = 0; "enabled_services_menu" = 0; "presentation_modes" = { ContextMenu = 0; ServicesMenu = 0; }; }'
+apply "Disable Stickies 'Make New Sticky Note' service (⌘⇧Y)" \
+  defaults write pbs NSServicesStatus -dict-add \
+  '"com.apple.Stickies - Make Sticky - makeStickyFromTextService"' \
+  '{ "enabled_context_menu" = 0; "enabled_services_menu" = 0; "presentation_modes" = { ContextMenu = 0; ServicesMenu = 0; }; }'
 
 # ── Apply ─────────────────────────────────────────────────────────────
 section "Restarting affected apps"

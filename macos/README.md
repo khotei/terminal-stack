@@ -31,6 +31,7 @@ script in the spirit of [mathiasbynens/.macos](https://github.com/mathiasbynens/
 | **Friction** | `LSQuarantine = false` | no "are you sure you want to open this app?" dialog |
 | **Shortcuts** | disable **Show Help menu** (`⌘⇧/`, hotkey 98) | it steals `⌘⇧/`; useless in a terminal/editor |
 | | disable Terminal **Open man Page** (`⌘⇧M`) + **Search man Page Index** (`⌘⇧A`) services | they hijack those chords system-wide (e.g. fight JetBrains/editor binds) |
+| | disable Stickies **Make New Sticky Note** (`⌘⇧Y`) service | frees `⌘⇧Y` system-wide (e.g. redo in editors) |
 
 > **It explains itself as it runs.** Every setting prints a plain-English line of what it changes
 > (and `--dry-run` prints the exact `defaults` command too) — so if some behaviour on your Mac changes
@@ -71,7 +72,7 @@ Each setting is a `defaults` key — flip it back, or just toggle it in **System
 | Reduce Motion | `defaults write com.apple.universalaccess reduceMotion -bool false` (then log out/in), or System Settings → Accessibility → Motion → Reduce Motion |
 | Quarantine dialog | `defaults write com.apple.LaunchServices LSQuarantine -bool true` |
 | Show Help menu | System Settings → Keyboard → Keyboard Shortcuts → App Shortcuts (re-enable), or `defaults delete com.apple.symbolichotkeys AppleSymbolicHotKeys` |
-| man-page Services | System Settings → Keyboard → Keyboard Shortcuts → Services → Text, re-check them |
+| man-page / Sticky Note Services | System Settings → Keyboard → Keyboard Shortcuts → Services → re-check them (man Page under Text; Make New Sticky Note under Text) |
 
 > A blunt full reset of one domain: `defaults delete com.apple.dock && killall Dock` (restores Dock
 > defaults). Prefer the per-key reverts above for everything else.
