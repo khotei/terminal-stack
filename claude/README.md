@@ -358,25 +358,27 @@ is on by default; the first `/voice` run asks for microphone permission. Rebindi
 ([schema](https://code.claude.com/docs/en/statusline)):
 
 ```
-Opus 4.8 · terminal-stack · feat/x* · 🧠 23% · 💰 $0.04 · 🔋 93%
-  model         dir          git¹      context²   cost       usage³
+terminal-stack · feat/x* · 🌳 fix-parser · 🧠 23% · ⚡ high · 🔋 93% · Opus 4.8
+     dir          git¹      worktree⁴      ctx²      effort⁵   usage³    model⁶
 ```
 ¹ branch, `*` = uncommitted changes · ² context-window **used** · ³ **usage-window headroom** — the
 percent of your plan's **5-hour** rate-limit budget still *remaining* (a fuel gauge, not a countdown:
-no reset clock by design — glance at `/usage` if you want the exact reset time). 🔋 green > 40 %,
-yellow > 15 %, 🪫 red below. Only on a Max/Pro plan and only after the session's first API response —
-absent otherwise (API-key users, cold start), and the line simply drops the segment. Segments are
-joined by a dim `·` so they breathe. Colours are the terminal's 16 ANSI slots (no hardcoded palette),
-so the line follows the active theme — like the Starship prompt. Falls back from `jq` to `grep` if
-`jq` is absent. Fields consumed: `.model.display_name`, `.workspace.current_dir`,
-`.context_window.used_percentage`, `.cost.total_cost_usd`,
-`.rate_limits.five_hour.used_percentage`.
+no reset clock by design — glance at `/usage` for the exact reset time). 🔋 green > 40 %, yellow > 15 %,
+🪫 red below. Max/Pro only and only after the first API response — dropped otherwise (API-key users,
+cold start). ⁴ **git worktree** name — shown *only* when you're inside a linked worktree, silent in the
+main tree, so you never lose track of which tree you're editing. ⁵ **reasoning effort** (`low`…`max`,
+live with `/effort`; absent when the model has no effort parameter). ⁶ **model** — trailing and dimmed,
+the least load-bearing segment, so it doesn't lead the eye. Segments are joined by a dim `·` so they
+breathe. Colours are the terminal's 16 ANSI slots (no hardcoded palette), so the line follows the
+active theme — like the Starship prompt. Falls back from `jq` to `grep` if `jq` is absent. Fields
+consumed: `.model.display_name`, `.workspace.current_dir`, `.workspace.git_worktree`,
+`.context_window.used_percentage`, `.effort.level`, `.rate_limits.five_hour.used_percentage`.
 
 **Already enabled** — [`settings.json`](./settings.json) carries the `statusLine` block, so a fresh
 install shows the line with no hand-editing. Test it:
 
 ```sh
-echo '{"model":{"display_name":"Opus"},"workspace":{"current_dir":"'"$PWD"'"},"context_window":{"used_percentage":25},"cost":{"total_cost_usd":0.04}}' \
+echo '{"model":{"display_name":"Opus"},"workspace":{"current_dir":"'"$PWD"'","git_worktree":"fix-parser"},"context_window":{"used_percentage":25},"effort":{"level":"high"}}' \
   | ./statusline.sh
 ```
 
@@ -390,7 +392,7 @@ The *why* behind each key — the file states the *what*
 
 | Key | Value | Why |
 |---|---|---|
-| `statusLine` | `command` → `~/.claude/statusline.sh` | The model · dir · git · ctx% · cost · usage-window line ([§9](#9-the-status-line)). |
+| `statusLine` | `command` → `~/.claude/statusline.sh` | dir · git · worktree · ctx% · effort · usage · model line ([§9](#9-the-status-line)). |
 | `editorMode` | `vim` | Vim motions in the prompt box — matches Neovim across the stack ([§6](#6-advanced-craft)). |
 | `vimInsertModeRemaps` | `{ "jk": "<Esc>" }` | `jk` in INSERT → NORMAL, no reach for `Esc` (Claude Code ≥ 2.1.208; user-settings only) ([§6](#6-advanced-craft)). |
 | `theme` | `auto` | Follows the OS light/dark appearance, like the rest of the stack. |
