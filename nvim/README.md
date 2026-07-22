@@ -91,6 +91,7 @@ LazyVim defaults unless the row says otherwise — the exhaustive tables are in
 | Toggle the file tree | `<leader>e` (explorer) |
 | Jump *into* the file tree — and back | `<leader>E` *(repo)* |
 | Jump to a symbol's definition · back | `gd` · `<C-o>` |
+| Teleport to any spot on screen | `s` + 2 chars + label (flash) |
 | See what's under the cursor | `K` (hover docs) |
 | Rename a symbol everywhere (live preview) | `<leader>cr` |
 | Fix-it menu (imports, quick-fixes) | `<leader>ca` (code action) |
@@ -118,6 +119,33 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§10](#10-what-we-changed
 > on one, UPPERCASE on the whole** (`ghs`/`ghS` = stage hunk/buffer), and **lowercase goes, UPPERCASE
 > moves** (`<C-w>h`/`H` = focus/relocate a split). Rows tagged *(repo)* are this stack's additions.
 
+**Motion & jumps** — move the cursor, don't scroll to hunt for it; **flash** is the multiplier. (Every
+row but the flash ones is *built-in Vim*, surfaced here because this is where you reach for "how do I
+jump" — the raw editor is otherwise out of scope, [§1](#1-the-mental-model).)
+
+| Keys | What it does |
+|---|---|
+| `s` · `S` | **flash** — 2 chars + a label, teleport anywhere on screen · flash by Treesitter node ([§6](#6-inside-the-floats--each-embedded-tool-is-its-own-app)) |
+| `r` *(operator)* | **remote** flash — `dr…` / `yr…` acts on a far-off target, cursor never leaves home |
+| `<C-o>` / `<C-i>` | back / forward through the **jumplist** — every `gd`, `/`, and `s` leaves a breadcrumb |
+| `` `` `` · `` `. `` | to where you *just* were · to your last **edit** |
+| `*` / `#` | jump to the next / prev use of the **word under the cursor** |
+| `]e` / `[e` | next / prev **error** — one of the `]`/`[` next-prev family (diagnostics `]d`, hunks `]h`, …), full set in **Code / LSP** below & [§1](#1-the-mental-model) |
+
+**Text objects** — what an operator *acts on*. Vim ships `iw`/`i(`/`i"`; [mini.ai](https://github.com/nvim-mini/mini.ai)
+(a LazyVim default) adds **semantic** ones. Grammar: an operator (`d`/`c`/`y`/`v`) + `a`round / `i`nside +
+one letter below. It finds the *next* object if you're not on one (so `ci(` works from before the parens).
+**Type `ci` and wait** — which-key lists them all.
+
+| `a` / `i` + | Selects (with `d`/`c`/`y`/`v`) |
+|---|---|
+| `f` · `c` · `o` | a **function** body · a **class** · a **block** (if / loop / `{…}`) — by Treesitter |
+| `(` `[` `{` `"` `` ` `` · `t` | the bracket / quote pair · an HTML/JSX **tag** (`cit` retargets a tag's contents) |
+| `u` · `e` · `d` | a **function call** · a **CamelCase** sub-word · a run of **digits** |
+| `g` · `?` | the whole **buffer** · a delimiter pair you **type** at a prompt |
+
+> `daf` deletes a whole function · `ci"` changes the string you're near · `yau` yanks a call · `vic` selects a class body.
+
 **Find & navigate** — one [snacks picker](https://www.lazyvim.org/keymaps#snackspicker), many sources ([§5](#5-the-picker-is-the-command-palette)):
 
 | Keys | What it does |
@@ -132,6 +160,7 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§10](#10-what-we-changed
 | `<leader>su` | **Undo history** as a picker — browse and restore a past state |
 | `<leader>sR` | Resume the last picker exactly where you left it |
 | `<leader>sk` | Search all keymaps by name (the "what was that key?" escape hatch) |
+| `<leader>sn…` | **Noice** — recall a message that scrolled past: `snh` full history · `snl` last · `snd` dismiss all |
 | `<leader>fc` | Open one of this stack's config files |
 | `<leader>e` · `<leader>E` | Explorer: toggle · focus ⇄ back *(repo)* |
 
@@ -218,10 +247,42 @@ stack adds in [`lua/plugins/`](./lua/plugins) — see [§10](#10-what-we-changed
 | `<leader>uw` · `<leader>ul` · `<leader>uL` | Toggle wrap · line numbers · relative numbers |
 | `<leader>uf` · `<leader>ud` | Toggle auto-format-on-save · diagnostics |
 | `<leader>uh` · `<leader>uc` | Toggle inlay hints · conceal |
-| `<leader>uA` · `<leader>uD` | Toggle the tab-bar · scope-dimming *(defaults set in [§10](#10-what-we-changed-vs-the-stock-starter))* |
+| `<leader>uA` · `<leader>uD` | Toggle the tab-bar *(off by default, [§10](#10-what-we-changed-vs-the-stock-starter))* · scope-dimming |
 | `<leader>ub` · `<leader>um` | Toggle dark background · in-buffer Markdown render *(markdown extra)* |
 | `<C-/>` | Toggle a terminal at the project root |
 | `<leader>qq` · `<leader>qs` / `<leader>ql` | Quit all · restore session / last session |
+
+<details>
+<summary><b>More that ships</b> — completion + snippet keys · JSX auto-tags · TODO search · the quiet plugins <em>(click to expand)</em></summary>
+
+**Completion + snippets** — insert mode, [blink.cmp](https://github.com/Saghen/blink.cmp) on the `"enter"` preset. The menu **auto-pops** as you type; you rarely press anything but accept:
+
+| Key | Action |
+|---|---|
+| `<CR>` · `<C-y>` | **Accept** the selected item |
+| `<C-n>` / `<C-p>` | Next / prev candidate |
+| `<C-space>` | Force the menu open · toggle the docs popup |
+| `<Tab>` / `<S-Tab>` | Jump forward / back through a **snippet's** placeholders |
+| `<C-e>` · `<C-k>` | Dismiss the menu · toggle signature help |
+| `<C-f>` / `<C-b>` | Scroll the docs popup |
+
+**Find every TODO / FIX** — [todo-comments](https://github.com/folke/todo-comments.nvim), beyond the `]t` / `[t` jumps in the table above:
+
+| Key | Action |
+|---|---|
+| `<leader>st` · `<leader>xt` | List all TODO/FIX comments — in a picker · in a Trouble panel |
+
+**The quiet machinery** — on by default, (almost) no keys to learn; here so you know *why* the editor already does these:
+
+| Plugin | What it does for you | Reach it via |
+|---|---|---|
+| [nvim-ts-autotag](https://github.com/windwp/nvim-ts-autotag) | auto-closes and renames JSX/HTML tags as you type | automatic in `.tsx` / `.html` |
+| [mini.pairs](https://github.com/nvim-mini/mini.pairs) | auto-closes brackets and quotes | toggle off with `<leader>up` |
+| [ts-comments](https://github.com/folke/ts-comments.nvim) | picks the right `gcc` comment string in embedded langs (JSX-in-TS) | automatic |
+| [nvim-lint](https://github.com/mfussenegger/nvim-lint) | runs linters on save, feeding the same `]d` / `]e` diagnostics | automatic |
+| [mason](https://github.com/mason-org/mason.nvim) | installs LSP servers / formatters / debug adapters | `:Mason` · add bundles with `:LazyExtras` |
+
+</details>
 
 ---
 
@@ -481,9 +542,10 @@ you edit it with plain Vim; only a few keys are its own:
   `Snacks.scratch({ name = "notes", ft = "markdown" })` in [`keymaps.lua`](./lua/config/keymaps.lua), or
   rename the file on disk. `<leader>S` lists them newest-first.
 
-### Bonus — flash: the motion the guide was missing
+### Flash — teleport by label (a motion, not a float)
 
-Not a float, but the highest-leverage *movement* LazyVim ships — and this doc omitted it. `s` + two
+Not a float, but the highest-leverage *movement* LazyVim ships — quick keys in the
+[§3 Motion & jumps](#3-complete-keybinding-reference) table, the mechanism here. `s` + two
 characters paints a one-key **label** on every match; press the label to teleport — in Normal mode to
 move, in operator-pending (`d`/`y`/`c`) to act on a distant target
 ([flash.nvim](https://github.com/folke/flash.nvim)).
@@ -605,7 +667,6 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/config/lazy.lua`](./lua/config/lazy.lua) | point `install.colorscheme` at the stack's palette | Use the real theme during install, not the default tokyonight. |
 | [`lua/config/options.lua`](./lua/config/options.lua) | `number`/`relativenumber` off, `wrap` on, `showtabline` off, `scrolloff=8`, `confirm` | Small comfort defaults on top of LazyVim's. |
 | [`lua/plugins/bufferline.lua`](./lua/plugins/bufferline.lua) | disable `bufferline.nvim` | Keep the buffer tab-bar hidden for good — `showtabline = 0` alone doesn't stick because bufferline re-enables it on startup. Buffer cycling stays on native `<S-h>`/`<S-l>`, `[b`/`]b`. |
-| [`lua/config/autocmds.lua`](./lua/config/autocmds.lua) | enable Snacks `dim` on startup | Scope-dimming isn't a LazyVim default (it's a call, not an option); turn it on by default via `LazyVim.on_very_lazy`. Toggle per-session with `<leader>uD`. |
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `jk` → `<Esc>` | One universal comfort bind; this file is where you port IdeaVim maps. |
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `<leader>E` → focus / return the neo-tree sidebar | Stock `<leader>e` only *toggles* the tree (closes it from the editor); this **focuses** it from any split in one key — no `<C-h>` hop across splits — and a second press returns to the origin window (`<C-w>p`). Overrides LazyVim's `<leader>E` (cwd explorer, still on `<leader>fE`). |
 | [`lazyvim.json`](./lazyvim.json) | enable `lang.markdown` + `lang.typescript` + `editor.inc-rename` + `editor.outline` + `coding.mini-surround` + `dap.core` + `test.core` extras | In-buffer Markdown render (`<leader>um`), TS LSP (`gd`/`gr`/`K`), live rename (`<leader>cr`), outline (`<leader>cs`), surround (`gs*`), debugger (`<leader>d…`), test runner (`<leader>t…`). See [§7](#7-advanced-craft--lsp-refactor-debug-test). |
@@ -614,7 +675,7 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/plugins/neotest.lua`](./lua/plugins/neotest.lua) | add Vitest + Jest neotest adapters | `test.core` ships neotest with an *empty* adapter table — no adapter, no tests discovered. |
 | [`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua) | add [`sindrets/diffview.nvim`](https://github.com/sindrets/diffview.nvim) + `<leader>gv`/`gm`/`gV`/`gF`, `--imply-local` default | Side-by-side diff + file history for reviewing changes (incl. `origin/main...HEAD`); `--imply-local` puts the working file on the right so LSP works in the diff. No LazyVim-native equivalent. |
 | [`lua/plugins/dropbar.lua`](./lua/plugins/dropbar.lua) | add [`Bekaboo/dropbar.nvim`](https://github.com/Bekaboo/dropbar.nvim) | Breadcrumb winbar (the "Context Info" view). Requires **Neovim ≥ 0.11** — a version floor the stack now depends on. |
-| [`lua/plugins/typescript.lua`](./lua/plugins/typescript.lua) | max out `vtsls` inlay hints (`variableTypes`, `parameterNames = "all"`) + noise suppressors | `lang.typescript` ships variable-type hints off and parameter names at `"literals"` only, so `<leader>uh` reveals little. All six hint categories on (suppressing the redundant ones) so one toggle shows everything, JetBrains-style. |
+| [`lua/plugins/typescript.lua`](./lua/plugins/typescript.lua) | inlay hints **off by default** (`inlay_hints.enabled = false`) + max out the `vtsls` set (`variableTypes`, `parameterNames = "all"`) + noise suppressors | LazyVim ships inlay hints *on* globally — turn them off for a clean buffer. `lang.typescript` also ships variable-type hints off and parameter names at `"literals"` only, so all six categories are maxed (redundant ones suppressed) — one `<leader>uh` then reveals everything, JetBrains-style, on demand. |
 
 ## 11. Layout
 
