@@ -453,6 +453,29 @@ own defaults):
   (vertical) — not `<C-…>`. And `t` opens it in a **new tab**.
 - **Reroot on the fly.** `.` makes the folder under the cursor the tree root; `<BS>` climbs back up.
 
+**Reading the git-status column.** To the right of each name neo-tree prints the file's **git state** —
+the same information as `git status`, in two parts: *what changed* + *whether it's staged*. Colour reads
+fastest: 🟢 green = in the index (staged, will commit) · 🟠 orange = needs attention (unstaged /
+untracked / conflict) · 🔴 red = deleted · 🔵 blue = modified or renamed. The glyphs are neo-tree
+defaults, unchanged here (Nerd Font — exact shape depends on the font; the theme picks the colour):
+
+| Symbol (neo-tree name) | Means | Colour |
+|---|---|---|
+| `modified` ● | file has edits | blue |
+| `renamed` ➜ | renamed / moved | blue |
+| `added` ✚ | new file, staged | green |
+| `deleted` ✖ | deleted | red |
+| `unstaged` ▢ | changes not `git add`-ed | orange |
+| `staged` ☑ | staged — ready to commit | green |
+| `conflict` ⚠ | merge conflict | orange |
+| `untracked` ! | new, git doesn't track it yet | orange |
+
+So `✖ ☑` = a **staged deletion**, `● ▢` = **modified but unstaged**. The symbols live in neo-tree's
+`git_status.symbols`; `?` inside the tree lists every key.
+
+> **Not git:** the warning triangles in the *far-right* column are **LSP diagnostics** propagated onto
+> files and folders — a different source. Git state sits just after the name; diagnostics hug the edge.
+
 ### Lazygit (`<leader>gg`) — the git TUI, its own world
 
 A standalone TUI ([lazygit](https://github.com/jesseduffield/lazygit/blob/master/docs/keybindings/Keybindings_en.md))
