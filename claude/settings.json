@@ -20,6 +20,14 @@
     "pr-review-toolkit@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true
   },
+  "extraKnownMarketplaces": {
+    "wakatime": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/wakatime/claude-code-wakatime.git"
+      }
+    }
+  },
   "language": "Русский",
   "voice": {
     "enabled": true,
@@ -29,5 +37,8 @@
   "skipWorkflowUsageWarning": true,
   "theme": "auto",
   "editorMode": "vim",
-  "vimInsertModeRemaps": { "jk": "<Esc>" }
+  "vimInsertModeRemaps": {
+    "jk": "<Esc>"
+  },
+  "model": "claude-fable-5[1m]"
 }
