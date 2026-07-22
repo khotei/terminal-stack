@@ -2,6 +2,9 @@ return {
   {
     "neovim/nvim-lspconfig",
     opts = {
+      -- Inlay hints off by default (LazyVim ships them on); <leader>uh reveals the
+      -- rich set the vtsls settings below configure — JetBrains-style, on demand.
+      inlay_hints = { enabled = false },
       servers = {
         vtsls = {
           settings = {
