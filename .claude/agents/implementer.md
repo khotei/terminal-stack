@@ -35,7 +35,7 @@ none.
   collides with the multiplexer prefix or editor leader), **STOP**: add a change-log row to the
   feature page, propose the spec change, and get the user's confirmation before continuing (hub
   §1.6). Never invent a requirement in config.
-- **Respect the repo.** Follow the root `CLAUDE.md` and `@.claude/rules/*` — naming, config
+- **Respect the repo.** Follow the repo's `CLAUDE.md` and `@.claude/rules/*` — naming, config
   conventions (`@.claude/rules/config.md`), comments, and validation
   (`@.claude/rules/testing.md`). Update the cheatsheet / README when you add a keybind or alias.
 - **Commit per `@.claude/rules/commits.md`.** gitmoji + Conventional Commit + a `Decision:`

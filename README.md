@@ -152,7 +152,6 @@ terminal-stack/
 ├── install.sh      # symlink every config into ~/.config etc. (idempotent)
 ├── Brewfile        # the toolchain (brew bundle)
 ├── Makefile        # try/zellij/check/install/update — `make help` lists all
-├── CLAUDE.md       # always-loaded guidance for Claude Code
 └── README.md       # you are here
 ```
 

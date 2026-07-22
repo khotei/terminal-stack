@@ -40,7 +40,7 @@ Refs: https://app.notion.com/p/<task-url>
 
 Add the dotfiles skeleton: ghostty/, zellij/, nvim/, zsh/ folders, a
 .gitignore (settings.local.json + machine-local state), a README stub,
-and a minimal .claude/ (root CLAUDE.md, settings.json, the SDD toolkit).
+and a minimal .claude/ (CLAUDE.md, settings.json, the SDD toolkit).
 
 Decision: settings.json pre-approves git add/commit/push + the config
 validators (ghostty +show-config, zellij setup, nvim --headless, zsh -n)

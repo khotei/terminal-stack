@@ -9,7 +9,7 @@ agent: researcher
 
 You are running the **Research** phase of the Terminal Stack SDD hub on the topic `$ARGUMENTS`.
 (This stands in for the playbook's phase-0 `/sdd:constitution` — the constitution already exists as
-the repo-root `CLAUDE.md`, so the optional pre-Specify step here is evidence-gathering.)
+the repo's `.claude/CLAUDE.md`, so the optional pre-Specify step here is evidence-gathering.)
 
 **Embedded — do NOT fetch from Notion:** the data-source IDs `@.claude/sdd/data-sources.md` (the
 Specs collection id lives there); the target is `Doc type = Research`.
