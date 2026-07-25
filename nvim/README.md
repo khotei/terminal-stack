@@ -650,7 +650,7 @@ inspector, not CDP) — run `bun test` in a pane, or run the code under node.
 | Rename by find-and-replace | `<leader>cr` (LSP rename, live preview) — every call site |
 | Scatter your own maps across files | put them in [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) (the one owning file) |
 | Reach for `<Esc>` a mile away | `jk` *(this repo)* |
-| Wonder why a Zellij key does nothing in nvim | the pane is **Locked** (you pressed `Alt+d`) — [§9](#9-living-inside-zellij-the-manual-lock--the-leader) |
+| Wonder why a Zellij key does nothing in nvim | the pane is **Locked** (you pressed `Ctrl+q`) — [§9](#9-living-inside-zellij-the-manual-lock--the-leader) |
 
 ---
 
@@ -660,17 +660,17 @@ Neovim runs in a **Zellij pane**, so two keyboard layers share your keyboard —
 multiplexer's modal keys (`<C-p>` pane, `<C-t>` tab, `<C-n>` resize, `<C-s>` scroll, `<C-o>` session)
 win, so those chords reach *Zellij*, not the editor:
 
-- **`Alt+d` hands nvim *every* keystroke.** There's **no autolock** — you hold the lock by choice. Press
-  `Alt+d` and Zellij drops to **Locked** mode, passing keys straight through, so `<C-n>`/`<C-p>`,
-  `<C-s>`, `<C-w>`, function keys — all of it reaches the editor untouched. `Alt+d` again takes the
+- **`Ctrl+q` hands nvim *every* keystroke.** There's **no autolock** — you hold the lock by choice. Press
+  `Ctrl+q` and Zellij drops to **Locked** mode, passing keys straight through, so `<C-n>`/`<C-p>`,
+  `<C-s>`, `<C-w>`, function keys — all of it reaches the editor untouched. `Ctrl+q` again takes the
   multiplexer back. `<Space>` (the leader) and the window keys `<C-h/j/k/l>` never collide, so those
   work whether or not you're locked; the `Ctrl+<mode>` chords are the ones the lock frees.
 - **A few nvim *defaults* live on `Alt` — Zellij eats those too.** LazyVim binds move-line to `<A-j>` /
   `<A-k>`, but those are exactly Zellij's *focus-pane-down/up* keys, so from an unlocked pane they move
-  the Zellij focus, not the line. Lock the pane (`Alt+d`) and they reach the editor. It's the only
+  the Zellij focus, not the line. Lock the pane (`Ctrl+q`) and they reach the editor. It's the only
   default collision — the rest of the keymap is leader / `Ctrl` / `g`-based.
 - **The gotcha: a `Ctrl` chord "does nothing" in nvim → you're *not* locked.** Enter nvim and its
-  `Ctrl`-keys are eaten by Zellij until you press `Alt+d` — no auto-locking to catch it for you. This is
+  `Ctrl`-keys are eaten by Zellij until you press `Ctrl+q` — no auto-locking to catch it for you. This is
   the mirror of the [Zellij reflex](../zellij/README.md#1-the-mental-model).
 - **Add editor maps in one place.** [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) is the sole home
   for your maps, so a collision with Zellij's modal keys or Ghostty stays auditable

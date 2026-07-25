@@ -714,15 +714,15 @@ from `$HOME`), `~/.gitconfig` (your identity — [git/](../git/README.md)), `~/.
 ## 9. Living inside a Zellij pane
 
 This shell runs inside a [Zellij](../zellij/README.md) pane, and the two layers cooperate through **one
-manual switch: `Alt+d`**. By default Zellij is in Normal mode and owns its hotkeys — so a full-screen
+manual switch: `Ctrl+q`**. By default Zellij is in Normal mode and owns its hotkeys — so a full-screen
 app's own Ctrl-keys (atuin's `Ctrl-R`, fzf's `Ctrl-T`/`Ctrl-J`/`Ctrl-K`) can be intercepted by the
-multiplexer before they reach the tool. Press **`Alt+d`** to drop the pane to **Locked** mode: Zellij
-then hands the app *every* keystroke, and those keys land where you mean them. `Alt+d` again returns to
+multiplexer before they reach the tool. Press **`Ctrl+q`** to drop the pane to **Locked** mode: Zellij
+then hands the app *every* keystroke, and those keys land where you mean them. `Ctrl+q` again returns to
 Normal.
 
 The trade-off is honest — **you lock by hand.** There's no autolock; nothing detects that you launched
 `fzf`/`atuin` and locks for you. If atuin's `Ctrl-R` or fzf's `Ctrl-T` "doesn't work," the pane is in
-Normal mode and Zellij ate the key — press `Alt+d` to lock, then use the tool (see the
+Normal mode and Zellij ate the key — press `Ctrl+q` to lock, then use the tool (see the
 [Zellij README §8](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock)).
 
 ---

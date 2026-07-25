@@ -27,22 +27,27 @@ ui {
 // Native modal Zellij (Ctrl+p pane · Ctrl+t tab · Ctrl+n resize · Ctrl+s
 // scroll · Ctrl+o session · …), no tmux prefix. Nested apps do NOT auto-lock —
 // you hold the lock yourself, by choice (no zellij-autolock plugin):
-//   · Alt+d toggles Locked ⇄ Normal — the single manual switch. In Locked,
-//     Zellij hands the pane every key, so nvim's Ctrl+n/p and Claude Code's
-//     Ctrl+o/t/r reach the app instead of a Zellij mode; Alt+d again takes the
-//     multiplexer back. Home-row + Option, one left hand. GOTCHA: enter nvim /
-//     claude and their Ctrl-keys are eaten until you Alt+d — no auto-locking.
+//   · Ctrl+q toggles Locked ⇄ Normal — the single manual switch, kept on the
+//     same Ctrl modifier as every other action so the hand never swaps to Alt
+//     mid-flow. In Locked, Zellij hands the pane every key, so nvim's Ctrl+n/p
+//     and Claude Code's Ctrl+o/t/r reach the app instead of a Zellij mode; Ctrl+q
+//     again takes the multiplexer back. GOTCHA: enter nvim / claude and their
+//     Ctrl-keys are eaten until you Ctrl+q — no auto-locking.
+//     Ctrl+q, not Ctrl+Space (macOS eats it for input-source switch) nor the old
+//     Alt+d (the Alt-vs-Ctrl modifier hop was the friction). It reclaims the key
+//     from Zellij's default Quit — a deliberate keypress nobody makes; the old
+//     XON flow-control meaning is already moot since Ctrl+s drives Scroll mode.
 //   · unbind Ctrl+g — Locked mode's default unlock; freed so Claude Code's own
-//     Ctrl+g (edit prompt in $EDITOR) reaches it. Leave Locked with Alt+d.
-// Locked mode honours only Alt+d, so a way back out is always bound.
+//     Ctrl+g (edit prompt in $EDITOR) reaches it. Leave Locked with Ctrl+q.
+// Locked mode honours only Ctrl+q, so a way back out is always bound.
 keybinds {
     shared_except "locked" {
         unbind "Ctrl g"
-        bind "Alt d" { SwitchToMode "Locked"; }
+        bind "Ctrl q" { SwitchToMode "Locked"; }
     }
     locked {
         unbind "Ctrl g"
-        bind "Alt d" { SwitchToMode "Normal"; }
+        bind "Ctrl q" { SwitchToMode "Normal"; }
     }
     // choose-tree (Ctrl+o f) — tmux `choose-tree` analog: a fuzzy tree of
     // sessions→tabs→panes where 1-9/A-Z jump straight to one. Picked over the

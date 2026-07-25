@@ -44,11 +44,12 @@ keyboard, and they clash on `Ctrl` keys — Zellij's `Ctrl+t`/`Ctrl+o`/`Ctrl+s` 
 `Ctrl+o`/`Ctrl+t`/`Ctrl+r` and nvim's `Ctrl+n`/`Ctrl+p`. This config gives you **one manual switch** to
 decide who wins ([§8](#8-living-with-claude-code--neovim--manual-lock)):
 
-> **`Alt+d`** — toggle **Locked** ⇄ Normal. In Locked, Zellij hands the pane *every* keystroke (the app
-> gets its `Ctrl`s back); press `Alt+d` again to take the multiplexer back. Home-row, one left hand.
+> **`Ctrl+q`** — toggle **Locked** ⇄ Normal. In Locked, Zellij hands the pane *every* keystroke (the app
+> gets its `Ctrl`s back); press `Ctrl+q` again to take the multiplexer back. Same `Ctrl` modifier as
+> every other action — the hand never swaps to `Alt` mid-flow.
 
 So the reflex to build: **entered nvim/Claude and its `Ctrl` keys "don't work"? Zellij is eating them —
-`Alt+d` to lock the pane.** There is **no** auto-locking here; you hold the lock yourself, by choice.
+`Ctrl+q` to lock the pane.** There is **no** auto-locking here; you hold the lock yourself, by choice.
 
 ---
 
@@ -59,7 +60,7 @@ per-mode tables are in [§3](#3-complete-keybinding-reference).)
 
 | Reflex | Keys |
 |---|---|
-| Lock ⇄ unlock a pane (hand keys to the app, or take Zellij back) | `Alt+d` |
+| Lock ⇄ unlock a pane (hand keys to the app, or take Zellij back) | `Ctrl+q` |
 | Jump **straight** to a tab | `Ctrl+t` then `1`…`9` |
 | Toggle to the last tab (A↔B) | `Ctrl+t` then `Tab` |
 | Glide focus across panes *and* tabs | `Alt+h` / `Alt+l` (rolls into the next tab at the edge) |
@@ -186,7 +187,7 @@ Normal and act in one stroke:
 | `Alt+[` / `Alt+]` | previous / next swap-layout |
 
 > These `Alt` keys are deliberately swallowed inside a **locked** Claude/nvim pane (that's the point —
-> the app gets them). Use them from a shell pane, or `Alt+d` out of lock first ([§8](#8-living-with-claude-code--neovim--manual-lock)).
+> the app gets them). Use them from a shell pane, or `Ctrl+q` out of lock first ([§8](#8-living-with-claude-code--neovim--manual-lock)).
 
 ---
 
@@ -227,8 +228,8 @@ build log, `claude`, a `tail -f`. There are **three tiers**; reach for the light
 | Scroll back and *find* something, keyboard-only | `Ctrl+s` → **Scroll**: `j/k` line · `d/u` half-page · `Ctrl+f`/`Ctrl+b` page. `s` starts a **search** — type, `Enter`, then `n`/`p` walk the hits. `Ctrl+c` snaps to the bottom and exits | Stays in the pane, incremental, no editor spin-up |
 | Yank a stack trace · Vim-select a block · save it out | `Ctrl+s` → `e` — **EditScrollback** dumps the whole buffer into **nvim** (`scrollback_editor`) | The *full* editor: `v`/`V` visual, `/` + `n`, macros, `:w /tmp/err.log` — more than copy-mode ever gave |
 
-> **The locked-pane catch (Claude / nvim).** If you've **locked** the pane (`Alt+d`), `Ctrl+s` goes *to
-> the app*, not Zellij. Reflex: **`Alt+d` first** (unlock → Normal), *then* `Ctrl+s` `e`; `Alt+d` again to
+> **The locked-pane catch (Claude / nvim).** If you've **locked** the pane (`Ctrl+q`), `Ctrl+s` goes *to
+> the app*, not Zellij. Reflex: **`Ctrl+q` first** (unlock → Normal), *then* `Ctrl+s` `e`; `Ctrl+q` again to
 > re-lock ([§8](#8-living-with-claude-code--neovim--manual-lock)). For a one-off grab, skip all that — a
 > **mouse drag** copies without unlocking.
 
@@ -422,7 +423,7 @@ this stack: **`zja`** = `zellij attach`, **`zjd`** = `zellij --layout dev` (zsh)
 | Don't | Do instead |
 |---|---|
 | Arrow through tabs `→ → →` to find one | Name tabs, `Ctrl+t N` or `go-to-tab-name` |
-| Fight a locked pane when a hotkey "won't work" | `Alt+d` to unlock (or lock) |
+| Fight a locked pane when a hotkey "won't work" | `Ctrl+q` to unlock (or lock) |
 | Rebuild your layout by hand every morning | `zellij --layout dev`, or resurrect via `Ctrl+o w` |
 | Cram 12 panes into one tab | Split across named tabs / a session per project |
 | `exit` a session you'll want back | `Ctrl+o d` detach — processes keep running |
@@ -436,15 +437,16 @@ the app *inside* a pane wants — Claude Code's `Ctrl+o`/`Ctrl+t`/`Ctrl+r`, nvim
 Whoever isn't locked out wins. You arbitrate with **one manual switch** — there is **no** auto-locking
 plugin (a deliberate choice: predictable control over convenience):
 
-- **`Alt+d` toggles Locked ⇄ Normal.** In **Locked**, Zellij hands the pane *every* keystroke, so the
-  app's `Ctrl` keys reach it; press `Alt+d` again to take the multiplexer back. It's on the home row
-  (Option + `D`, one left hand) — the one key Locked mode honours, so it's always your way out.
+- **`Ctrl+q` toggles Locked ⇄ Normal.** In **Locked**, Zellij hands the pane *every* keystroke, so the
+  app's `Ctrl` keys reach it; press `Ctrl+q` again to take the multiplexer back. It stays on the same
+  `Ctrl` modifier as every other action (reclaimed from Zellij's default Quit) — the one key Locked
+  mode honours, so it's always your way out.
 - **`Ctrl+g` is freed** (unbound from Zellij's default lock toggle) so Claude Code's own `Ctrl+g` —
-  *edit prompt in `$EDITOR`* — reaches it. Leave Locked with `Alt+d`, not `Ctrl+g`.
+  *edit prompt in `$EDITOR`* — reaches it. Leave Locked with `Ctrl+q`, not `Ctrl+g`.
 
 > ⚠️ **The trade-off you chose.** With no autolock, entering nvim/Claude/fzf does **not** lock the pane
-> for you — until you press `Alt+d`, Zellij keeps eating those apps' `Ctrl` keys. The reflex: **`Alt+d`
-> the moment a nested app's `Ctrl` key "doesn't work."** Lock it once on entry, `Alt+d` again on exit.
+> for you — until you press `Ctrl+q`, Zellij keeps eating those apps' `Ctrl` keys. The reflex: **`Ctrl+q`
+> the moment a nested app's `Ctrl` key "doesn't work."** Lock it once on entry, `Ctrl+q` again on exit.
 
 ---
 
