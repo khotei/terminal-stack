@@ -1,0 +1,11 @@
+git:
+  pagers:
+    - # Two pagers, not one, so `|` (cyclePagers) toggles unified ⇄ side-by-side at
+      # runtime — the first entry is the startup default. delta needs --paging=never
+      # or it tries to page inside lazygit's own pager. delta docs · lazygit Config.md
+      colorArg: always
+      pagers:
+        - name: unified
+          pager: delta --paging=never --line-numbers
+        - name: side-by-side
+          pager: delta --paging=never --line-numbers --side-by-side --width={{columnWidth}}
