@@ -39,6 +39,5 @@
   "editorMode": "vim",
   "vimInsertModeRemaps": {
     "jk": "<Esc>"
-  },
-  "model": "claude-fable-5[1m]"
+  }
 }
