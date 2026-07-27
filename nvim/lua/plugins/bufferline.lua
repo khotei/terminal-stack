@@ -1,8 +1,21 @@
 return {
-  -- Tabline off for good. showtabline = 0 (options.lua) isn't enough — bufferline re-enables
-  -- the tab-bar on startup regardless, so disabling the plugin is the only reliable way to keep
-  -- it hidden. Buffer cycling still works: LazyVim binds <S-h>/<S-l> and [b/]b to native
-  -- :bprevious/:bnext in its own config/keymaps.lua, independent of this plugin. Only the
-  -- bufferline-only <leader>b keys (pin/pick/close-left-right) go — and those need a visible bar.
-  { "akinsho/bufferline.nvim", enabled = false },
+  -- Tabline shows TABPAGES, never buffers. bufferline in `mode = "tabs"` renders one entry per
+  -- tabpage — so buffers stay hidden (we never use buffer mode) and the top bar is a true tab
+  -- bar. LazyVim already sets always_show_bufferline = false, so the bar appears only at ≥2 tabs;
+  -- a new tab (e.g. :DiffviewOpen) surfaces on its own. Switch tabs: gt/gT, {count}gt (jump by
+  -- number), or <leader><tab>]/[. Rename a tab: :BufferLineTabRename (sets t:name).
+  --
+  -- Colors come from catppuccin, not bufferline's own derivation, so the bar follows light/dark.
+  -- get_theme() returns a closure that reads the CURRENT flavour; bufferline re-invokes it on its
+  -- own ColorScheme autocmd, so when auto-dark-mode (plugins/colorscheme.lua) flips background and
+  -- re-applies catppuccin, the bar repaints Latte⇄Mocha instead of freezing on the startup flavour.
+  {
+    "akinsho/bufferline.nvim",
+    opts = function(_, opts)
+      opts.options = opts.options or {}
+      opts.options.mode = "tabs"
+      opts.highlights = require("catppuccin.special.bufferline").get_theme()
+      return opts
+    end,
+  },
 }
