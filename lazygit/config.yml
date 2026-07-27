@@ -1,11 +1,22 @@
 git:
+  # delta renders lazygit's inline diff. Two pagers so `|` cycles unified ⇄ side-by-side;
+  # both use --width={{columnWidth}} (the live diff-pane width — so they ADAPT to resize).
+  # WHY the odd bits:
+  #  • --paging=never — else delta pages inside lazygit's own pager.
+  #  • --light/--dark from the macOS appearance (same signal as Ghostty's
+  #    light:Latte/dark:Mocha) — delta can't probe the terminal through lazygit's pipe
+  #    (it races the TUI), so we decide it here. macOS-only.
+  #  • unified: single {np} right gutter — delta's default dual old:new numbers waste width.
+  #  • side-by-side --width is {{columnWidth}} MINUS 8 — delta draws side-by-side ~8 cols
+  #    wider than --width (its two number gutters), so the fudge makes it fit the pane.
+  # In a split/parallel-pane layout columnWidth is small (~40), so side-by-side halves to
+  # ~20/side and wraps — it fills ONLY when the pane is wide (resize / `+`). For a wide
+  # review regardless of layout use <c-t> (difftastic, git/config) or <leader>gv (diffview):
+  # both take the FULL terminal, not this constrained pane.
   pagers:
-    - # Two pagers, not one, so `|` (cyclePagers) toggles unified ⇄ side-by-side at
-      # runtime — the first entry is the startup default. delta needs --paging=never
-      # or it tries to page inside lazygit's own pager. delta docs · lazygit Config.md
+    - name: unified
       colorArg: always
-      pagers:
-        - name: unified
-          pager: delta --paging=never --line-numbers
-        - name: side-by-side
-          pager: delta --paging=never --line-numbers --side-by-side --width={{columnWidth}}
+      pager: "delta --paging=never --width={{columnWidth}} --line-numbers --line-numbers-left-format='' --line-numbers-right-format='{np:>3}│' --hunk-header-decoration-style=none --file-decoration-style=none --file-modified-label='' $([ \"$(defaults read -g AppleInterfaceStyle 2>/dev/null)\" = Dark ] && echo --dark || echo --light)"
+    - name: side-by-side
+      colorArg: always
+      pager: "delta --paging=never --side-by-side --width=$(({{columnWidth}} - 8)) --hunk-header-decoration-style=none --file-decoration-style=none --file-modified-label='' $([ \"$(defaults read -g AppleInterfaceStyle 2>/dev/null)\" = Dark ] && echo --dark || echo --light)"
