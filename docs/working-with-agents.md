@@ -349,7 +349,7 @@ git diff --name-only   # did it touch something it shouldn't have?
 
 Scope creep — files edited or deleted outside the task — is the **#1 agent tell**.
 
-**② Read the delta with LSP live.** `<leader>gv` (working tree) or `<leader>gm` (branch vs `main`):
+**② Read the delta with LSP live.** `<leader>gv` (working tree) or `<leader>gM` (branch vs `main`):
 `<Tab>`/`<S-Tab>` between files, `]c`/`[c` between hunks; stop on any line and `gd`/`gr`/`K` work right
 there. For a stray hunk without leaving the file, gitsigns: `]h`/`[h` to jump, `<leader>ghp` to preview,
 `<leader>gb` to blame. `<leader>gs` is the changed-files picker; `<leader>gl` the git log.
@@ -403,7 +403,7 @@ correctness/requirement gaps ([best practices](https://code.claude.com/docs/en/b
 
 ### Committed work, branches & PRs
 
-Your whole branch, LSP live: `<leader>gm` (`:DiffviewOpen origin/main...HEAD`). The **three-dot** range
+Your whole branch, LSP live: `<leader>gM` (`:DiffviewOpen origin/main...HEAD`). The **three-dot** range
 compares against the merge-base — the same delta a GitHub reviewer sees. A PR: `gh pr checkout <N>`
 makes it local (real files, full LSP), then `:DiffviewOpen origin/main...HEAD`; or triage without
 checkout via `gh pr diff <N> | delta`. A big multi-commit PR reviews commit-by-commit with
@@ -726,7 +726,8 @@ stack's config.
 |---|---|---|
 | `git diff --stat` / `--name-only` | 30-second scope triage (do this first) | shell |
 | `<leader>gv` | Review working-tree changes | Neovim · diffview |
-| `<leader>gm` | Review branch vs main (`origin/main...HEAD`) | Neovim · diffview |
+| `<leader>gM` | Review branch vs main (`origin/main...HEAD`) | Neovim · diffview |
+| `<leader>gm` | Commits picker → `<c-o>`/`<c-x>` open a commit in diffview | Neovim · diffview |
 | `<leader>gV` / `<leader>gF` | Repo history / current-file history | Neovim · diffview |
 | `<leader>gs` / `<leader>gl` | Changed-files picker / git log | Neovim |
 | `]c` / `[c` · `<Tab>` / `<S-Tab>` | next/prev hunk · next/prev file | diffview |

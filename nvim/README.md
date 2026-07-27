@@ -215,7 +215,8 @@ one letter below. It finds the *next* object if you're not on one (so `ci(` work
 | `<leader>ghb` · `<leader>ghB` | Full blame of the **line** · the whole **buffer** |
 | `<leader>ghd` · `<leader>ghD` | Diff the file vs HEAD · vs the previous commit (`~`) |
 | `<leader>ghu` | Un-stage the last staged hunk |
-| `<leader>gv` · `<leader>gm` | Diffview: working tree · whole branch vs `main` *(repo)* |
+| `<leader>gv` · `<leader>gM` | Diffview: working tree · whole branch vs `main` *(repo)* |
+| `<leader>gm` | Diffview **commits picker** → `<c-o>` commit's change · `<c-x>` vs current *(repo)* |
 | `<leader>gV` · `<leader>gF` | Diffview history — whole repo · current file *(repo)* |
 
 > A **hunk** is a contiguous block of changed lines (a git-diff term — literally a "chunk"). `ghp` peeks
@@ -353,9 +354,11 @@ import or a lint the LSP can fix? `<leader>ca` (code action) offers the menu —
 imports", quick-fixes — apply and move on.
 
 **Review a diff — especially Claude Code's.** `<leader>gv` opens **diffview** *(repo)* on the working
-tree; `<leader>gm` reviews the whole branch vs main (`origin/main...HEAD`). Both open with
-`--imply-local`, so the working-tree file is on the right side and **LSP works inside the diff**
-(`gd`/`gr`/`K` — no jump to the real file needed). `<leader>gV` shows the repo's commit *history*;
+tree; `<leader>gM` reviews the whole branch vs main (`origin/main...HEAD`). `<leader>gm` opens the
+Snacks **commits picker**: highlight a commit and press `<c-o>` for that commit's own change (vs its
+parent — what lazygit shows) or `<c-x>` to diff it against the working tree. All open with
+`--imply-local`, so the working-tree file is on the right side and **LSP works
+inside the diff** (`gd`/`gr`/`K` — no jump to the real file needed). `<leader>gV` shows the repo's commit *history*;
 `<leader>gF` narrows it to the current file ([diffview.nvim](https://github.com/sindrets/diffview.nvim)).
 Full review workflow: [working-with-agents.md](../docs/working-with-agents.md).
 For a stray line, stage it straight from the buffer: cursor on a hunk, `<leader>ghs`; jump between hunks
@@ -509,10 +512,10 @@ letter differs per panel (`s` = stash in Files, squash in Commits).
   current branch. Mind the case — in Files, `C` means "commit with editor."
 - **Instant amend.** `A` in Files folds staged changes into `HEAD` with no prompt.
 
-### Diffview (`<leader>gv` · `<leader>gm`) — the review loop *(repo)*
+### Diffview (`<leader>gv` · `<leader>gM` · `<leader>gm`) — the review loop *(repo)*
 
 Side-by-side of every change with a file list you page through — `<leader>gv` for the working tree,
-`<leader>gm` for the whole branch vs main. Both use `--imply-local`, so the real file sits on the
+`<leader>gM` for the whole branch vs main. Both use `--imply-local`, so the real file sits on the
 right and **LSP is live in the diff** (`gd`/`gr`/`K`, diagnostics) — the review and the code, one view
 ([diffview.nvim](https://github.com/sindrets/diffview.nvim); `<leader>gV`/`gF` show history;
 [full guide](../docs/working-with-agents.md)). Its default keys, once a diffview panel is focused:
@@ -528,6 +531,28 @@ right and **LSP is live in the diff** (`gd`/`gr`/`K`, diagnostics) — the revie
 
 > **The whole review loop is two keys:** `-` to stage from the panel, `<Tab>` to step straight into the
 > next file's diff — ideal for reading Claude Code's changes ([§4](#4-recipes--i-want-to--do-this)).
+
+#### The commits picker (`<leader>gm`) — its hotkeys *(repo + Snacks)*
+
+`<leader>gm` opens Snacks' git-log picker (the same widget behind LazyVim's `<leader>gc` / `<leader>gl`).
+The title bar only hints a key or two (`… <c-d> git diff | <c-y> copy …`) and truncates the rest with
+`…` — **press `?` with the results list focused (`/` toggles input ⇄ list) for the full live key list.**
+The keys worth knowing:
+
+| Keys | Action |
+|---|---|
+| `<c-o>` | Open the commit in **diffview** — its **own** change (vs parent, like lazygit) *(repo)* |
+| `<c-x>` | Open the commit in **diffview** — vs the **working tree** *(repo)* |
+| `<c-d>` · `<c-y>` | Built-in **git diff** preview · **copy** the sha *(git-log picker)* |
+| `<c-f>` · `<c-b>` | Scroll the **preview** down · up |
+| `<c-j>`/`<c-n>` · `<c-k>`/`<c-p>` | **Next** · **previous** commit in the list |
+| `<c-s>` · `<c-v>` · `<c-t>` | Open in a **split** · **vsplit** · **tab** |
+| `<c-q>` · `<Tab>` | Send list to **quickfix** · toggle multi-**select** |
+
+> `<c-o>` / `<c-x>` are the two the stack adds ([`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua));
+> the rest are **Snacks picker defaults**, shared by *every* picker (files, grep, …) — learn them once.
+> The preview pane renders diffs with Neovim's built-in highlighting, **not delta** (delta only pages
+> inside lazygit); `<c-o>` / `<c-x>` are the route to a full side-by-side.
 
 ### The other panels — Trouble · Outline · Neotest · DAP-UI
 
@@ -699,7 +724,7 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/plugins/markdown.lua`](./lua/plugins/markdown.lua) | disable `markdown-preview.nvim` | `lang.markdown` ships two renderers; keep only render-markdown's in-buffer toggle (`<leader>um`). A terminal-first stack wants no browser tab — and skips the plugin's node build step. |
 | [`lua/plugins/dap-node.lua`](./lua/plugins/dap-node.lua) | append an `npm`/`pnpm` "Debug script" dap config | `lang.typescript` covers "Launch file"/"Attach" but not `npm run <script>` under the debugger; appended so its own configs survive. |
 | [`lua/plugins/neotest.lua`](./lua/plugins/neotest.lua) | add Vitest + Jest neotest adapters | `test.core` ships neotest with an *empty* adapter table — no adapter, no tests discovered. |
-| [`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua) | add [`sindrets/diffview.nvim`](https://github.com/sindrets/diffview.nvim) + `<leader>gv`/`gm`/`gV`/`gF`, `--imply-local` default | Side-by-side diff + file history for reviewing changes (incl. `origin/main...HEAD`); `--imply-local` puts the working file on the right so LSP works in the diff. No LazyVim-native equivalent. |
+| [`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua) | add [`sindrets/diffview.nvim`](https://github.com/sindrets/diffview.nvim) + `<leader>gv`/`gM`/`gm`/`gV`/`gF`, `--imply-local` default | Side-by-side diff + file history for reviewing changes (`gM` = `origin/main...HEAD`; `gm` = a commits picker whose `<c-o>`/`<c-x>` open a chosen commit in diffview); `--imply-local` puts the working file on the right so LSP works in the diff. No LazyVim-native equivalent. |
 | [`lua/plugins/dropbar.lua`](./lua/plugins/dropbar.lua) | add [`Bekaboo/dropbar.nvim`](https://github.com/Bekaboo/dropbar.nvim) | Breadcrumb winbar (the "Context Info" view). Requires **Neovim ≥ 0.11** — a version floor the stack now depends on. |
 | [`lua/plugins/typescript.lua`](./lua/plugins/typescript.lua) | inlay hints **off by default** (`inlay_hints.enabled = false`) + max out the `vtsls` set (`variableTypes`, `parameterNames = "all"`) + noise suppressors | LazyVim ships inlay hints *on* globally — turn them off for a clean buffer. `lang.typescript` also ships variable-type hints off and parameter names at `"literals"` only, so all six categories are maxed (redundant ones suppressed) — one `<leader>uh` then reveals everything, JetBrains-style, on demand. |
 

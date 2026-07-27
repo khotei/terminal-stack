@@ -353,7 +353,7 @@ git diff --name-only   # тронуло ли то, что не должно?
 
 Расползание зоны — файлы, правленные или удалённые вне задачи — **признак агента №1**.
 
-**② Читать дельту с живым LSP.** `<leader>gv` (рабочее дерево) или `<leader>gm` (ветка vs `main`):
+**② Читать дельту с живым LSP.** `<leader>gv` (рабочее дерево) или `<leader>gM` (ветка vs `main`):
 `<Tab>`/`<S-Tab>` между файлами, `]c`/`[c` между hunk'ами; встаньте на строку — и `gd`/`gr`/`K`
 работают прямо здесь. Для случайного hunk'а, не покидая файл, gitsigns: `]h`/`[h` прыгать,
 `<leader>ghp` предпросмотр, `<leader>gb` blame. `<leader>gs` — picker изменённых файлов; `<leader>gl`
@@ -410,7 +410,7 @@ git diff --name-only   # тронуло ли то, что не должно?
 
 ### Закоммиченное, ветки и PR
 
-Вся ваша ветка, с живым LSP: `<leader>gm` (`:DiffviewOpen origin/main...HEAD`). **Трёхточечный**
+Вся ваша ветка, с живым LSP: `<leader>gM` (`:DiffviewOpen origin/main...HEAD`). **Трёхточечный**
 диапазон сравнивает с merge-base — той же дельтой, что видит ревьюер на GitHub. PR:
 `gh pr checkout <N>` делает его локальным (реальные файлы, полный LSP), затем
 `:DiffviewOpen origin/main...HEAD`; либо triage без checkout'а через `gh pr diff <N> | delta`. Большой
@@ -742,7 +742,8 @@ Comprehend каждого среза кормит *следующий* Frame у�
 |---|---|---|
 | `git diff --stat` / `--name-only` | 30-секундный triage зоны (сначала это) | shell |
 | `<leader>gv` | Ревью изменений рабочего дерева | Neovim · diffview |
-| `<leader>gm` | Ревью ветки vs main (`origin/main...HEAD`) | Neovim · diffview |
+| `<leader>gM` | Ревью ветки vs main (`origin/main...HEAD`) | Neovim · diffview |
+| `<leader>gm` | Пикер коммитов → `<c-o>`/`<c-x>` открывают коммит в diffview | Neovim · diffview |
 | `<leader>gV` / `<leader>gF` | История репозитория / текущего файла | Neovim · diffview |
 | `<leader>gs` / `<leader>gl` | Picker изменённых файлов / git log | Neovim |
 | `]c` / `[c` · `<Tab>` / `<S-Tab>` | след./пред. hunk · след./пред. файл | diffview |
