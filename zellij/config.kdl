@@ -24,13 +24,13 @@ ui {
 }
 
 // ── keybinds: native modal, manual lock ───────────────────────────────
-// Native modal Zellij (Ctrl+p pane · Ctrl+t tab · Ctrl+n resize · Ctrl+s
-// scroll · Ctrl+o session · …), no tmux prefix. Nested apps do NOT auto-lock —
+// Native modal Zellij (Ctrl+p pane · Ctrl+t tab · Ctrl+s scroll; Move/Session/
+// Resize behind Ctrl+p m/o/R), no tmux prefix. Nested apps do NOT auto-lock —
 // you hold the lock yourself, by choice (no zellij-autolock plugin):
 //   · Ctrl+q toggles Locked ⇄ Normal — the single manual switch, kept on the
 //     same Ctrl modifier as every other action so the hand never swaps to Alt
-//     mid-flow. In Locked, Zellij hands the pane every key, so nvim's Ctrl+n/p
-//     and Claude Code's Ctrl+o/t/r reach the app instead of a Zellij mode; Ctrl+q
+//     mid-flow. In Locked, Zellij hands the pane every key, so nvim's Ctrl+p
+//     and Claude Code's Ctrl+t/r reach the app instead of a Zellij mode; Ctrl+q
 //     again takes the multiplexer back. GOTCHA: enter nvim / claude and their
 //     Ctrl-keys are eaten until you Ctrl+q — no auto-locking.
 //     Ctrl+q, not Ctrl+Space (macOS eats it for input-source switch) nor the old
@@ -43,16 +43,30 @@ ui {
 keybinds {
     shared_except "locked" {
         unbind "Ctrl g"
+        // Freed for the apps even when unlocked — each is daily vocabulary inside
+        // a pane: Ctrl+h nvim window-left · Ctrl+o nvim jumplist-back + Claude
+        // Code transcript · Ctrl+n nvim completion-next. Their modes re-enter via
+        // the pane hub below: Ctrl+p then m (Move) / o (Session) / R (Resize).
+        unbind "Ctrl h"
+        unbind "Ctrl o"
+        unbind "Ctrl n"
         bind "Ctrl q" { SwitchToMode "Locked"; }
     }
     locked {
         unbind "Ctrl g"
         bind "Ctrl q" { SwitchToMode "Normal"; }
     }
-    // choose-tree (Ctrl+o f) — tmux `choose-tree` analog: a fuzzy tree of
+    // The pane hub: rare modes ride behind Ctrl+p instead of owning a global
+    // Ctrl key. R, not r — lowercase r is the default split-right.
+    pane {
+        bind "m" { SwitchToMode "Move"; }
+        bind "o" { SwitchToMode "Session"; }
+        bind "R" { SwitchToMode "Resize"; }
+    }
+    // choose-tree (Ctrl+p o f) — tmux `choose-tree` analog: a fuzzy tree of
     // sessions→tabs→panes where 1-9/A-Z jump straight to one. Picked over the
-    // built-in session-manager (Ctrl+o w), which can't drill to pane level. The wasm
-    // is fetched into plugins/ by install.sh (git-ignored, best-effort — Ctrl+o f is a
+    // built-in session-manager (Ctrl+p o w), which can't drill to pane level. The wasm
+    // is fetched into plugins/ by install.sh (git-ignored, best-effort — Ctrl+p o f is a
     // no-op if absent). floating+move_to_focused_tab mirror the session-manager bind.
     // https://github.com/laperlej/zellij-choose-tree
     session {
