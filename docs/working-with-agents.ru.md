@@ -748,6 +748,8 @@ Comprehend каждого среза кормит *следующий* Frame у�
 | `<leader>gs` / `<leader>gl` | Picker изменённых файлов / git log | Neovim |
 | `]c` / `[c` · `<Tab>` / `<S-Tab>` | след./пред. hunk · след./пред. файл | diffview |
 | `]h` / `[h` · `<leader>ghp` · `<leader>gb` | прыгать по hunk'ам · предпросмотр · blame | gitsigns |
+| `:checktime` | перечитать буферы, изменённые агентом на диске (само — при фокусе) | Neovim |
+| `:LspRestart` | перезапустить LSP, когда типы отстают от правок агента | Neovim |
 | `gd` / `gr` / `K` · `]]` / `[[` · `gy` / `gI` | опр. / ссылки / hover · прыжки по символу · тип / реализация | Neovim LSP |
 | `<leader>cs` | Outline (форма кода) | Neovim |
 | `git add -p` · lazygit `<space>` | стейдж hunk-за-hunk'ом = прочесть каждое изменение | shell · lazygit |

@@ -732,6 +732,8 @@ stack's config.
 | `<leader>gs` / `<leader>gl` | Changed-files picker / git log | Neovim |
 | `]c` / `[c` · `<Tab>` / `<S-Tab>` | next/prev hunk · next/prev file | diffview |
 | `]h` / `[h` · `<leader>ghp` · `<leader>gb` | jump hunks · preview · blame | gitsigns |
+| `:checktime` | re-read buffers the agent changed on disk (auto-runs on focus) | Neovim |
+| `:LspRestart` | restart the language server when types lag the agent's edits | Neovim |
 | `gd` / `gr` / `K` · `]]` / `[[` · `gy` / `gI` | def / refs / hover · hop symbol uses · type / impl | Neovim LSP |
 | `<leader>cs` | Outline (code shape) | Neovim |
 | `git add -p` · lazygit `<space>` | stage hunk-by-hunk = read every change | shell · lazygit |

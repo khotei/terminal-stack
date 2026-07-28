@@ -364,6 +364,14 @@ Full review workflow: [working-with-agents.md](../docs/working-with-agents.md).
 For a stray line, stage it straight from the buffer: cursor on a hunk, `<leader>ghs`; jump between hunks
 with `]h` / `[h`. Need the full git TUI? `<leader>gg` floats **lazygit**.
 
+**Resync the editor after an agent rewrote many files.** Buffers refresh themselves: `autoread` plus
+LazyVim's `checktime`-on-`FocusGained` autocmd re-read every outside-changed buffer the moment you
+focus the nvim pane; `:checktime` does the same on demand (a buffer holding *your* unsaved edits is
+left alone — W12 warns instead). If *types* still lag — vtsls reporting stale diagnostics until you
+visit a file — `:LspRestart` (or `:LspRestart vtsls`, sparing the other clients) restarts the server
+and re-indexes the project. The nuclear `:bufdo e!` re-reads everything but **discards** unsaved
+local edits — last resort only.
+
 **Run and debug a test at the cursor.** `<leader>tr` runs the nearest test; `<leader>ts` opens the
 summary panel; `<leader>td` runs it *under the debugger*. This stack wires the [Vitest and Jest
 adapters](./lua/plugins/neotest.lua) *(repo)* so tests are discovered whichever a repo uses.
