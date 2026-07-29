@@ -25,6 +25,15 @@ add commit-commands
 add pr-review-toolkit
 add frontend-design
 
+# WakaTime ships from its own marketplace (registered in settings.json#extraKnownMarketplaces),
+# not claude-plugins-official — install by fully-qualified name. Reads the api_key from
+# ~/.wakatime.cfg (never committed). Pairs with nvim/lua/plugins/wakatime.lua on one dashboard.
+if claude plugin list 2>/dev/null | grep -q "claude-code-wakatime@wakatime"; then
+  printf '  ok: %s already installed\n' claude-code-wakatime
+else
+  claude plugin install claude-code-wakatime@wakatime --scope user
+fi
+
 cat <<'DONE'
 
 Plugins installed (user scope) — enabled via settings.json#enabledPlugins.
