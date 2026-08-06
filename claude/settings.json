@@ -30,6 +30,7 @@
     }
   },
   "language": "Русский",
+  "tui": "fullscreen",
   "voice": {
     "enabled": true,
     "mode": "hold"
