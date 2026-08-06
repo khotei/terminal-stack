@@ -23,3 +23,15 @@ map("n", "<leader>E", function()
     vim.cmd("Neotree focus")
   end
 end, { desc = "Explorer (focus ⇄ back)" })
+
+-- Force-reload every buffer from disk after an agent rewrote files (`:bufdo e!`).
+-- It DISCARDS unsaved edits — the deliberate nuke for when the filesystem should
+-- win. The safe path that keeps your edits is `:checktime` (auto-runs on
+-- FocusGained; see nvim/README §13), so it earns no key. Capital R mirrors
+-- LazyVim's bd/bD convention (capital = more forceful). Lands in which-key under
+-- <leader>b via its desc — no separate which-key spec needed.
+map("n", "<leader>bR", function()
+  local cur = vim.api.nvim_get_current_buf()
+  vim.cmd("bufdo silent! edit!")
+  pcall(vim.api.nvim_set_current_buf, cur)
+end, { desc = "Reload ALL buffers from disk (discard edits)" })
