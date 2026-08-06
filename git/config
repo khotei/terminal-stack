@@ -10,6 +10,42 @@
 [delta]
 	navigate = true       # n / N jump between diff hunks in the pager
 	line-numbers = true
+	# Syntax in ANSI slots, so diffs repaint with Ghostty's theme instead of
+	# carrying a second palette (bat's 24-bit themes). `bat --list-themes` lists it.
+	syntax-theme = ansi
+
+# The diff *chrome* — line fills, word-level emphasis, gutters — in GitHub's own
+# diff colours instead of delta's generic red/green. Values are Primer's diffBlob
+# tokens (addition/deletion lineBg · wordBg · numBg) from the high-contrast
+# primitives that also drive nvim and zellij; the dark rgba() tokens are flattened
+# over canvas.default #0a0c10, since a terminal cell carries no alpha.
+# Activated per appearance by DELTA_FEATURES (zsh/tools.zsh) — delta cannot pair
+# light/dark itself. lazygit passes --features on its own delta invocations.
+[delta "github-light"]
+	light = true
+	minus-style = "syntax #fff0ee"
+	minus-emph-style = "#ffffff #a0111f"
+	plus-style = "syntax #e6ffec"
+	plus-emph-style = "#ffffff #055d20"
+	line-numbers-minus-style = "#0e1116 #ffd7d5"
+	line-numbers-plus-style = "#0e1116 #ccffd8"
+	line-numbers-zero-style = "#66707b"
+	file-style = "#0349b4 bold"
+	file-decoration-style = "#88929d ul"
+	hunk-header-decoration-style = "#88929d ul"
+
+[delta "github-dark"]
+	dark = true
+	minus-style = "syntax #231519"
+	minus-emph-style = "#0a0c10 #ff6a69"
+	plus-style = "syntax #0a2516"
+	plus-emph-style = "#0a0c10 #09b43a"
+	line-numbers-minus-style = "#f0f3f6 #54282b"
+	line-numbers-plus-style = "#f0f3f6 #124622"
+	line-numbers-zero-style = "#9ea7b3"
+	file-style = "#71b7ff bold"
+	file-decoration-style = "#7a828e ul"
+	hunk-header-decoration-style = "#7a828e ul"
 
 [merge]
 	conflictStyle = zdiff3

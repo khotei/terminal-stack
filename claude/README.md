@@ -374,6 +374,21 @@ active theme — like the Starship prompt. Falls back from `jq` to `grep` if `jq
 consumed: `.model.display_name`, `.workspace.current_dir`, `.workspace.git_worktree`,
 `.context_window.used_percentage`, `.effort.level`, `.rate_limits.five_hour.used_percentage`.
 
+### The theme
+
+[`themes/`](./themes/) carries **GitHub High Contrast** as two custom themes
+([format](https://code.claude.com/docs/en/terminal-config#create-a-custom-theme)) — every token, from
+the prompt border to the diff fills, set from the same Primer primitives the editor and the
+multiplexer use, so a `/diff` inside Claude Code and a diff in lazygit are the same two colours.
+
+`settings.json` holds exactly one `theme`, and its `auto` value only picks between the *built-in*
+presets — it cannot pair two custom themes. So the appearance is resolved in the shell instead: the
+`claude()` wrapper in [`zsh/theme.zsh`](../zsh/README.md#8-one-theme-across-the-stack) passes
+`--settings '{"theme":"custom:github-<mode>-high-contrast"}'`, an *additive* layer that overrides only
+the theme. Launch Claude Code from a shell that sourced the stack's zsh and it matches; launch it any
+other way and it falls back to the `auto` preset in `settings.json`. `/theme` also lists both by name
+if you'd rather pin one by hand.
+
 **Already enabled** — [`settings.json`](./settings.json) carries the `statusLine` block, so a fresh
 install shows the line with no hand-editing. Test it:
 

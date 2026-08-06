@@ -5,17 +5,11 @@ return {
   -- a new tab (e.g. :DiffviewOpen) surfaces on its own. Switch tabs: gt/gT, {count}gt (jump by
   -- number), or <leader><tab>]/[. Rename a tab: :BufferLineTabRename (sets t:name).
   --
-  -- Colors come from catppuccin, not bufferline's own derivation, so the bar follows light/dark.
-  -- get_theme() returns a closure that reads the CURRENT flavour; bufferline re-invokes it on its
-  -- own ColorScheme autocmd, so when auto-dark-mode (plugins/colorscheme.lua) flips background and
-  -- re-applies catppuccin, the bar repaints Latte⇄Mocha instead of freezing on the startup flavour.
+  -- No highlight override: bufferline derives its colours from the active colorscheme and
+  -- re-derives them on its own ColorScheme autocmd, so the bar follows the light/dark flip
+  -- in plugins/colorscheme.lua without a theme-specific integration module.
   {
     "akinsho/bufferline.nvim",
-    opts = function(_, opts)
-      opts.options = opts.options or {}
-      opts.options.mode = "tabs"
-      opts.highlights = require("catppuccin.special.bufferline").get_theme()
-      return opts
-    end,
+    opts = { options = { mode = "tabs" } },
   },
 }

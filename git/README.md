@@ -19,6 +19,8 @@ so your name/email/signing config in `~/.gitconfig` stays exactly as it is.
 | `interactive.diffFilter` | `delta --color-only` | Colour the hunks in `git add -p`. |
 | `delta.navigate` | `true` | `n` / `N` jump between files/hunks in the pager. |
 | `delta.line-numbers` | `true` | Show old/new line numbers beside the diff. |
+| `delta.syntax-theme` | `ansi` | Highlight in ANSI slots instead of one of bat's 24-bit themes, so diffs follow Ghostty's light/dark palette with no second theme to keep in sync. |
+| `delta.github-light` / `github-dark` | feature blocks | The diff **chrome** — line fills, word-level emphasis, number gutters — in GitHub's own colours (Primer `diffBlob` tokens: `#e6ffec`/`#fff0ee` fills, `#055d20`/`#a0111f` word emphasis; the dark rgba tokens flattened over `#0a0c10`). delta can hold only one palette at a time, so `DELTA_FEATURES` selects the half — exported per appearance by [`zsh/theme.zsh`](../zsh/README.md#8-one-theme-across-the-stack). lazygit's own delta calls need no flag: they inherit it. |
 | `merge.conflictStyle` | `zdiff3` | 3-way conflict markers with the common ancestor (clearer merges). |
 | `diff.colorMoved` | `default` | Distinguish moved lines from real adds/deletes. |
 | `diff.tool` | `nvimdiff` | `git difftool` (lazygit's "open external diff") opens the pair in Neovim's diff mode — delta only pages inline, so this is a separate role. Avoids the `opendiff`→Xcode fallback. |

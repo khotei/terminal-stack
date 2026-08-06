@@ -1,11 +1,14 @@
+# The palette lives in ./theme-light.yml / ./theme-dark.yml, merged over this file by
+# LG_CONFIG_FILE (set in zsh/theme.zsh from the macOS appearance) — lazygit reads a
+# comma-separated list and merges left-to-right, which is the only light/dark hook it has.
+
 git:
   # delta renders lazygit's inline diff. Two pagers so `|` cycles unified ⇄ side-by-side;
   # both use --width={{columnWidth}} (the live diff-pane width — so they ADAPT to resize).
+  # The diff palette needs no flag here: delta reads DELTA_FEATURES from the environment,
+  # which zsh/theme.zsh already points at github-light|github-dark for the appearance.
   # WHY the odd bits:
   #  • --paging=never — else delta pages inside lazygit's own pager.
-  #  • --light/--dark from the macOS appearance (same signal as Ghostty's
-  #    light:Latte/dark:Mocha) — delta can't probe the terminal through lazygit's pipe
-  #    (it races the TUI), so we decide it here. macOS-only.
   #  • unified: single {np} right gutter — delta's default dual old:new numbers waste width.
   #  • side-by-side --width is {{columnWidth}} MINUS 8 — delta draws side-by-side ~8 cols
   #    wider than --width (its two number gutters), so the fudge makes it fit the pane.
@@ -13,10 +16,10 @@ git:
   # ~20/side and wraps — it fills ONLY when the pane is wide (resize / `+`). For a wide
   # review regardless of layout use <c-t> (difftastic, git/config) or <leader>gv (diffview):
   # both take the FULL terminal, not this constrained pane.
-  pagers:
+  diffRenderers:
     - name: unified
       colorArg: always
-      pager: "delta --paging=never --width={{columnWidth}} --line-numbers --line-numbers-left-format='' --line-numbers-right-format='{np:>3}│' --hunk-header-decoration-style=none --file-decoration-style=none --file-modified-label='' $([ \"$(defaults read -g AppleInterfaceStyle 2>/dev/null)\" = Dark ] && echo --dark || echo --light)"
+      command: "delta --paging=never --width={{columnWidth}} --line-numbers --line-numbers-left-format='' --line-numbers-right-format='{np:>3}│' --hunk-header-decoration-style=none --file-decoration-style=none --file-modified-label=''"
     - name: side-by-side
       colorArg: always
-      pager: "delta --paging=never --side-by-side --width=$(({{columnWidth}} - 8)) --hunk-header-decoration-style=none --file-decoration-style=none --file-modified-label='' $([ \"$(defaults read -g AppleInterfaceStyle 2>/dev/null)\" = Dark ] && echo --dark || echo --light)"
+      command: "delta --paging=never --side-by-side --width=$(({{columnWidth}} - 8)) --hunk-header-decoration-style=none --file-decoration-style=none --file-modified-label=''"

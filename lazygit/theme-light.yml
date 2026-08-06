@@ -1,0 +1,21 @@
+# GitHub Light High Contrast for lazygit — merged over config.yml by LG_CONFIG_FILE
+# (zsh/tools.zsh picks light vs dark from the macOS appearance). lazygit has no
+# light/dark pair of its own, and its default `blue` selection fill sits under
+# default-coloured text at ~1.6:1 here — hence a real theme, not an attribute tweak.
+# Colours are Primer light-high-contrast UI tokens (canvas/fg/border/accent/…), the
+# same primitives that drive nvim's github-nvim-theme and zellij/themes/.
+# Hex is allowed wherever a colour is: lazygit.dev/docs/configuration → Color Attributes
+gui:
+  theme:
+    activeBorderColor: ["#0349b4", bold] # accent.emphasis — the focused panel
+    inactiveBorderColor: ["#88929d"] # border.muted
+    searchingActiveBorderColor: ["#744500", bold] # attention.fg
+    optionsTextColor: ["#66707b"] # fg.subtle — the key hints footer
+    selectedLineBgColor: ["#dbe8fb"] # current row (projekt0n's GitHub fzf theme)
+    inactiveViewSelectedLineBgColor: ["#e7ecf0"] # canvas.subtle — same row, panel unfocused
+    cherryPickedCommitFgColor: ["#622cbc"] # done.fg
+    cherryPickedCommitBgColor: ["#faf0fe"] # done.subtle
+    markedBaseCommitFgColor: ["#744500"] # attention.fg
+    markedBaseCommitBgColor: ["#fcf7be"] # attention.subtle
+    unstagedChangesColor: ["#d1242f"] # danger.fg
+    defaultFgColor: ["#0e1116"] # fg.default

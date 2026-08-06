@@ -486,8 +486,8 @@ The *why* behind each key in [`config.kdl`](./config.kdl) — the config states 
 
 | Key | Value | Why |
 |---|---|---|
-| `theme` | *(dark palette)* | Fallback if the terminal reports no appearance — defined **in-config** (themes block) so it doesn't depend on a built-in. |
-| `theme_dark` / `theme_light` | *(dark / light palette)* | Auto-switch with the OS: Ghostty follows the macOS appearance and reports it via **CSI 2031 / DSR 997**; Zellij picks the matching palette live. Both are named in the `themes { … }` block below. |
+| `theme` | `github-light-hc` | Pre-handshake fallback only — the palette shown until Ghostty answers the light/dark query (a fraction of a second). |
+| `theme_light` / `theme_dark` | `github-light-hc` / `github-dark-hc` | The pair Zellij swaps between when the terminal reports its appearance over **CSI 2031 / DSR 997** (zellij ≥ 0.44.2, answered by Ghostty). Both must be set, or auto-switching stays off. Defined in [`themes/github-high-contrast.kdl`](./themes/github-high-contrast.kdl) — auto-loaded, since `themes/` is Zellij's default `theme_dir` and `~/.config/zellij` symlinks to this folder. |
 | `default_layout` | `compact` | Built-in **compact-bar** — theme-aware, shows mode + keys + tabs ([§9](#9-the-status-bar)). |
 | `pane_frames` | `true` | Frames on so splits read as distinct cards; the frame lends a 1-cell content offset (Zellij has no native inner padding). |
 | `ui.pane_frames.rounded_corners` | `true` | Round the frame corners — softer look; inert without `pane_frames true`. |
@@ -495,10 +495,28 @@ The *why* behind each key in [`config.kdl`](./config.kdl) — the config states 
 | `scrollback_editor` | `nvim` | "Edit scrollback" (`Ctrl+s` `e`) opens in the stack's editor. |
 | `mouse_mode` | `true` | Scroll/select — and click a tab/pane to focus it. |
 
-Both palettes are embedded directly in the `themes { … }` block — their ANSI slots mirrored from
-Ghostty's active theme so the terminal and multiplexer render one identical palette — which keeps the
-config self-contained (no built-in dependency). Re-theme by editing the two palettes there; the `bg`
-slot is deliberately a lifted tone (not the darkest) so pane frames stay visible.
+### Why not the built-in `ansi` theme
+
+`theme "ansi"` looks like the zero-duplication answer — every colour an ANSI slot index, so the
+multiplexer repaints from whatever palette Ghostty holds. It **breaks under GitHub High Contrast**:
+that theme hard-codes the bar's background to *slot 0*, and in the GitHub HC palettes slot 0 is a
+**text** colour (`#0e1116` near-black in light, `#7a828e` grey in dark) — never the terminal
+background. Result: a black status bar under a white terminal. The palettes carry no light neutral at
+all, so no ANSI-only theme can fix it.
+
+Hence the local pair in [`themes/github-high-contrast.kdl`](./themes/github-high-contrast.kdl), and it
+is built from **Primer's UI tokens**, not the terminal slots: `canvas.subtle` fills the bar,
+`accent.emphasis` marks the focused tab and pane frame, `neutral.emphasis` the idle ones,
+`success`/`danger` the exit codes. Those primitives are the same file
+[github-nvim-theme](https://github.com/projekt0n/github-nvim-theme) generates from, so the bar and the
+editor under it are literally the same palette — which the 16 slots could never express.
+
+The cost is one file to keep in sync: **re-theme in `ghostty/config`, then mirror the tokens here**
+(and in the three env-driven tools — [`zsh/README.md` §8](../zsh/README.md#8-one-theme-across-the-stack)).
+Swapping to a theme Zellij already
+[bundles](https://github.com/zellij-org/zellij/tree/main/zellij-utils/assets/themes) (catppuccin,
+tokyo-night, everforest, …) removes that cost entirely — point `theme_light`/`theme_dark` at the
+built-in names and delete the local file.
 
 ## 12. Reload & verify
 

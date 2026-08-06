@@ -24,7 +24,10 @@ For each step, first confirm the tool exists (e.g. `command -v ghostty`); if abs
    error = FAIL). Run health for broad checks, `luafile` when you touched one module.
 4. **zsh** — `zsh -n <file>` syntax-checks a shell file without executing it. Run it over each
    touched `zsh/*.zsh` / `.zshrc` (so a typo can't break login shells).
-5. **Formatters (if present)** — `stylua --check nvim/` for Lua and `shfmt -d zsh/` for shell. These
+5. **Theme** — `python3 scripts/theme-audit.py` checks every hand-transcribed colour in the Zellij /
+   lazygit / Claude Code / delta / fzf themes against the Primer primitives. Those tools accept a
+   wrong colour silently, so this is their only load check. SKIP if `github-theme` isn't installed.
+6. **Formatters (if present)** — `stylua --check nvim/` for Lua and `shfmt -d zsh/` for shell. These
    are style gates, not load checks; report them separately and treat a diff as a soft FAIL (run
    `stylua` / `shfmt -w` to fix).
 

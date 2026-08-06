@@ -17,10 +17,13 @@ font-thicken = true
 alpha-blending = linear-corrected
 
 # ── theme ─────────────────────────────────────────────────────────────
-# One palette reused across Zellij / LazyVim / Starship, so the whole stack shares
-# a single scheme. The light:…,dark:… pair auto-follows the macOS appearance
-# (Ghostty reports it via CSI 2031). Verify: ghostty +list-themes
-theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+# The stack's palette: bat, eza and Starship draw in ANSI slots and repaint from here
+# alone; everything that draws real UI chrome carries its own port of the same theme
+# (zsh/README.md §8 maps them). The light:…,dark:… pair auto-follows the macOS
+# appearance, which Ghostty then reports inward via CSI 2031.
+# High Contrast over Default: Default leaves window separators and diagnostic hints
+# at ~1.1:1 contrast — effectively invisible. Verify: ghostty +list-themes
+theme = light:GitHub Light High Contrast,dark:GitHub Dark High Contrast
 
 # ── window ────────────────────────────────────────────────────────────
 # Opaque by choice (readability over glass). To enable translucency add

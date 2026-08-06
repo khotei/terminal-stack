@@ -115,8 +115,16 @@ The *why* behind each key in [`config`](./config); the config file itself states
 | [`macos-option-as-alt`](https://ghostty.org/docs/config/reference#macos-option-as-alt) | `true` | Send **Alt** on Option (vs. composing accents) so Alt-binds in Zellij / nvim / zsh fire — see [§1](#1-the-one-idea-a-terminal-that-stays-out-of-the-way). |
 
 The chosen palettes ship **bundled with Ghostty** (browse them with `ghostty +list-themes`), so there's
-no theme file to install — hence `theme` names them directly rather than pointing at a path. To re-theme
-the whole stack, change this pair and mirror it in Zellij + Neovim (or ask Claude Code to do it).
+no theme file to install — hence `theme` names them directly rather than pointing at a path.
+
+**This line re-themes part of the stack on its own.** Starship, `bat`, `eza` and the Claude Code status
+line paint in ANSI slot indices, so they take their colours from whatever palette Ghostty has loaded —
+including the live light/dark swap. Everything that draws real UI chrome needs its own port of the same
+theme, because the 16 slots hold no background shades: [Neovim](../nvim/README.md) and
+[Zellij](../zellij/README.md) get theirs from the CSI 2031 report, while fzf, delta, lazygit and Claude
+Code are handed the appearance through the environment
+([`zsh/README.md` §8](../zsh/README.md#8-one-theme-across-the-stack)). Change the pair here → mirror it
+in those six.
 
 ---
 

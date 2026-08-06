@@ -22,6 +22,7 @@ runtime tools the configs wire together (see `@.claude/rules/tech-stack.md`).
 | `nvim --headless "+checkhealth" +qa` | Neovim health (plugins, providers, deps) | same |
 | `nvim --headless -c 'luafile <file>' -c qa` | a single Lua module loads | same |
 | `zsh -n <file>` | shell file syntax (no execution) | same |
+| `python3 scripts/theme-audit.py` | every transcribed theme colour is a real Primer token | `/check` |
 | `stylua --check nvim/` | Lua formatting (style gate) | `/check` |
 | `shfmt -d zsh/` | shell formatting (style gate) | `/check` |
 

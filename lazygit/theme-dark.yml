@@ -1,0 +1,19 @@
+# GitHub Dark High Contrast for lazygit — the dark half of ./theme-light.yml
+# (see that file for why lazygit needs its own theme at all). Primer
+# dark-high-contrast UI tokens. Where Primer states a token as rgba() over
+# canvas.default (#0a0c10), the flattened opaque value is used — a terminal cell
+# has no alpha.
+gui:
+  theme:
+    activeBorderColor: ["#409eff", bold] # accent.emphasis
+    inactiveBorderColor: ["#7a828e"] # border.default
+    searchingActiveBorderColor: ["#f0b72f", bold] # attention.fg
+    optionsTextColor: ["#9ea7b3"] # fg.subtle
+    selectedLineBgColor: ["#0f1b28"] # current row (projekt0n's GitHub fzf theme)
+    inactiveViewSelectedLineBgColor: ["#272b33"] # canvas.subtle
+    cherryPickedCommitFgColor: ["#b780ff"] # done.fg
+    cherryPickedCommitBgColor: ["#1b1828"] # done.subtle, flattened
+    markedBaseCommitFgColor: ["#f0b72f"] # attention.fg
+    markedBaseCommitBgColor: ["#2a2110"] # attention.subtle, flattened
+    unstagedChangesColor: ["#ff6a69"] # danger.fg
+    defaultFgColor: ["#f0f3f6"] # fg.default

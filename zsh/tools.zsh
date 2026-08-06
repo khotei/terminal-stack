@@ -16,6 +16,9 @@ command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --shell zsh)"
 # `fzf --zsh` ships the bindings in fzf ≥ 0.48 (Homebrew is current).
 if command -v fzf >/dev/null; then
   source <(fzf --zsh 2>/dev/null) 2>/dev/null
+  # Colours come from theme.zsh (FZF_DEFAULT_OPTS): fzf picks its `dark` scheme on any
+  # 256-colour terminal and never re-checks the background, so it needs the appearance
+  # handed to it.
 fi
 
 # bat — syntax-highlighted pager. Used as the man pager only; we do NOT alias `cat`
@@ -23,4 +26,7 @@ fi
 if command -v bat >/dev/null; then
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"   # colourful man pages via bat
   export MANROFFOPT="-c"
+  # Paint in ANSI slots so bat (and delta, which borrows bat's themes) follows
+  # Ghostty's light/dark palette — no second theme to switch. `bat --list-themes`.
+  export BAT_THEME=ansi
 fi

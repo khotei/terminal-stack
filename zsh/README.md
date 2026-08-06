@@ -23,9 +23,10 @@ rationale. Nothing to hunt across other files or upstream manuals.
    · [fzf](#51-fzf--fuzzy-everything) · [fzf-tab](#52-fzf-tab--tab-becomes-a-fuzzy-menu) · [zoxide](#53-zoxide--jump-by-frecency) · [atuin](#54-atuin--history-as-a-database) · [zsh-vi-mode](#55-zsh-vi-mode--vim-on-the-command-line) · [autosuggestions](#56-zsh-autosuggestions--grey-ghost-text) · [syntax-highlighting](#57-zsh-syntax-highlighting--live-colour) · [eza](#58-eza--a-better-ls) · [bat](#59-bat--a-better-cat--pager) · [ripgrep](#510-ripgrep-rg--a-better-grep) · [fd](#511-fd--a-better-find) · [lazygit](#512-lazygit--git-as-a-tui) · [yazi](#513-yazi--a-tui-file-manager) · [fnm](#514-fnm--node-version-manager) · [gh](#515-gh--github-from-the-terminal)
 6. [Anti-patterns](#6-anti-patterns)
 7. [The prompt (Starship)](#7-the-prompt-starship)
-8. [Keeping `$HOME` tidy — XDG](#8-keeping-home-tidy--xdg-base-directories)
-9. [Living inside a Zellij pane](#9-living-inside-a-zellij-pane)
-10. [Settings reference](#10-settings-reference-config-rationale) · [Reload & verify](#11-reload--verify) · [Install](#12-install)
+8. [One theme across the stack](#8-one-theme-across-the-stack) — how light/dark reaches every tool
+9. [Keeping `$HOME` tidy — XDG](#9-keeping-home-tidy--xdg-base-directories)
+10. [Living inside a Zellij pane](#10-living-inside-a-zellij-pane)
+11. [Settings reference](#11-settings-reference-config-rationale) · [Reload & verify](#12-reload--verify) · [Install](#13-install)
 
 ---
 
@@ -42,16 +43,17 @@ rationale. Nothing to hunt across other files or upstream manuals.
 | `↑ ↑ ↑` hunting for a command | `Ctrl-R` — full-text fuzzy search over every command you've ever run |
 | `ls`, eyeball, `cd`, repeat | `Ctrl-T` (paste a fuzzy-picked path) · `Alt-C` (fuzzy-`cd`) |
 
-**The one load-bearing invariant: source order.** [`.zshrc`](./.zshrc) sources six role files in a
+**The one load-bearing invariant: source order.** [`.zshrc`](./.zshrc) sources seven role files in a
 fixed sequence, and the order is *not* cosmetic — three couplings depend on it:
 
 ```
-env → vi-mode → aliases → tools → prompt → plugins
+env → theme → vi-mode → aliases → tools → prompt → plugins
 ```
 
 | Boundary | Why it must be there |
 |---|---|
 | `env` **first** | Sets `$EDITOR`, `$XDG_*`, history *before* anything reads them. |
+| `theme` **before** `tools` | Exports the appearance-dependent colours (`FZF_DEFAULT_OPTS`, `DELTA_FEATURES`, `LG_CONFIG_FILE`) that the integrations in `tools.zsh` launch with — see [§8](#8-one-theme-across-the-stack). |
 | `vi-mode` **before** `tools` | [zsh-vi-mode](#55-zsh-vi-mode--vim-on-the-command-line) *overwrites* keymaps on init, so fzf's `Ctrl-T`/`Ctrl-R` and atuin's `Ctrl-R` must bind **after** it or they're clobbered. This is why it runs `ZVM_INIT_MODE=sourcing`. |
 | `plugins` **last**, highlighting **within it last** | [zsh-syntax-highlighting must be sourced after every other widget](https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md) so it can wrap them. |
 
@@ -179,6 +181,12 @@ the linked upstream doc — you shouldn't need to for daily use.
 
 The general-purpose fuzzy finder; the shell integration (`source <(fzf --zsh)`, [`tools.zsh`](./tools.zsh))
 adds keybindings. Docs: <https://github.com/junegunn/fzf>.
+
+**It does not follow the terminal.** fzf picks its `dark` scheme on any 256-colour terminal and never
+re-checks the background, so under a light palette the current line and the left gutter arrive as dark
+256-colour blocks. [`theme.zsh`](./theme.zsh) exports the matching GitHub High Contrast palette as
+`FZF_DEFAULT_OPTS` instead ([§8](#8-one-theme-across-the-stack)); `man fzf` → *COLOR SCHEME* documents
+the spec.
 
 **Shell keys:** `Ctrl-T` paste a picked path · `Alt-C` fuzzy-`cd` · (`Ctrl-R` is
 [atuin's](#54-atuin--history-as-a-database) here, not fzf's).
@@ -394,6 +402,10 @@ A `cat` clone with syntax highlighting and a built-in pager. Wired **only** as t
 [`tools.zsh`](./tools.zsh) (`MANPAGER="sh -c 'col -bx | bat -l man -p'"`). Docs:
 <https://github.com/sharkdp/bat>.
 
+`BAT_THEME=ansi` is exported alongside it: bat then highlights in the terminal's 16 ANSI slots rather
+than one of its own 24-bit themes, so man pages — and delta's diffs, which borrow bat's themes — follow
+Ghostty's light/dark palette with nothing to switch. Browse the alternatives with `bat --list-themes`.
+
 **Use:** `bat file.rs` highlights + paginates · `-p`/`--plain` drops line numbers & git gutter · `-l
 <lang>` forces a language.
 
@@ -471,6 +483,8 @@ Fast, ergonomic file finder, `.gitignore`-aware. Also a runtime dependency (not 
 A full terminal UI for git — stage, commit, rebase, and cherry-pick without leaving the keyboard.
 Aliased `lg` when installed ([`aliases.zsh`](./aliases.zsh)). Every key below is verified against the
 [upstream keybindings](https://github.com/jesseduffield/lazygit/blob/master/docs/keybindings/Keybindings_en.md).
+Its colours (panel borders, the selected row, the diff) are GitHub High Contrast, delivered through
+`LG_CONFIG_FILE` at launch — [§8](#8-one-theme-across-the-stack).
 
 **Global** (any panel):
 
@@ -656,7 +670,7 @@ The GitHub CLI — PRs, reviews, CI, and the raw API without leaving the shell. 
 | `find . -name '*.ts'` | `fd -e ts` — smart-case, ignores junk ([fd](#511-fd--a-better-find)) |
 | `alias cat=bat` | leave `cat` alone; bat is the man-pager ([§5.9](#59-bat--a-better-cat--pager)) |
 | `alias grep=rg` / `find=fd` | keep the names; use `rg`/`fd` directly (scripts stay portable) |
-| Put secrets in a committed `*.zsh` | `~/.zshrc.local` (git-ignored) — public repo ([§10](#10-settings-reference-config-rationale)) |
+| Put secrets in a committed `*.zsh` | `~/.zshrc.local` (git-ignored) — public repo ([§10](#11-settings-reference-config-rationale)) |
 | `git add -p` then `git commit -m …` | `lg` — stage + commit + push visually ([lazygit](#512-lazygit--git-as-a-tui)) |
 
 ---
@@ -676,7 +690,45 @@ Nerd Font (the stack assumes one).
 
 ---
 
-## 8. Keeping `$HOME` tidy — XDG base directories
+## 8. One theme across the stack
+
+The whole stack wears **GitHub High Contrast**, light or dark, following the macOS appearance. Tools
+reach it two different ways, and the split is worth knowing when something looks out of place:
+
+**They listen themselves.** Ghostty repaints on the OS appearance and announces it to the programs
+inside over `CSI 2031`; [Zellij](../zellij/README.md) (`theme_light`/`theme_dark`) and
+[Neovim](../nvim/README.md) (`auto-dark-mode.nvim`) act on that signal live. Anything that draws in the
+16 ANSI slots — Starship, `bat`, `eza`, the Claude Code status line — repaints with the palette for
+free.
+
+**They have to be told.** fzf, delta, lazygit and Claude Code each read their colours once, at process
+start, and none of them can pair a light and a dark theme. [`theme.zsh`](./theme.zsh) resolves the
+appearance (one `defaults read`, throttled to 5 s) and exports it, so the *next* launch of each is
+already right:
+
+| Tool | Carrier | Points at |
+|---|---|---|
+| fzf | `FZF_DEFAULT_OPTS` | [projekt0n's GitHub fzf theme](https://github.com/projekt0n/github-theme-contrib/tree/main/themes/fzf), with `hl`/`header` fixed — upstream sets them to the background colour |
+| delta | `DELTA_FEATURES=+github-light\|+github-dark` | the feature blocks in [`git/config`](../git/config) — GitHub's own diff fills |
+| lazygit | `LG_CONFIG_FILE` (comma-separated, merged left-to-right) | [`lazygit/theme-{light,dark}.yml`](../lazygit/) |
+| Claude Code | `CLAUDE_THEME` → a `claude()` wrapper passing `--settings` | [`claude/themes/*.json`](../claude/themes/) |
+
+Every palette traces to the same source: Primer's high-contrast primitives, the ones
+[github-nvim-theme](https://github.com/projekt0n/github-nvim-theme) is generated from. **Re-theming the
+stack** therefore means editing `ghostty/config` *and* mirroring the palette in the four files above —
+the price of tools that cannot switch themselves.
+
+That mirroring is hand-transcribed, and Zellij, lazygit and Claude Code all swallow a wrong colour
+without a word — so `/check` re-derives it: [`scripts/theme-audit.py`](../scripts/theme-audit.py) walks
+every hex in those files and fails if one isn't a Primer token (a single wrong digit is caught).
+
+> **A change lands on the next launch, not the running process.** Flip the macOS appearance and the
+> already-open lazygit keeps its old colours; quit and reopen it. The shell exports the new values
+> within 5 s (one prompt).
+
+---
+
+## 9. Keeping `$HOME` tidy — XDG base directories
 
 [`env.zsh`](./env.zsh) exports the [XDG base dirs](https://specifications.freedesktop.org/basedir/latest/)
 (`XDG_CONFIG_HOME` · `XDG_DATA_HOME` · `XDG_STATE_HOME` · `XDG_CACHE_HOME`), so XDG-aware tools (Neovim,
@@ -711,7 +763,7 @@ from `$HOME`), `~/.gitconfig` (your identity — [git/](../git/README.md)), `~/.
 
 ---
 
-## 9. Living inside a Zellij pane
+## 10. Living inside a Zellij pane
 
 This shell runs inside a [Zellij](../zellij/README.md) pane, and the two layers cooperate through **one
 manual switch: `Ctrl+q`**. By default Zellij is in Normal mode and owns its hotkeys — so a full-screen
@@ -727,7 +779,7 @@ Normal mode and Zellij ate the key — press `Ctrl+q` to lock, then use the tool
 
 ---
 
-## 10. Settings reference (config rationale)
+## 11. Settings reference (config rationale)
 
 The *why* behind the load-bearing settings — the config states the *what*.
 
@@ -749,14 +801,14 @@ The *why* behind the load-bearing settings — the config states the *what*.
 **Secrets & machine-local:** nothing secret goes in a committed file — this is a **public** repo.
 Machine-local tweaks live in `~/.zshrc.local` (git-ignored), sourced last by `.zshrc`.
 
-## 11. Reload & verify
+## 12. Reload & verify
 
 - **Apply:** `source ~/.zshrc` or open a new shell. (fnm/zoxide/atuin/starship re-`eval` on each
   source; guards make re-sourcing idempotent.)
 - **Validate:** `zsh -n zsh/.zshrc` (+ each `*.zsh`) — syntax only, never executes. Run by `/check`.
 - **Try it now:** `make try` — the sandbox boots straight into this shell.
 
-## 12. Install
+## 13. Install
 
 `./install.sh` (or `make install`) links all of these. By hand:
 

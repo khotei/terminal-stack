@@ -1,0 +1,277 @@
+// GitHub High Contrast for Zellij — the multiplexer half of ghostty/config's
+// `theme = light:GitHub Light High Contrast,dark:GitHub Dark High Contrast`.
+// Auto-loaded: ~/.config/zellij symlinks to zellij/, and themes/ is Zellij's default
+// theme_dir. Selected by theme_light/theme_dark in ../config.kdl.
+//
+// Colours are Primer's *UI* tokens (canvas / fg / border / accent / success / attention
+// / danger / done), not the 16 terminal slots — the same primitives file that drives
+// nvim's github-nvim-theme, so bar, frames and editor speak one palette:
+// github-nvim-theme/lua/github-theme/palette/primitives/{light,dark}_high_contrast.lua
+// The terminal's 16 slots hold no light neutral at all, which is why the built-in
+// `ansi` theme paints a black bar under a white terminal (README §11).
+// Token map — light | dark:
+//   bar fill        canvas.subtle    #e7ecf0 | #272b33
+//   plugin fill     canvas.default   #ffffff | #0a0c10
+//   current row     projekt0n fzf    #dbe8fb | #0f1b28
+//   text            fg.default       #0e1116 | #f0f3f6
+//   on a fill       fg.onEmphasis    #ffffff | #0a0c10
+//   active tab      accent.emphasis  #0349b4 | #409eff
+//   idle tab        neutral.emphasis #66707b | #9ea7b3
+//   idle frame      border.muted     #88929d | #7a828e
+// `background 0` on frames/tables/exit-codes is upstream's "no fill" convention.
+
+themes {
+    github-light-hc {
+        text_unselected {
+            base 14 17 22
+            background 231 236 240
+            emphasis_0 3 73 180
+            emphasis_1 5 93 32
+            emphasis_2 116 69 0
+            emphasis_3 98 44 188
+        }
+        text_selected {
+            base 14 17 22
+            background 219 232 251
+            emphasis_0 3 73 180
+            emphasis_1 5 93 32
+            emphasis_2 116 69 0
+            emphasis_3 98 44 188
+        }
+        ribbon_unselected {
+            base 255 255 255
+            background 102 112 123
+            emphasis_0 255 255 255
+            emphasis_1 14 17 22
+            emphasis_2 219 232 251
+            emphasis_3 255 255 255
+        }
+        ribbon_selected {
+            base 255 255 255
+            background 3 73 180
+            emphasis_0 255 255 255
+            emphasis_1 219 232 251
+            emphasis_2 255 255 255
+            emphasis_3 219 232 251
+        }
+        table_title {
+            base 3 73 180
+            background 0
+            emphasis_0 209 36 47
+            emphasis_1 5 93 32
+            emphasis_2 116 69 0
+            emphasis_3 98 44 188
+        }
+        table_cell_unselected {
+            base 14 17 22
+            background 255 255 255
+            emphasis_0 3 73 180
+            emphasis_1 5 93 32
+            emphasis_2 116 69 0
+            emphasis_3 98 44 188
+        }
+        table_cell_selected {
+            base 14 17 22
+            background 219 232 251
+            emphasis_0 3 73 180
+            emphasis_1 5 93 32
+            emphasis_2 116 69 0
+            emphasis_3 98 44 188
+        }
+        list_unselected {
+            base 14 17 22
+            background 255 255 255
+            emphasis_0 3 73 180
+            emphasis_1 5 93 32
+            emphasis_2 116 69 0
+            emphasis_3 98 44 188
+        }
+        list_selected {
+            base 14 17 22
+            background 219 232 251
+            emphasis_0 3 73 180
+            emphasis_1 5 93 32
+            emphasis_2 116 69 0
+            emphasis_3 98 44 188
+        }
+        frame_unselected {
+            base 136 146 157
+            background 0
+            emphasis_0 3 73 180
+            emphasis_1 5 93 32
+            emphasis_2 98 44 188
+            emphasis_3 0
+        }
+        frame_selected {
+            base 3 73 180
+            background 0
+            emphasis_0 209 36 47
+            emphasis_1 5 93 32
+            emphasis_2 98 44 188
+            emphasis_3 0
+        }
+        frame_highlight {
+            base 209 36 47
+            background 0
+            emphasis_0 98 44 188
+            emphasis_1 209 36 47
+            emphasis_2 209 36 47
+            emphasis_3 209 36 47
+        }
+        exit_code_success {
+            base 5 93 32
+            background 0
+            emphasis_0 3 73 180
+            emphasis_1 14 17 22
+            emphasis_2 98 44 188
+            emphasis_3 116 69 0
+        }
+        exit_code_error {
+            base 209 36 47
+            background 0
+            emphasis_0 116 69 0
+            emphasis_1 0
+            emphasis_2 0
+            emphasis_3 0
+        }
+        multiplayer_user_colors {
+            player_1 98 44 188
+            player_2 3 73 180
+            player_3 0
+            player_4 116 69 0
+            player_5 5 93 32
+            player_6 0
+            player_7 209 36 47
+            player_8 151 19 104
+            player_9 0
+            player_10 0
+        }
+    }
+
+    github-dark-hc {
+        text_unselected {
+            base 240 243 246
+            background 39 43 51
+            emphasis_0 113 183 255
+            emphasis_1 38 205 77
+            emphasis_2 240 183 47
+            emphasis_3 183 128 255
+        }
+        text_selected {
+            base 240 243 246
+            background 15 27 40
+            emphasis_0 113 183 255
+            emphasis_1 38 205 77
+            emphasis_2 240 183 47
+            emphasis_3 183 128 255
+        }
+        ribbon_unselected {
+            base 10 12 16
+            background 158 167 179
+            emphasis_0 10 12 16
+            emphasis_1 240 243 246
+            emphasis_2 15 27 40
+            emphasis_3 10 12 16
+        }
+        ribbon_selected {
+            base 10 12 16
+            background 64 158 255
+            emphasis_0 10 12 16
+            emphasis_1 15 27 40
+            emphasis_2 10 12 16
+            emphasis_3 15 27 40
+        }
+        table_title {
+            base 113 183 255
+            background 0
+            emphasis_0 255 106 105
+            emphasis_1 38 205 77
+            emphasis_2 240 183 47
+            emphasis_3 183 128 255
+        }
+        table_cell_unselected {
+            base 240 243 246
+            background 10 12 16
+            emphasis_0 113 183 255
+            emphasis_1 38 205 77
+            emphasis_2 240 183 47
+            emphasis_3 183 128 255
+        }
+        table_cell_selected {
+            base 240 243 246
+            background 15 27 40
+            emphasis_0 113 183 255
+            emphasis_1 38 205 77
+            emphasis_2 240 183 47
+            emphasis_3 183 128 255
+        }
+        list_unselected {
+            base 240 243 246
+            background 10 12 16
+            emphasis_0 113 183 255
+            emphasis_1 38 205 77
+            emphasis_2 240 183 47
+            emphasis_3 183 128 255
+        }
+        list_selected {
+            base 240 243 246
+            background 15 27 40
+            emphasis_0 113 183 255
+            emphasis_1 38 205 77
+            emphasis_2 240 183 47
+            emphasis_3 183 128 255
+        }
+        frame_unselected {
+            base 122 130 142
+            background 0
+            emphasis_0 113 183 255
+            emphasis_1 38 205 77
+            emphasis_2 183 128 255
+            emphasis_3 0
+        }
+        frame_selected {
+            base 64 158 255
+            background 0
+            emphasis_0 255 106 105
+            emphasis_1 38 205 77
+            emphasis_2 183 128 255
+            emphasis_3 0
+        }
+        frame_highlight {
+            base 255 106 105
+            background 0
+            emphasis_0 183 128 255
+            emphasis_1 255 106 105
+            emphasis_2 255 106 105
+            emphasis_3 255 106 105
+        }
+        exit_code_success {
+            base 38 205 77
+            background 0
+            emphasis_0 113 183 255
+            emphasis_1 240 243 246
+            emphasis_2 183 128 255
+            emphasis_3 240 183 47
+        }
+        exit_code_error {
+            base 255 106 105
+            background 0
+            emphasis_0 240 183 47
+            emphasis_1 0
+            emphasis_2 0
+            emphasis_3 0
+        }
+        multiplayer_user_colors {
+            player_1 183 128 255
+            player_2 113 183 255
+            player_3 0
+            player_4 240 183 47
+            player_5 38 205 77
+            player_6 0
+            player_7 255 106 105
+            player_8 239 110 177
+            player_9 0
+            player_10 0
+        }
+    }
+}
