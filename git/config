@@ -23,7 +23,9 @@
 # light/dark itself. lazygit passes --features on its own delta invocations.
 [delta "github-light"]
 	light = true
-	minus-style = "syntax #fff0ee"
+	# deletion.numBg, not lineBg: #fff0ee sits ~1.07:1 on the white canvas and the
+	# deleted line vanishes beside the stronger green fill (addition.lineBg).
+	minus-style = "syntax #ffd7d5"
 	minus-emph-style = "#ffffff #a0111f"
 	plus-style = "syntax #e6ffec"
 	plus-emph-style = "#ffffff #055d20"
