@@ -379,7 +379,7 @@ consumed: `.model.display_name`, `.workspace.current_dir`, `.workspace.git_workt
 [`themes/`](./themes/) carries **GitHub High Contrast** as two custom themes
 ([format](https://code.claude.com/docs/en/terminal-config#create-a-custom-theme)) — every token, from
 the prompt border to the diff fills, set from the same Primer primitives the editor and the
-multiplexer use, so a `/diff` inside Claude Code and a diff in lazygit are the same two colours.
+multiplexer use, so a `/diff` inside Claude Code and `git diff` in the shell are the same two colours.
 
 `settings.json` holds exactly one `theme`, and its `auto` value only picks between the *built-in*
 presets — it cannot pair two custom themes. So the appearance is resolved in the shell instead: the

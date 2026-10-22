@@ -483,7 +483,7 @@ Fast, ergonomic file finder, `.gitignore`-aware. Also a runtime dependency (not 
 A full terminal UI for git — stage, commit, rebase, and cherry-pick without leaving the keyboard.
 Aliased `lg` when installed ([`aliases.zsh`](./aliases.zsh)). Every key below is verified against the
 [upstream keybindings](https://github.com/jesseduffield/lazygit/blob/master/docs/keybindings/Keybindings_en.md).
-Its colours (panel borders, the selected row, the diff) are GitHub High Contrast, delivered through
+Its colours (panel borders, the selected row) are GitHub High Contrast, delivered through
 `LG_CONFIG_FILE` at launch — [§8](#8-one-theme-across-the-stack).
 
 **Global** (any panel):

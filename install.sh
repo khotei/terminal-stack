@@ -79,8 +79,9 @@ prune_one() { # remove $1 iff it's OUR symlink (into $REPO) whose target is gone
 prune() {
   echo "• Prune (stale links → configs removed from the repo)"
   for p in "${MANAGED[@]}"; do prune_one "$p"; done
-  # the per-file zsh + claude/rules role dirs are dynamic — sweep them for our dangling links
+  # the per-file zsh, lazygit + claude/rules dirs are dynamic — sweep them for our dangling links
   [ -d "$CONFIG/zsh" ] && for p in "$CONFIG"/zsh/*; do [ -L "$p" ] && prune_one "$p"; done
+  [ -d "$CONFIG/lazygit" ] && for p in "$CONFIG"/lazygit/*; do [ -L "$p" ] && prune_one "$p"; done
   [ -d "$HOME/.claude/rules" ] && for p in "$HOME"/.claude/rules/*; do [ -L "$p" ] && prune_one "$p"; done
   return 0
 }

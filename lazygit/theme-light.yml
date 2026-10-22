@@ -1,5 +1,5 @@
 # GitHub Light High Contrast for lazygit — merged over config.yml by LG_CONFIG_FILE
-# (zsh/tools.zsh picks light vs dark from the macOS appearance). lazygit has no
+# (zsh/theme.zsh picks light vs dark from the macOS appearance). lazygit has no
 # light/dark pair of its own, and its default `blue` selection fill sits under
 # default-coloured text at ~1.6:1 here — hence a real theme, not an attribute tweak.
 # Colours are Primer light-high-contrast UI tokens (canvas/fg/border/accent/…), the
