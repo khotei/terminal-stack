@@ -211,9 +211,9 @@ may catch the app's Ctrl-keys.
 - Full TUI: `lg` (or `<Space>gg` inside Neovim) → **lazygit**. Stage hunks with `Space`, commit with
   `c`, push with `P`, rebase interactively with `s`/`f`/`r`. It's the fastest staging UI there is.
 - Per-line history: `<Space>gb` (git blame) in Neovim.
-- Plain `git diff` / `git show` now flow through **delta** — pretty, line-numbered diffs; `n`/`N` move
-  between hunks. Wired by the **additive** `~/.config/git/config` (it never touches your `~/.gitconfig`
-  identity — see [`git/README.md`](../git/README.md)).
+- Sane git defaults (`zdiff3` conflicts, moved-line colouring, fast-forward-only pulls) come from the
+  **additive** `~/.config/git/config` (it never touches your `~/.gitconfig` identity — see
+  [`git/README.md`](../git/README.md)).
 
 **Why this way:** lazygit turns "stage exactly these hunks, write a message, push" into a few
 keystrokes without leaving the terminal; `<Space>gg` opens it docked to the file you're on.

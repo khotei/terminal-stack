@@ -41,7 +41,7 @@ top-to-bottom and come out knowing the stack — not just copying it.
 | **Terminal** | [**Ghostty**](https://ghostty.org) | GPU-accelerated, native, single-file config. The fastest, lowest-friction emulator on macOS right now. |
 | **Multiplexer** | [**Zellij**](https://zellij.dev) | Modern tmux alternative — sane defaults, discoverable UI, KDL config, sessions-as-workspaces. |
 | **Editor** | [**Neovim**](https://neovim.io) + [**LazyVim**](https://lazyvim.org) | The "IDE in the terminal." LazyVim brings LSP, the snacks picker, which-key, Treesitter, git — the JetBrains muscle memory survives. |
-| **Shell** | **zsh** + [**Starship**](https://starship.rs) | Fast prompt, plus power-ups: autosuggestions · syntax-highlighting · fzf-tab, and `eza`/`bat`/`delta` · `zoxide` · `atuin` · `fzf` · `fd` · `ripgrep` · `lazygit` · `yazi`. |
+| **Shell** | **zsh** + [**Starship**](https://starship.rs) | Fast prompt, plus power-ups: autosuggestions · syntax-highlighting · fzf-tab, and `eza`/`bat` · `zoxide` · `atuin` · `fzf` · `fd` · `ripgrep` · `lazygit` · `yazi`. |
 | **Agent** | [**Claude Code**](https://docs.claude.com/en/docs/claude-code) | Lives in a multiplexer pane beside Neovim. Less RAM, tighter feedback loop, better agentic flow than embedded IDE versions. |
 
 > **The pattern:** one Zellij session per project → split into **Neovim** (edit) ∣ **Claude Code**
@@ -141,7 +141,7 @@ terminal-stack/
 ├── zsh/            # .zshrc, Starship, shell integrations    — see zsh/README.md
 ├── claude/         # Claude Code status line + cc-worktree   — see claude/README.md
 ├── fonts/          # bundled Dank Mono (.otf)                — see fonts/README.md
-├── git/            # delta diffs, defaults + identity setup   — see git/README.md
+├── git/            # git defaults + identity setup            — see git/README.md
 ├── macos/          # opt-in macOS system defaults script     — see macos/README.md
 ├── jetbrains/      # opt-in IdeaVim + IDE settings (link by demand) — see jetbrains/README.md
 ├── cursor/         # opt-in Cursor settings + vscode-neovim init (link by demand) — see cursor/README.md

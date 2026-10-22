@@ -41,7 +41,7 @@ repo has into `~/.config`, **skipping any that are absent**. Ghostty is host-onl
 itself isn't run inside the container.
 
 > **Note:** the image carries the core in-terminal layers (Zellij, Neovim, zsh, Starship,
-> ripgrep/fd/fzf/zoxide/atuin). The newer power-ups — **eza**/**bat**/**delta** and the zsh plugins
+> ripgrep/fd/fzf/zoxide/atuin). The newer power-ups — **eza**/**bat** and the zsh plugins
 > (autosuggestions, syntax-highlighting, fzf-tab) — are **not** baked into the sandbox; install them
 > via `brew bundle` on a real machine.
 

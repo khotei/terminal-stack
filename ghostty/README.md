@@ -121,7 +121,7 @@ no theme file to install — hence `theme` names them directly rather than point
 line paint in ANSI slot indices, so they take their colours from whatever palette Ghostty has loaded —
 including the live light/dark swap. Everything that draws real UI chrome needs its own port of the same
 theme, because the 16 slots hold no background shades: [Neovim](../nvim/README.md) and
-[Zellij](../zellij/README.md) get theirs from the CSI 2031 report, while fzf, delta, lazygit and Claude
+[Zellij](../zellij/README.md) get theirs from the CSI 2031 report, while fzf, lazygit and Claude
 Code are handed the appearance through the environment
 ([`zsh/README.md` §8](../zsh/README.md#8-one-theme-across-the-stack)). Change the pair here → mirror it
 in those six.

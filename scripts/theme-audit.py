@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """theme-audit.py — prove every colour in the hand-written themes is a real Primer token.
 
-Six tools carry a hand-transcribed copy of GitHub High Contrast (Zellij, lazygit, Claude
-Code, delta, fzf), because none of them can follow the terminal's palette on its own. A
+Four tools carry a hand-transcribed copy of GitHub High Contrast (Zellij, lazygit, Claude
+Code, fzf), because none of them can follow the terminal's palette on its own. A
 transcribed hex is the one thing nothing else validates: Zellij, lazygit and Claude Code
 all accept a wrong colour in silence. This walks each file and checks its hexes against
 the Primer primitives that generate github-nvim-theme — the same source the editor uses,
@@ -66,7 +66,6 @@ def section(text, pattern):
 def sources():
     """(label, [rgb…]) per file half — light and dark are checked against their own palette."""
     zellij = read("zellij/themes/github-high-contrast.kdl")
-    git = read("git/config")
     fzf = re.findall(r"FZF_DEFAULT_OPTS='([^']*)'", read("zsh/theme.zsh"))
     for i, mode in enumerate(("light", "dark")):
         kdl = section(zellij, r"github-%s-hc\s*\{(.*?)\n    \}" % mode)
@@ -78,8 +77,6 @@ def sources():
         yield mode, f"lazygit/theme-{mode}.yml", hexes(read(f"lazygit/theme-{mode}.yml"))
         yield mode, f"claude/themes/github-{mode}-high-contrast.json", hexes(
             read(f"claude/themes/github-{mode}-high-contrast.json"))
-        yield mode, f'git/config [delta "github-{mode}"]', hexes(
-            section(git, r'\[delta "github-%s"\](.*?)(?=\n\[|\Z)' % mode))
         yield mode, f"zsh/theme.zsh (fzf {mode})", hexes(fzf[i] if i < len(fzf) else "")
 
 

@@ -559,8 +559,8 @@ The keys worth knowing:
 
 > `<c-o>` / `<c-x>` are the two the stack adds ([`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua));
 > the rest are **Snacks picker defaults**, shared by *every* picker (files, grep, …) — learn them once.
-> The preview pane renders diffs with Neovim's built-in highlighting, **not delta** (delta only pages
-> `git` in the shell); `<c-o>` / `<c-x>` are the route to a full side-by-side.
+> The preview pane renders diffs with Neovim's built-in highlighting; `<c-o>` / `<c-x>` are the route
+> to a full side-by-side.
 
 ### The other panels — Trouble · Outline · Neotest · DAP-UI
 

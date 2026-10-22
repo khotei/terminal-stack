@@ -30,7 +30,6 @@ brew "yazi"                             # file manager TUI
 brew "jq"                               # JSON (Claude Code statusline)
 brew "eza"                              # modern ls (zsh/aliases.zsh)
 brew "bat"                              # better cat / man pager (zsh/tools.zsh)
-brew "git-delta"                        # pretty git diffs — binary is `delta` (git/config)
 brew "zsh-autosuggestions"             # grey inline history suggestions (zsh/plugins.zsh)
 brew "zsh-syntax-highlighting"         # colour the command line as you type (must load last)
 brew "fzf-tab"                         # Tab completion becomes an fzf picker

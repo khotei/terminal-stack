@@ -19,7 +19,7 @@ The whole guide hangs on one shift. **Generation got cheap; your edge moved to c
 verification.** Read §1 for the model, §2 for the loop that operationalizes it, and keep the rest as
 the deepening spiral — the same loop, seen through *who does what*, *many agents*, *reading the diff*,
 *re-prompting*, and *why it works cognitively*. Everything runs on tools you already have — **diffview**,
-**gitsigns**, **lazygit**, **git-delta**, **gh**, **git worktrees**, and Claude Code itself. Nothing new
+**gitsigns**, **lazygit**, **gh**, **git worktrees**, and Claude Code itself. Nothing new
 to install.
 
 ### Contents
@@ -406,7 +406,7 @@ correctness/requirement gaps ([best practices](https://code.claude.com/docs/en/b
 Your whole branch, LSP live: `<leader>gM` (`:DiffviewOpen origin/main...HEAD`). The **three-dot** range
 compares against the merge-base — the same delta a GitHub reviewer sees. A PR: `gh pr checkout <N>`
 makes it local (real files, full LSP), then `:DiffviewOpen origin/main...HEAD`; or triage without
-checkout via `gh pr diff <N> | delta`. A big multi-commit PR reviews commit-by-commit with
+checkout via `gh pr diff <N>`. A big multi-commit PR reviews commit-by-commit with
 `<leader>gV` (repo history) rather than one giant diff.
 
 ---
@@ -745,7 +745,7 @@ stack's config.
 | `/code-review` · `/review <N>` · `/security-review` | fresh-context AI review passes | Claude Code |
 | `/check` | prove the config loads (the "tests") | Claude Code |
 | `/clear` · `/rewind` (Esc Esc) | fresh session · undo a bad turn (edits only) | Claude Code |
-| `gh pr checkout <N>` → diffview · `gh pr diff <N> \| delta` | review a PR locally / triage fast | shell + nvim |
+| `gh pr checkout <N>` → diffview · `gh pr diff <N>` | review a PR locally / triage fast | shell + nvim |
 | `CLAUDE_CODE_ENABLE_TELEMETRY=1` | agent observability (OTEL) | Claude Code |
 
 ---

@@ -2,7 +2,7 @@
 # git/setup.sh — set your git IDENTITY (name, email, optional signing key) for a
 # fresh environment, or change it later. Writes ONLY to ~/.gitconfig — your
 # machine-local identity that is never committed — and never touches the repo's
-# shared ~/.config/git/config (delta + defaults), which carries no [user] block.
+# shared ~/.config/git/config (defaults), which carries no [user] block.
 #
 # Why a script, not a committed file: this is a PUBLIC repo, so your name/email
 # must never live in git. install.sh links the shared defaults; this sets the
@@ -46,7 +46,7 @@ Usage:  ./git/setup.sh [--name "Your Name"] [--email you@example.com]
   --show          print the current identity and exit (read-only)
   --dry-run       print the commands it would run, change nothing
 
-The repo's shared git defaults (delta pager, etc.) live separately in
+The repo's shared git defaults live separately in
 ~/.config/git/config and are installed by ./install.sh — this only sets
 the personal [user] identity those defaults leave out.
 USAGE

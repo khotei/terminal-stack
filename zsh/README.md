@@ -53,7 +53,7 @@ env → theme → vi-mode → aliases → tools → prompt → plugins
 | Boundary | Why it must be there |
 |---|---|
 | `env` **first** | Sets `$EDITOR`, `$XDG_*`, history *before* anything reads them. |
-| `theme` **before** `tools` | Exports the appearance-dependent colours (`FZF_DEFAULT_OPTS`, `DELTA_FEATURES`, `LG_CONFIG_FILE`) that the integrations in `tools.zsh` launch with — see [§8](#8-one-theme-across-the-stack). |
+| `theme` **before** `tools` | Exports the appearance-dependent colours (`FZF_DEFAULT_OPTS`, `LG_CONFIG_FILE`, `CLAUDE_THEME`) that the integrations in `tools.zsh` launch with — see [§8](#8-one-theme-across-the-stack). |
 | `vi-mode` **before** `tools` | [zsh-vi-mode](#55-zsh-vi-mode--vim-on-the-command-line) *overwrites* keymaps on init, so fzf's `Ctrl-T`/`Ctrl-R` and atuin's `Ctrl-R` must bind **after** it or they're clobbered. This is why it runs `ZVM_INIT_MODE=sourcing`. |
 | `plugins` **last**, highlighting **within it last** | [zsh-syntax-highlighting must be sourced after every other widget](https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md) so it can wrap them. |
 
@@ -403,7 +403,7 @@ A `cat` clone with syntax highlighting and a built-in pager. Wired **only** as t
 <https://github.com/sharkdp/bat>.
 
 `BAT_THEME=ansi` is exported alongside it: bat then highlights in the terminal's 16 ANSI slots rather
-than one of its own 24-bit themes, so man pages — and delta's diffs, which borrow bat's themes — follow
+than one of its own 24-bit themes, so man pages follow
 Ghostty's light/dark palette with nothing to switch. Browse the alternatives with `bat --list-themes`.
 
 **Use:** `bat file.rs` highlights + paginates · `-p`/`--plain` drops line numbers & git gutter · `-l
@@ -627,7 +627,7 @@ The GitHub CLI — PRs, reviews, CI, and the raw API without leaving the shell. 
 | Task / goal | Command | What it does |
 |---|---|---|
 | Pull a PR local to review | `gh pr checkout <N>` | Check out its branch — real files, full LSP (`-f` re-syncs after a push) |
-| Read a PR diff in the terminal | `gh pr diff <N>` | The diff (`--patch`, `--name-only` for scope; pipe `\| delta` for colour) |
+| Read a PR diff in the terminal | `gh pr diff <N>` | The diff (`--patch`, `--name-only` for scope) |
 | See a PR's description + state | `gh pr view <N>` | Body, checks, comments (`--web` opens the browser) |
 | CI status of a PR | `gh pr checks <N>` | Per-check pass/fail (`--watch` to follow) |
 | Leave a review verdict | `gh pr review <N> --approve` | or `--request-changes -b "…"` / `--comment -b "…"` |
@@ -701,7 +701,7 @@ inside over `CSI 2031`; [Zellij](../zellij/README.md) (`theme_light`/`theme_dark
 16 ANSI slots — Starship, `bat`, `eza`, the Claude Code status line — repaints with the palette for
 free.
 
-**They have to be told.** fzf, delta, lazygit and Claude Code each read their colours once, at process
+**They have to be told.** fzf, lazygit and Claude Code each read their colours once, at process
 start, and none of them can pair a light and a dark theme. [`theme.zsh`](./theme.zsh) resolves the
 appearance (one `defaults read`, throttled to 5 s) and exports it, so the *next* launch of each is
 already right:
@@ -709,13 +709,12 @@ already right:
 | Tool | Carrier | Points at |
 |---|---|---|
 | fzf | `FZF_DEFAULT_OPTS` | [projekt0n's GitHub fzf theme](https://github.com/projekt0n/github-theme-contrib/tree/main/themes/fzf), with `hl`/`header` fixed — upstream sets them to the background colour |
-| delta | `DELTA_FEATURES=+github-light\|+github-dark` | the feature blocks in [`git/config`](../git/config) — GitHub's own diff fills |
 | lazygit | `LG_CONFIG_FILE` (comma-separated, merged left-to-right) | [`lazygit/theme-{light,dark}.yml`](../lazygit/) |
 | Claude Code | `CLAUDE_THEME` → a `claude()` wrapper passing `--settings` | [`claude/themes/*.json`](../claude/themes/) |
 
 Every palette traces to the same source: Primer's high-contrast primitives, the ones
 [github-nvim-theme](https://github.com/projekt0n/github-nvim-theme) is generated from. **Re-theming the
-stack** therefore means editing `ghostty/config` *and* mirroring the palette in the four files above —
+stack** therefore means editing `ghostty/config` *and* mirroring the palette in the three places above —
 the price of tools that cannot switch themselves.
 
 That mirroring is hand-transcribed, and Zellij, lazygit and Claude Code all swallow a wrong colour
@@ -848,6 +847,5 @@ Section order mirrors zellij/README.md:
 Rules honored: cite every key/alias/flag upstream OR in this repo's config (config.md · never invent);
 config says what, prose says why (claude-md.md); public repo → assume world-readable.
 Only the companion CLIs actually WIRED in this repo's config are documented — verified against
-tools.zsh / aliases.zsh / plugins.zsh / vi-mode.zsh. delta is not wired here (git/ owns it), so it gets
-no card.
+tools.zsh / aliases.zsh / plugins.zsh / vi-mode.zsh.
 -->

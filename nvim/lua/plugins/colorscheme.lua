@@ -1,5 +1,5 @@
 -- GitHub High Contrast — the Neovim port of the palette Ghostty loads. Anything drawing
--- real UI chrome needs its own port (Zellij, lazygit, delta, fzf, Claude Code — see
+-- real UI chrome needs its own port (Zellij, lazygit, fzf, Claude Code — see
 -- zsh/README.md §8); only bat, eza and Starship ride the ANSI slots for free. This one
 -- is also the palette's canonical source: its primitives generate every other port.
 -- High Contrast over Default: Default leaves WinSeparator and DiagnosticHint near

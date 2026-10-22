@@ -1,7 +1,7 @@
 # Appearance switch for the tools that cannot follow the terminal themselves.
 #
 # Ghostty flips its palette with the macOS appearance and reports the change over
-# CSI 2031; Zellij and Neovim listen and repaint. bat, delta, fzf, lazygit and Claude
+# CSI 2031; Zellij and Neovim listen and repaint. bat, fzf, lazygit and Claude
 # Code do not — each reads its colours once at process start. So the appearance is
 # resolved here, once per prompt, and handed to them through the environment.
 # Every palette below is GitHub High Contrast, the same Primer tokens the editor and
@@ -13,9 +13,6 @@ typeset -g _TS_APPEARANCE='' _TS_APPEARANCE_AT=0
 
 _ts_theme_apply() {
   local mode=$1 cfg="${XDG_CONFIG_HOME:-$HOME/.config}"
-
-  # delta: GitHub's own diff colours, defined as features in git/config.
-  export DELTA_FEATURES="+github-$mode"
 
   # lazygit: a comma-separated list is merged left-to-right — its only light/dark hook.
   export LG_CONFIG_FILE="$cfg/lazygit/config.yml,$cfg/lazygit/theme-$mode.yml"

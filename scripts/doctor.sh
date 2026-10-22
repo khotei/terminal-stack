@@ -48,7 +48,6 @@ tool "yazi"   yazi   "brew bundle"
 tool "jq"     jq     "brew bundle"
 tool "eza"    eza    "brew bundle"
 tool "bat"    bat    "brew bundle"
-tool "delta"  delta  "brew bundle (git-delta)"
 
 section "Tools — agent & terminal (casks)"
 if command -v claude >/dev/null 2>&1; then ok "Claude Code (claude)"; else bad "Claude Code" "brew bundle (cask claude-code), then run claude to log in"; fi

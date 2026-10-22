@@ -118,7 +118,7 @@ the `${VAR}` + `~/.zshrc.local` pattern for future token-based servers.
 
 ### Git identity
 
-The repo's `git/config` is **additive** — delta + sane defaults, but **no `[user]` block**, so your
+The repo's `git/config` is **additive** — sane defaults, but **no `[user]` block**, so your
 name/email never live in this public repo. Set them on this machine (or change them later):
 
 ```sh

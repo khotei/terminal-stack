@@ -26,7 +26,7 @@ fi
 if command -v bat >/dev/null; then
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"   # colourful man pages via bat
   export MANROFFOPT="-c"
-  # Paint in ANSI slots so bat (and delta, which borrows bat's themes) follows
+  # Paint in ANSI slots so bat follows
   # Ghostty's light/dark palette — no second theme to switch. `bat --list-themes`.
   export BAT_THEME=ansi
 fi

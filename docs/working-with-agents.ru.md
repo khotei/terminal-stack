@@ -21,7 +21,7 @@ Claude Code живёт в панели Zellij и быстро пишет код.
 проверке.** §1 — про модель, §2 — про петлю, что её воплощает, а дальше — та же петля по спирали:
 через *кто что делает*, *много агентов*, *чтение диффа*, *переприглашение* и *почему это работает
 когнитивно*. Всё работает на инструментах, что у вас уже есть — **diffview**, **gitsigns**,
-**lazygit**, **git-delta**, **gh**, **git worktrees** и сам Claude Code. Ставить нечего.
+**lazygit**, **gh**, **git worktrees** и сам Claude Code. Ставить нечего.
 
 ### Содержание
 
@@ -413,7 +413,7 @@ git diff --name-only   # тронуло ли то, что не должно?
 Вся ваша ветка, с живым LSP: `<leader>gM` (`:DiffviewOpen origin/main...HEAD`). **Трёхточечный**
 диапазон сравнивает с merge-base — той же дельтой, что видит ревьюер на GitHub. PR:
 `gh pr checkout <N>` делает его локальным (реальные файлы, полный LSP), затем
-`:DiffviewOpen origin/main...HEAD`; либо triage без checkout'а через `gh pr diff <N> | delta`. Большой
+`:DiffviewOpen origin/main...HEAD`; либо triage без checkout'а через `gh pr diff <N>`. Большой
 многокоммитный PR ревьюйте коммит-за-коммитом с `<leader>gV` (история репозитория), а не одним
 гигантским диффом.
 
@@ -761,7 +761,7 @@ Comprehend каждого среза кормит *следующий* Frame у�
 | `/code-review` · `/review <N>` · `/security-review` | проходы ревью свежим агентом | Claude Code |
 | `/check` | доказать, что конфиг грузится («тесты») | Claude Code |
 | `/clear` · `/rewind` (Esc Esc) | свежая сессия · отмена плохого такта (лишь правки) | Claude Code |
-| `gh pr checkout <N>` → diffview · `gh pr diff <N> \| delta` | ревью PR локально / быстрый triage | shell + nvim |
+| `gh pr checkout <N>` → diffview · `gh pr diff <N>` | ревью PR локально / быстрый triage | shell + nvim |
 | `CLAUDE_CODE_ENABLE_TELEMETRY=1` | наблюдаемость агента (OTEL) | Claude Code |
 
 ---
