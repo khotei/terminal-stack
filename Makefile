@@ -45,12 +45,13 @@ cursor: ## Link Cursor settings/keybindings + vscode-neovim init.lua (opt-in; --
 git-setup: ## Set your git identity (name/email) in ~/.gitconfig (interactive; --show/--dry-run)
 	./git/setup.sh
 
-update: ## Update everything: pull configs, install/upgrade tools, prune stale links
+update: ## Update everything: pull configs, install/upgrade tools, uninstall what the Brewfile dropped, prune stale links
 	git pull --ff-only
 	brew update
 	brew bundle --file=./Brewfile
 	-brew upgrade --formula $$(brew bundle list --formula --file=./Brewfile)
 	-brew upgrade --cask $$(brew bundle list --cask --file=./Brewfile)
+	-brew bundle cleanup --force --file=./Brewfile
 	./install.sh --prune
 	@echo ""
 	@echo "→ open nvim, run :Lazy update, then commit nvim/lazy-lock.json to pin the new versions"

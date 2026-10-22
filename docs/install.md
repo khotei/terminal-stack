@@ -196,11 +196,14 @@ this repo and are broken; a valid link, or any symlink pointing elsewhere, is le
 make update
 ```
 Runs, in order: `git pull --ff-only` → `brew update` → `brew bundle` (install any newly-added tool)
-→ `brew upgrade` for the Brewfile's formulae **and** casks → `./install.sh --prune`. It finishes by
+→ `brew upgrade` for the Brewfile's formulae **and** casks → `brew bundle cleanup --force` (uninstall
+whatever the Brewfile no longer lists) → `./install.sh --prune`. It finishes by
 reminding you to run **`:Lazy update`** in Neovim and commit the refreshed `nvim/lazy-lock.json` to
 pin the new plugin versions.
 
-> `make update` upgrades only the tools the Brewfile lists — it won't touch the rest of your Homebrew.
+> `make update` treats the Brewfile as the whole truth: it upgrades only what the file lists **and
+> uninstalls** every formula/cask/tap the file doesn't (commented-out Personal apps included). Keep
+> anything you install by hand in the Brewfile, or it goes on the next update.
 
 ## Experimenting without disturbing your setup
 
