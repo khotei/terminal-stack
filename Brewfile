@@ -42,6 +42,8 @@ brew "shfmt"                            # shell formatter
 # ── git / containers (the SDD workflow + the sandbox) ─────────────────
 brew "gh"                               # PRs, the SDD loop
 cask "docker-desktop"                   # the `make try` sandbox
+tap  "pulumi/tap", trusted: true        # pulumi.com/docs/install: install from the vendor tap, not core
+brew "pulumi/tap/pulumi"                # infra as code
 
 # ── fonts ─────────────────────────────────────────────────────────────
 cask "font-symbols-only-nerd-font"      # icon fallback for Ghostty / Starship / LazyVim
@@ -60,6 +62,8 @@ cask "claude"                           # Claude desktop app (distinct from clau
 cask "notion"                           # the SDD specs/hub live here
 cask "obsidian"                         # notes
 cask "telegram"                         # chat
+cask "whatsapp"                         # word chat
+cask "tailscale-app"                    # work VPN
 cask "raycast"                          # launcher
 cask "alt-tab"                          # window switcher
 cask "shottr"                           # screenshots
@@ -70,7 +74,7 @@ mas  "OS Cleaner Pro", id: 1084211765
 # ══════════════════════════════════════════════════════════════════════
 # DEVELOPMENT — tooling beyond the terminal stack
 # ══════════════════════════════════════════════════════════════════════
-tap "oven-sh/bun"                       # third-party tap — if brew bundle errors here: brew trust oven-sh/bun
+tap  "oven-sh/bun", trusted: true
 brew "bun"                              # JS runtime / package manager
 brew "fnm"                              # fast Node version manager — wired in zsh/tools.zsh; bootstrap installs an LTS. Provides node for the Neovim TS LSP (mason → vtsls).
 # cask "figma"                          # design (enable if needed)
