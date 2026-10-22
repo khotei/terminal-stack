@@ -7,3 +7,7 @@
   created. Never move or rename a folder while an agent works in it.
 - While work spans several worktrees, every status names each item's worktree by its full
   readable path, so the user knows where to open lazygit.
+- A worktree is a full, isolated environment: its own dependencies, `.env`, local data and
+  containers, never a share of another tree's. When the project runs services, each worktree
+  gets its own ports and container names (the project's docs say how), so worktrees run side
+  by side without waiting for each other; stop a worktree's containers before removing it.
