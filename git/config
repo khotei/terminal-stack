@@ -20,7 +20,7 @@
 # primitives that also drive nvim and zellij; the dark rgba() tokens are flattened
 # over canvas.default #0a0c10, since a terminal cell carries no alpha.
 # Activated per appearance by DELTA_FEATURES (zsh/tools.zsh) — delta cannot pair
-# light/dark itself. lazygit passes --features on its own delta invocations.
+# light/dark itself.
 [delta "github-light"]
 	light = true
 	# deletion.numBg, not lineBg: #fff0ee sits ~1.07:1 on the white canvas and the
@@ -38,7 +38,9 @@
 
 [delta "github-dark"]
 	dark = true
-	minus-style = "syntax #231519"
+	# deletion.numBg, not lineBg: Primer's lineBg #231519 (red at 10%, green gets 15%)
+	# barely lifts off the #0a0c10 canvas, so a deleted line reads as plain context.
+	minus-style = "syntax #54282b"
 	minus-emph-style = "#0a0c10 #ff6a69"
 	plus-style = "syntax #0a2516"
 	plus-emph-style = "#0a0c10 #09b43a"
