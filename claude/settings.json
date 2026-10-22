@@ -4,8 +4,9 @@
       "WebFetch",
       "WebSearch"
     ],
-    "defaultMode": "default"
+    "defaultMode": "auto"
   },
+  "model": "opus",
   "worktree": {
     "baseRef": "head"
   },
@@ -19,7 +20,12 @@
     "commit-commands@claude-plugins-official": true,
     "pr-review-toolkit@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "claude-code-wakatime@wakatime": true
+    "claude-code-wakatime@wakatime": true,
+    "superpowers@anthropic-plugin-directory": true,
+    "code-review-anthropics@anthropic-plugin-directory": true,
+    "context7@anthropic-plugin-directory": true,
+    "code-simplifier@anthropic-plugin-directory": true,
+    "mattpocock-skills@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "wakatime": {
@@ -30,6 +36,11 @@
     }
   },
   "language": "Русский",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high"
+    }
+  },
   "tui": "fullscreen",
   "voice": {
     "enabled": true,
