@@ -7,10 +7,10 @@ layout {
     // Bar in the tab template so every dev tab carries it. Built-in compact-bar:
     // theme-aware (follows theme_dark/theme_light), shows mode + keys + tabs.
     default_tab_template {
-        children
         pane size=1 borderless=true {
             plugin location="compact-bar"
         }
+        children
     }
     tab name="dev" {
         pane split_direction="vertical" {

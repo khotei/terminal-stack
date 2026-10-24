@@ -15,7 +15,7 @@
 theme "github-light-hc"
 theme_light "github-light-hc"
 theme_dark "github-dark-hc"
-default_layout "compact"        // built-in compact-bar — theme-aware, shows mode + keys + tabs
+default_layout "compact-top"    // ./layouts/compact-top.kdl — built-in compact with the bar on top
 pane_frames true                // on so the rounded corners below can draw; frame = 1-cell content breathing room
 copy_on_select true             // select = copy, tmux-like
 scrollback_editor "nvim"        // `Edit scrollback` opens in the stack's editor

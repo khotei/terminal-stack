@@ -8,7 +8,7 @@ workspaces.
 fast recipes, and the config rationale. Nothing to hunt across other files.
 
 - **Files:** [`config.kdl`](./config.kdl) → `~/.config/zellij/config.kdl`,
-  [`layouts/dev.kdl`](./layouts/dev.kdl) → `~/.config/zellij/layouts/dev.kdl`
+  [`layouts/compact-top.kdl`](./layouts/compact-top.kdl) (default) and [`layouts/dev.kdl`](./layouts/dev.kdl) → `~/.config/zellij/layouts/`
 - **Validate:** `zellij --config zellij/config.kdl setup --check` (run by `/check` + CI)
 - **Feature:** `F-MUX-001` · **Upstream:** <https://zellij.dev/documentation>
 
@@ -463,8 +463,12 @@ of the stack in light appearance and darkens in dark (this is what closes the au
 bar with hard-coded colours could not). For the current mode it shows the **mode name, that mode's keybinding
 hints, and the tabs** — the live cheatsheet the tables above summarise. At the far right it also names
 the active **swap layout** (`VERTICAL`, `HORIZONTAL`, …) — the template `Alt+[` / `Alt+]` cycle
-([§6](#6-advanced-pane-craft)). It ships with Zellij (no wasm, no permission grant) and loads via
-`default_layout "compact"` for every session.
+([§6](#6-advanced-pane-craft)). It ships with Zellij (no wasm, no permission grant). The bar sits **on top**: the built-in
+`compact` layout puts it at the bottom and has no option to move it, so
+[`layouts/compact-top.kdl`](./layouts/compact-top.kdl) is that layout with the bar pane first, and
+[`layouts/compact-top.swap.kdl`](./layouts/compact-top.swap.kdl) carries over its swap layouts (the
+`Alt+[` / `Alt+]` arrangements) with the same order — without that file the swap layouts would be
+lost. It loads via `default_layout "compact-top"` for every session.
 
 ## 10. The `dev` layout
 
@@ -488,7 +492,7 @@ The *why* behind each key in [`config.kdl`](./config.kdl) — the config states 
 |---|---|---|
 | `theme` | `github-light-hc` | Pre-handshake fallback only — the palette shown until Ghostty answers the light/dark query (a fraction of a second). |
 | `theme_light` / `theme_dark` | `github-light-hc` / `github-dark-hc` | The pair Zellij swaps between when the terminal reports its appearance over **CSI 2031 / DSR 997** (zellij ≥ 0.44.2, answered by Ghostty). Both must be set, or auto-switching stays off. Defined in [`themes/github-high-contrast.kdl`](./themes/github-high-contrast.kdl) — auto-loaded, since `themes/` is Zellij's default `theme_dir` and `~/.config/zellij` symlinks to this folder. |
-| `default_layout` | `compact` | Built-in **compact-bar** — theme-aware, shows mode + keys + tabs ([§9](#9-the-status-bar)). |
+| `default_layout` | `compact-top` | Built-in `compact` with the **compact-bar** moved to the top ([§9](#9-the-status-bar)). |
 | `pane_frames` | `true` | Frames on so splits read as distinct cards; the frame lends a 1-cell content offset (Zellij has no native inner padding). |
 | `ui.pane_frames.rounded_corners` | `true` | Round the frame corners — softer look; inert without `pane_frames true`. |
 | `copy_on_select` | `true` | Select = copy (tmux-like). |

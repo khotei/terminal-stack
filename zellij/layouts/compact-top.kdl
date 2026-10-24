@@ -1,0 +1,7 @@
+// Built-in `compact` (zellij setup --dump-layout compact) with the bar moved above the panes.
+layout {
+    pane size=1 borderless=true {
+        plugin location="compact-bar"
+    }
+    pane
+}
