@@ -637,6 +637,8 @@ move, in operator-pending (`d`/`y`/`c`) to act on a distant target
 | `s` | normal / visual / op | flash jump — type chars, then a label, to teleport |
 | `S` | normal / visual / op | flash Treesitter — label-select a growing syntax node |
 | `r` | operator | remote — jump away, act, return (`yr…`) |
+| `R` | op / visual | Treesitter search — type chars, then label-pick a syntax node around a match (`dR…`) |
+| `<C-s>` | command-line | toggle flash labels on a regular `/` search — needs the pane **Locked** (`Ctrl+q`), else Zellij takes it as Scroll mode |
 | `<C-space>` | normal / op / visual | Treesitter incremental select (grow; `<BS>` shrinks) |
 
 Example: `d` then `r` then `s` + a target deletes a far-off word without moving your cursor home.
