@@ -61,8 +61,8 @@ and they never collide:
 So your fingers always know *which tool they're talking to*: a `⌃`-mode key means "multiplexer", a bare
 `<Space>` in the editor means "editor command". Ghostty deliberately leaves the `⌃` keys free; Neovim's
 leader never shadows the multiplexer. When a full-screen app (nvim/claude) needs *every* key, press
-[`⌥d`](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock) to **lock** Zellij and hand it
-over — `⌥d` again to reach the multiplexer. (Details:
+[`⌃q`](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock) to **lock** Zellij and hand it
+over — `⌃q` again to reach the multiplexer. (Details:
 [`.claude/rules/config.md`](../.claude/rules/config.md).)
 
 **Where Claude Code lives:** in a Zellij pane next to Neovim — not an IDE sidebar. You edit on the
@@ -106,8 +106,8 @@ always know who's listening.
 **2. Keys flow OS → terminal → multiplexer → app.** Ghostty's `macos-option-as-alt` turns the Mac's
 Option into a real Alt, so Zellij's `⌥h`/`⌥l` and Claude's `⌥P`/`⌥T` actually arrive. When a pane needs
 *every* key for a full-screen app (nvim/claude/fzf/atuin), press
-[`⌥d`](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock) to **lock** Zellij and hand that
-app the keyboard — `⌥d` again to return. There's no autolock: you lock by hand, so until you do, the
+[`⌃q`](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock) to **lock** Zellij and hand that
+app the keyboard — `⌃q` again to return. There's no autolock: you lock by hand, so until you do, the
 app's own Ctrl-keys can be caught by Zellij. `⌃g` stays free so Claude Code's "edit prompt in
 `$EDITOR`" reaches Claude even while locked.
 
@@ -120,7 +120,7 @@ split; `⌃o` `d` detaches with builds and agents still running; `zja` drops you
 were — even after a reboot, via [resurrection](../zellij/README.md#5-sessions-are-workspaces). For two
 features at once, a **worktree per agent** ([flow 5](#5-run-agents-in-parallel-worktrees)).
 
-**5. The editor │ agent loop.** Navigate on the left (Neovim: `<Space>fg` search, `gd`/`gr` LSP),
+**5. The editor │ agent loop.** Navigate on the left (Neovim: `<Space>/` search, `gd`/`gr` LSP),
 delegate on the right (Claude: `@file`, `!cmd`), review the diff back in the editor (`<Space>gg`
 lazygit). Switch sides with `⌥h`/`⌥l`. Peers in adjacent panes — lower RAM, tighter loop, you keep hold
 of the diff.
@@ -145,12 +145,16 @@ reference of any layer, open its README.
 | Layer | The moves you'll reach for most | Full reference |
 |---|---|---|
 | **Ghostty** | `⌘⇧R` reload · <code>⌘&#96;</code> quick-terminal | [ghostty/README](../ghostty/README.md) |
-| **Zellij** | `⌥h`/`⌥l` pane+tab · `⌃t` `N` jump to tab · `⌃o` `w` sessions · `⌥d` lock/unlock | [zellij/README](../zellij/README.md) |
-| **Neovim** | `<Space>` which-key · `<Space>ff`/`fg` find/grep · `gd`/`gr`/`K` LSP · `<Space>gg` lazygit | [nvim/README](../nvim/README.md) |
+| **Zellij** | `⌥h`/`⌥l` pane+tab · `⌃t` `N` jump to tab · `⌃o` `w` sessions · `⌃q` lock/unlock | [zellij/README](../zellij/README.md) |
+| **Neovim** | `<Space>` which-key · `<Space>ff` / `<Space>/` find/grep · `gd`/`gr`/`K` LSP · `gpd`/`gpr` peek · `<Space>gg` lazygit | [nvim/README](../nvim/README.md) |
 | **Shell** | `z` jump · `⌃R` history · `⌃T` file · `Esc` vi-mode · `zjd` workspace | [zsh/README](../zsh/README.md) |
 | **lazygit** | `Space` stage · `c` commit · `P` push · `s`/`f`/`r` squash/fixup/reword | [zsh/README §lazygit](../zsh/README.md#512-lazygit--git-as-a-tui) |
 | **yazi** | `h`/`j`/`k`/`l` nav · `y`/`x`/`p` copy/cut/paste · `z` fzf-jump | [zsh/README §yazi](../zsh/README.md#513-yazi--a-tui-file-manager) |
 | **Claude Code** | `⇧Tab` mode · `@`/`!`/`/` sigils · `⌃G` edit in nvim · `Esc` interrupt | [claude/README](../claude/README.md) |
+
+Neovim's popups — the picker behind `gr` and `<Space>ff`, the glance peek, hover docs, the which-key
+menu — each have their own keys, and some `⌃` keys inside them need a locked pane: see
+[nvim/README §5–§6](../nvim/README.md#5-the-picker-is-the-command-palette).
 
 ---
 
@@ -176,15 +180,20 @@ never lose context, and a reboot-free week of work lives in detached sessions.
 ### 2. Find and edit code
 *You need to change how `createUser` validates email.*
 
-1. In Neovim: `<Space>fg` → type `createUser` → Enter on the hit (live grep across the repo).
+1. In Neovim: `<Space>/` → type `createUser` → Enter on the hit (live grep across the repo).
 2. Land on the function. `gd` jumps to a symbol's definition; `gr` shows everywhere it's used.
-3. Edit with Vim motions (`ci(` to replace args, `cit` inside a tag, `<Space>cr` to LSP-rename the
+3. Just want to *read* the helper, not go there? **Peek** instead: `gpd` (definition) · `gpr` (usages)
+   · `gpy` (type) · `gpi` (implementations) open a floating glance window under the line — code on the
+   left, the list of locations on the right, your own line still in view. `Enter` jumps there, `q`
+   closes — the rest of its keys: [nvim/README §6](../nvim/README.md#6-inside-the-floats--each-embedded-tool-is-its-own-app).
+4. Edit with Vim motions (`ci(` to replace args, `cit` inside a tag, `<Space>cr` to LSP-rename the
    symbol everywhere).
-4. `K` for hover docs, `]d` to hop to the next error, `<Space>ca` to apply a quick-fix.
-5. `<Space>ff` to open a sibling file by name; `⌃h`/`⌃l` to move between editor splits.
+5. `K` for hover docs, `]d` to hop to the next error, `<Space>ca` to apply a quick-fix.
+6. `<Space>ff` to open a sibling file by name; `⌃h`/`⌃l` to move between editor splits.
 
-**Why this way:** The snacks picker (`<Space>ff`/`fg`) replaces the JetBrains "search everywhere"; the LSP
-keys (`gd`/`gr`/`cr`) replace "go to / find usages / rename". Hands stay on the home row.
+**Why this way:** The picker (`<Space>ff` / `<Space>/`) replaces the JetBrains "search everywhere"; the LSP
+keys (`gd`/`gr`/`cr`) replace "go to / find usages / rename", and `gp…` is "Peek Definition". Hands
+stay on the home row.
 
 ### 3. Pair with Claude Code
 *You want the agent to implement a function while you keep reading code.*
@@ -200,7 +209,7 @@ keys (`gd`/`gr`/`cr`) replace "go to / find usages / rename". Hands stay on the 
 **Why this way:** the agent and the editor are *peers in adjacent panes* — lower RAM and a tighter
 loop than an embedded IDE agent, and you stay in control of the diff. When you want the pane to swallow
 *every* key — Claude's own `Ctrl`-shortcuts, or nvim's — press
-[`⌥d`](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock) to **lock** Zellij, and `⌥d`
+[`⌃q`](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock) to **lock** Zellij, and `⌃q`
 again to hand the multiplexer back. It's a manual toggle (no autolock), so until you press it Zellij
 may catch the app's Ctrl-keys.
 
@@ -280,7 +289,7 @@ pass `/check`.
 
 > `⌘⇧R`-fresh terminal. `z api` → `zellij --layout dev`. Left: `nvim`. Right: `claude`.
 >
-> `<Space>fg` "parseToken" → land in the auth module, `gd` into the helper, spot the bug. `⌥l` →
+> `<Space>/` "parseToken" → land in the auth module, `gd` into the helper, spot the bug. `⌥l` →
 > tell Claude "write a failing test for an expired token, then fix `parseToken`". `⌥h` → back to
 > nvim, keep reading while it works; the statusline ticks to *31% ctx*.
 >
@@ -299,7 +308,7 @@ The *why* behind the combos — the reasons this stack is fast once it's yours:
 
 - **One entry per layer.** `⌘` = terminal, `⌃`-mode keys = multiplexer, `<Space>` = editor. Your hands
   always know who's listening; nothing overlaps.
-- **Search, don't browse.** `<Space>ff`/`fg`, `⌃R`, `z`, lazygit — reaching a file / command / commit
+- **Search, don't browse.** `<Space>ff` / `<Space>/`, `⌃R`, `z`, lazygit — reaching a file / command / commit
   is a fuzzy query, not a click-path. Fewer keystrokes, no mouse.
 - **Stay on the home row.** Vim motions in the editor *and* the shell (vi-mode) mean you almost never
   reach for arrows or the mouse — less travel, less strain.
@@ -324,7 +333,7 @@ The *why* behind the combos — the reasons this stack is fast once it's yours:
 | Changed an nvim plugin spec | `:Lazy sync` (or restart nvim) |
 | Changed a shell file | `source ~/.zshrc` or open a new shell |
 | "Does my config even load?" | `make check` (all validators) — or per-tool, see below |
-| A keybind seems dead | check the layer. A Zellij key dead? The pane may be **locked** — `⌥d` to unlock. An app's own Ctrl-key dead? The pane is **not** locked — `⌥d` to lock so the app gets it |
+| A keybind seems dead | check the layer. A Zellij key dead? The pane may be **locked** — `⌃q` to unlock. An app's own Ctrl-key dead? The pane is **not** locked — `⌃q` to lock so the app gets it |
 | fzf/atuin `⌃R` stopped working | vi-mode must load *before* them — it does in `zsh/.zshrc`; check your `~/.zshrc.local` overrides |
 | New machine / new files added | `git pull && ./install.sh --prune` |
 | Update all the tools | `make update` (then `:Lazy update` + commit `lazy-lock.json`) |
