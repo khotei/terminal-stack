@@ -148,7 +148,7 @@ one letter below. It finds the *next* object if you're not on one (so `ci(` work
 
 > `daf` deletes a whole function · `ci"` changes the string you're near · `yau` yanks a call · `vic` selects a class body.
 
-**Find & navigate** — one [fzf-lua picker](https://www.lazyvim.org/extras/editor/fzf), many sources ([§5](#5-the-picker-is-the-command-palette)):
+**Find & navigate** — one [snacks picker](https://www.lazyvim.org/extras/editor/snacks_picker), many sources ([§5](#5-the-picker-is-the-command-palette)):
 
 | Keys | What it does |
 |---|---|
@@ -394,40 +394,49 @@ on save is on by default — toggle it per-session with `<leader>uf` when a repo
 
 ## 5. The picker is the command palette
 
-Almost every "find / list / choose" action funnels through **one** fuzzy picker —
-[fzf-lua](https://github.com/ibhagwan/fzf-lua), the one LazyVim enables here. Internalize the picker and
-half the keymap comes for free, because the same window drives:
+Almost every "find / list / choose" action funnels through **one** fuzzy picker — the
+[snacks picker](https://www.lazyvim.org/extras/editor/snacks_picker) (enabled in
+[`lazyvim.json`](./lazyvim.json)). Internalize the picker and half the keymap comes for free, because
+the same window drives:
 
 - **finding** — files (`<leader><space>` / `<leader>ff`), grep (`<leader>/`), buffers (`<leader>,`),
-  recent (`<leader>fr`), symbols (`<leader>ss` / `<leader>sS`), **keymaps** (`<leader>sk`) — nearly every
-  `<leader>f…` / `<leader>s…` key;
-- **LSP lists** — `gr` references, and `gd` / `gy` / `gI` when there's **more than one** result (a single
-  result skips the picker and jumps straight there);
+  recent (`<leader>fr`), symbols (`<leader>ss` / `<leader>sS`), **keymaps** (`<leader>sk`), git log
+  (`<leader>gl`) — nearly every `<leader>f…` / `<leader>s…` key;
+- **LSP lists** — `gr` references, `gd` / `gy` / `gI` definitions, types, implementations. A single
+  result skips the picker and jumps straight there;
 - **`<leader>sR`** — resume the last picker exactly where you left it.
 
-**One keymap, every source.** You type to filter; the list and a preview of the hit sit beside the
-prompt, and the keys below work the same in all of them (source:
-[fzf-lua defaults](https://github.com/ibhagwan/fzf-lua#default-options) +
-[LazyVim's fzf extra](https://www.lazyvim.org/extras/editor/fzf)). **`F1` shows the full live key list**
-in any picker.
+**One keymap, every source.** It's **two windows**: an *input* prompt that opens in **insert** (you type
+the filter) and the *list*. The chords below drive everything **without leaving the filter**. Prefer Vim
+motions? **`<a-w>` hops focus into the list** — it's in normal mode there, so `j`/`k`, `gg`/`G`, `zz`
+work with no modifier at all, and **`?` shows the full live key list**; `i` hops back to typing.
+`<Esc>` **closes** the picker, it does *not* drop you to normal — so focus, don't Esc (source:
+[snacks.nvim](https://github.com/folke/snacks.nvim/blob/main/docs/picker.md)).
 
 | Key | What it does |
 |---|---|
 | `<C-j>` / `<C-k>` · `↓` / `↑` | Next / prev item |
 | `<CR>` · `<C-v>` | Open · open in a vertical split |
-| `<Tab>` / `<S-Tab>` · `<a-q>` | Mark several · send the marked ones to the quickfix list |
-| `<C-d>` / `<C-u>` | Half a page down / up the list |
-| `<C-f>` · `<S-Up>` / `<S-Down>` | Scroll the preview down · page it up / down |
-| `<C-x>` | **Jump labels** on the list — press a label to pick that item (flash, but in the picker) |
-| `<F4>` · `<F1>` | Hide / show the preview · the full key list |
-| `<C-r>` *(files, grep)* | Search from the project root ⇄ the current directory |
-| `<Esc>` | Close |
+| `<Tab>` / `<S-Tab>` · `<C-a>` | Multi-select an item · select all |
+| `<C-d>` / `<C-u>` | Half-page down / up in the list |
+| `<C-f>` | Scroll the preview down |
+| `<C-Up>` / `<C-Down>` | Prev / next query from history |
+| `<a-w>` | Focus the list ⇄ the input |
+| `<a-s>` | **Flash** labels on the list — press one to pick that item |
+| `<a-t>` | Send the results to **Trouble** (a list that stays open) |
+| `<a-c>` *(files, grep)* | Search from the project root ⇄ the current directory |
+| `<a-m>` | Maximize the picker |
+| `<Esc>` · `<C-c>` · `q` *(list)* | Close the picker |
 
-> **Zellij eats some picker keys while the pane is unlocked:** `<C-s>` (split), `<C-t>` (open the list
-> in Trouble), `<C-b>` (preview up), `<C-p>` (prev item), `<a-h>` / `<a-i>` (show hidden / git-ignored
-> files). The table sticks to keys that always arrive; for these, lock the pane with `Ctrl+q` and press it
-> again to unlock ([§9](#9-living-inside-zellij-the-manual-lock--the-leader)). `<C-q>` (everything to
-> quickfix) never arrives — it *is* the lock key; use `<a-q>`.
+> **Zellij eats some picker keys while the pane is unlocked:** `<C-s>` (split), `<C-t>` (tab), `<C-b>`
+> (preview up), `<C-p>` (prev item), `<a-p>` (toggle the preview), `<a-h>` / `<a-i>` (show hidden /
+> git-ignored files), `<a-f>` (follow symlinks). The table sticks to keys that always arrive; for these,
+> lock the pane with `Ctrl+q` and press it again to unlock
+> ([§9](#9-living-inside-zellij-the-manual-lock--the-leader)). `<C-q>` (send to quickfix) never arrives
+> — it *is* the lock key; `<a-t>` (Trouble) is the stand-in.
+
+**A source may add its own keys** atop these: the buffers picker binds `<C-x>` to *delete the buffer*,
+and git-status binds `<Tab>` to *stage* / `<C-r>` to *restore*. When unsure which apply, `<a-w>` then `?`.
 
 > Reflex: *"I need to get *to* something"* → it's a `<leader>f…` or `<leader>s…` picker. When unsure,
 > `<leader>` and read the `f` / `s` branches which-key prints.
@@ -549,8 +558,7 @@ right and **LSP is live in the diff** (`gd`/`gr`/`K`, diagnostics) — the revie
 
 #### The commits picker (`<leader>gm`) — its hotkeys *(repo + Snacks)*
 
-`<leader>gm` opens Snacks' git-log picker — the one Snacks picker in the stack; every other picker is
-fzf-lua ([§5](#5-the-picker-is-the-command-palette)), so its keys differ.
+`<leader>gm` opens Snacks' git-log picker (the same widget behind LazyVim's `<leader>gc` / `<leader>gl`).
 The title bar only hints a key or two (`… <c-d> git diff | <c-y> copy …`) and truncates the rest with
 `…` — **press `?` with the results list focused (`/` toggles input ⇄ list) for the full live key list.**
 The keys worth knowing:
@@ -566,7 +574,8 @@ The keys worth knowing:
 | `<c-q>` · `<Tab>` | Send list to **quickfix** · toggle multi-**select** |
 
 > `<c-o>` / `<c-x>` are the two the stack adds ([`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua));
-> the rest are **Snacks picker defaults** — this picker only; the fzf-lua ones are in [§5](#5-the-picker-is-the-command-palette).
+> the rest are **Snacks picker defaults**, shared by *every* picker ([§5](#5-the-picker-is-the-command-palette), incl. the
+> keys Zellij eats in an unlocked pane).
 > The preview pane renders diffs with Neovim's built-in highlighting; `<c-o>` / `<c-x>` are the route
 > to a full side-by-side.
 
@@ -768,6 +777,7 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `jk` → `<Esc>` | One universal comfort bind; this file is where you port IdeaVim maps. |
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `<leader>E` → focus / return the neo-tree sidebar | Stock `<leader>e` only *toggles* the tree (closes it from the editor); this **focuses** it from any split in one key — no `<C-h>` hop across splits — and a second press returns to the origin window (`<C-w>p`). Overrides LazyVim's `<leader>E` (cwd explorer, still on `<leader>fE`). |
 | [`lazyvim.json`](./lazyvim.json) | enable `lang.markdown` + `lang.typescript` + `editor.inc-rename` + `editor.outline` + `coding.mini-surround` + `dap.core` + `test.core` extras | In-buffer Markdown render (`<leader>um`), TS LSP (`gd`/`gr`/`K`), live rename (`<leader>cr`), outline (`<leader>cs`), surround (`gs*`), debugger (`<leader>d…`), test runner (`<leader>t…`). See [§7](#7-advanced-craft--lsp-refactor-debug-test). |
+| [`lazyvim.json`](./lazyvim.json) | enable the `editor.snacks_picker` extra | The picker for every `<leader>f…`/`<leader>s…` key and `gd`/`gr` lists ([§5](#5-the-picker-is-the-command-palette)). LazyVim treats a `lazyvim.json` without `install_version` as a pre-v14 install and silently keeps **fzf-lua**; naming the extra pins the snacks picker. Over fzf-lua: its list is a normal-mode buffer (`<a-w>`, then `j`/`k`) — far fewer `Ctrl` chords for Zellij to eat — and `<leader>gm` already uses it, so one picker keymap covers the editor. |
 | [`lua/plugins/markdown.lua`](./lua/plugins/markdown.lua) | disable `markdown-preview.nvim` | `lang.markdown` ships two renderers; keep only render-markdown's in-buffer toggle (`<leader>um`). A terminal-first stack wants no browser tab — and skips the plugin's node build step. |
 | [`lua/plugins/dap-node.lua`](./lua/plugins/dap-node.lua) | append an `npm`/`pnpm` "Debug script" dap config | `lang.typescript` covers "Launch file"/"Attach" but not `npm run <script>` under the debugger; appended so its own configs survive. |
 | [`lua/plugins/neotest.lua`](./lua/plugins/neotest.lua) | add Vitest + Jest neotest adapters | `test.core` ships neotest with an *empty* adapter table — no adapter, no tests discovered. |
