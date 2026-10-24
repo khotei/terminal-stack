@@ -26,6 +26,7 @@ that ties them together, not a key dump.
    - [6. Move around (history, dirs, files)](#6-move-around-history-dirs-files)
    - [7. Edit a long command (vi-mode)](#7-edit-a-long-command-vi-mode)
    - [8. Tweak and reload a config](#8-tweak-and-reload-a-config)
+   - [9. Check the app in the browser](#9-check-the-app-in-the-browser)
 5. [A day in the life](#a-day-in-the-life)
 6. [Ergonomic principles](#ergonomic-principles)
 7. [Reload & troubleshoot](#reload--troubleshoot)
@@ -283,6 +284,21 @@ keys or `⌃A`/`⌃E` emacs chords. One editing model everywhere. (See [`zsh/REA
 `./install.sh --prune` syncs a new machine, `make update` upgrades the tools. Each change should still
 pass `/check`.
 
+### 9. Check the app in the browser
+*You changed the signup form and want to see it work — without leaving the keyboard.*
+
+1. Chrome on the left two thirds, Ghostty on the right third (Raycast *First Two Thirds* /
+   *Last Third*).
+2. Start the agent with the browser attached: `claude --chrome`.
+3. Ask it to check, not just to open: *"Open localhost:3000/signup, submit it with an invalid email,
+   and tell me which errors appear."* It works in a visible tab; a console error goes straight back
+   into the fix.
+
+**Why this way:** the agent that wrote the code also clicks through it and reads the console, so the
+loop closes without copy-pasting traces. Keep `--chrome` per session — enabled by default, its tools
+cost context in every session. Layouts, Vimium, the word-lookup ladder and the side panel:
+[`chrome/README.md`](../chrome/README.md).
+
 ---
 
 ## A day in the life
@@ -393,6 +409,7 @@ above stay the source of truth). Pick one that fits; skim, don't memorize.
 - Per-layer references (the single source of keys per tool): [ghostty](../ghostty/README.md) ·
   [zellij](../zellij/README.md) · [nvim](../nvim/README.md) · [zsh](../zsh/README.md) ·
   [claude](../claude/README.md) · [fonts](../fonts/README.md)
+- The browser beside the stack: [chrome](../chrome/README.md)
 - Setup + ops: [install](install.md) · [sandbox](sandbox.md)
 - Working with agents (the loop, review, parallel worktrees): [working-with-agents](working-with-agents.md)
 - How the repo is built (the SDD loop + commands): [`.claude/commands/README.md`](../.claude/commands/README.md)

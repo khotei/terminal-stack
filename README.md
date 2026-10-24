@@ -145,6 +145,7 @@ terminal-stack/
 ├── macos/          # opt-in macOS system defaults script     — see macos/README.md
 ├── jetbrains/      # opt-in IdeaVim + IDE settings (link by demand) — see jetbrains/README.md
 ├── cursor/         # opt-in Cursor settings + vscode-neovim init (link by demand) — see cursor/README.md
+├── chrome/         # the browser beside the stack: layouts, Vimium, Claude in Chrome — see chrome/README.md
 ├── docs/           # guide.md · install.md · sandbox.md      — see docs/README.md
 ├── scripts/        # check.sh + entrypoint.sh (sandbox/CI)
 ├── .claude/        # the SDD toolkit that builds this repo (see below)

@@ -16,6 +16,9 @@ can actually live in. Five docs, by intent:
 [zsh](../zsh/README.md) · [git](../git/README.md) · [claude](../claude/README.md) ·
 [fonts](../fonts/README.md) · [macos](../macos/README.md).
 
+> **Beside the stack:** the browser — Vimium, the word-lookup ladder, Claude in Chrome and
+> `claude --chrome`; see [chrome](../chrome/README.md).
+
 > **System:** macOS defaults via `make macos` (opt-in — not run by bootstrap/install); see
 > [macos](../macos/README.md).
 
