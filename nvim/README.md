@@ -21,7 +21,7 @@ manual to start working.
 3. [Complete keybinding reference](#3-complete-keybinding-reference) — by area
 4. [Recipes — "I want to… → do this"](#4-recipes--i-want-to--do-this) — incl. **the navigation set** (name → code → deps → back)
 5. [The picker is the command palette](#5-the-picker-is-the-command-palette)
-6. [Inside the floats — each embedded tool is its own app](#6-inside-the-floats--each-embedded-tool-is-its-own-app) — explorer · lazygit · diffview · flash
+6. [Inside the floats — each embedded tool is its own app](#6-inside-the-floats--each-embedded-tool-is-its-own-app) — explorer · lazygit · diffview · glance · flash
 7. [Advanced craft — LSP, refactor, debug, test](#7-advanced-craft--lsp-refactor-debug-test)
 8. [Anti-patterns](#8-anti-patterns)
 9. [Living inside Zellij (the manual lock + the leader)](#9-living-inside-zellij-the-manual-lock--the-leader)
@@ -194,6 +194,7 @@ one letter below. It finds the *next* object if you're not on one (so `ci(` work
 | `gI` · `gy` | Jump to **implementations** · to the symbol's **type** |
 | `]]` / `[[` | Hop to the next / prev **use** of the symbol under the cursor, in-file (`<a-n>`/`<a-p>` cycle) |
 | `K` · `gK` | Hover docs · signature help (parameter hints) — a peek, no jump |
+| `gpd` · `gpr` · `gpy` · `gpi` | **Peek** definition · references · type · implementations in a glance panel — read it, don't leave *(repo)*, [§6](#6-inside-the-floats--each-embedded-tool-is-its-own-app) |
 | `<leader>ca` · `<leader>cA` | Code action (add import, quick-fix) · source action (whole-file, e.g. organize imports) |
 | `<leader>cr` | Rename the symbol everywhere, live preview *(inc-rename extra)* |
 | `<leader>cf` | Format the buffer or selection |
@@ -311,7 +312,8 @@ back → mark the spot.** This is the ready-made key set for each step.
 
 | You want… | Key |
 |---|---|
-| every place it's **used** | `gr` — references, in a picker |
+| every place it's **used** | `gr` — references, in a picker · `gpr` — the same, peeked in place (glance) |
+| to **read** the definition without leaving | `gpd` — glance panel; `<CR>` jumps there after all |
 | to hop **use → use in this file** | `]]` / `[[` (next / prev reference; `<a-n>`/`<a-p>` cycle) |
 | its **type** · its **implementations** | `gy` · `gI` |
 | the file's **shape** | `<leader>cs` Outline (symbol tree); the **dropbar** winbar shows the path with no keypress |
@@ -601,6 +603,27 @@ you edit it with plain Vim; only a few keys are its own:
   `Snacks.scratch({ name = "notes", ft = "markdown" })` in [`keymaps.lua`](./lua/config/keymaps.lua), or
   rename the file on disk. `<leader>S` lists them newest-first.
 
+### Glance (`gpd` · `gpr` · `gpy` · `gpi`) — peek without leaving *(repo)*
+
+`gd` *moves* you to the definition; `gp…` *shows* it in a panel that opens under the current line (a
+full-width float when the window is under 100 columns), VS Code's "Peek Definition" — code on the left,
+the list of locations on the right, your own line still in view. Same letters as the jumps with a `p` (**peek**) inserted: `gpd` definition · `gpr` references
+· `gpy` type · `gpi` implementations ([glance.nvim](https://github.com/DNLHC/glance.nvim)). The panel
+opens even for a single result — that's the point; `<CR>` turns the peek into a jump. You can edit
+code right in the preview. Its default keys, in the list:
+
+| Key | What it does |
+|---|---|
+| `j` / `k` · `<Tab>` / `<S-Tab>` | Next / prev item · next / prev location (skips file groups) |
+| `<CR>` / `o` · `v` · `s` · `t` | Jump there · in a vertical split · horizontal split · new tab |
+| `<C-d>` / `<C-u>` | Scroll the code preview |
+| `l` / `h` | Open / close a file group |
+| `<leader>l` | Focus the code preview (and back from it) |
+| `q` / `<Esc>` | Close the panel — `:Glance resume` reopens it as you left it |
+
+> glance's `<C-q>` (send all locations to quickfix) never arrives inside Zellij — `Ctrl+q` is the lock
+> toggle in **every** mode, Locked included ([§9](#9-living-inside-zellij-the-manual-lock--the-leader)).
+
 ### Flash — teleport by label (a motion, not a float)
 
 Not a float, but the highest-leverage *movement* LazyVim ships — quick keys in the
@@ -734,6 +757,7 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/plugins/neotest.lua`](./lua/plugins/neotest.lua) | add Vitest + Jest neotest adapters | `test.core` ships neotest with an *empty* adapter table — no adapter, no tests discovered. |
 | [`lua/plugins/diffview.lua`](./lua/plugins/diffview.lua) | add [`sindrets/diffview.nvim`](https://github.com/sindrets/diffview.nvim) + `<leader>gv`/`gM`/`gm`/`gV`/`gF`, `--imply-local` default | Side-by-side diff + file history for reviewing changes (`gM` = `origin/main...HEAD`; `gm` = a commits picker whose `<c-o>`/`<c-x>` open a chosen commit in diffview); `--imply-local` puts the working file on the right so LSP works in the diff. No LazyVim-native equivalent. |
 | [`lua/plugins/dropbar.lua`](./lua/plugins/dropbar.lua) | add [`Bekaboo/dropbar.nvim`](https://github.com/Bekaboo/dropbar.nvim) | Breadcrumb winbar (the "Context Info" view). Requires **Neovim ≥ 0.11** — a version floor the stack now depends on. |
+| [`lua/plugins/glance.lua`](./lua/plugins/glance.lua) | add [`DNLHC/glance.nvim`](https://github.com/DNLHC/glance.nvim) + `gpd`/`gpr`/`gpy`/`gpi`, a which-key `gp` → *peek* group | Read a definition or every reference **without leaving the buffer** — LazyVim's `gd`/`gr` always move you (or open a picker). Over `goto-preview` (stale, needs `logger.nvim`, overrides `vim.ui.input` that Snacks owns) and `lspsaga` (a kitchen sink for one feature). `gp…`, not glance's suggested `gD`/`gR`: the typescript extra owns those. |
 | [`lua/plugins/typescript.lua`](./lua/plugins/typescript.lua) | inlay hints **off by default** (`inlay_hints.enabled = false`) + max out the `vtsls` set (`variableTypes`, `parameterNames = "all"`) + noise suppressors | LazyVim ships inlay hints *on* globally — turn them off for a clean buffer. `lang.typescript` also ships variable-type hints off and parameter names at `"literals"` only, so all six categories are maxed (redundant ones suppressed) — one `<leader>uh` then reveals everything, JetBrains-style, on demand. |
 
 ## 11. Layout
@@ -750,6 +774,7 @@ nvim/
 │   ├── colorscheme.lua           # shared palette (auto light/dark via vim.o.background) + auto-dark-mode.nvim
 │   ├── diffview.lua              # side-by-side diff + file history
 │   ├── dropbar.lua               # breadcrumb winbar
+│   ├── glance.lua                # peek definition / references in a panel (gp…)
 │   ├── dap-node.lua              # npm/pnpm "Debug script" launcher
 │   ├── markdown.lua              # disable browser preview (keep in-buffer render)
 │   └── neotest.lua               # Vitest + Jest adapters
