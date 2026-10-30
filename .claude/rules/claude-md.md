@@ -1,6 +1,12 @@
+---
+paths:
+  - "**/CLAUDE.md"
+  - ".claude/**"
+---
+
 # Maintaining `CLAUDE.md` and rules (context, not a config dump)
 
-**Always-loaded rule.** A `CLAUDE.md` (or a rule file) is a cache of what the **config cannot say**.
+A `CLAUDE.md` (or a rule file) is a cache of what the **config cannot say**.
 The config files are the source of truth for *what* the setup is — the keys, the keybinds, the
 plugin specs, the values. These docs exist only for *why* it is that way, and for constraints that
 aren't local to one file. Optimize for the next reader (usually a future Claude session) and for low

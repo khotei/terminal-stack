@@ -1,6 +1,27 @@
+---
+paths:
+  - "ghostty/**"
+  - "zellij/**"
+  - "nvim/**"
+  - "zsh/**"
+  - "git/**"
+  - "lazygit/**"
+  - "claude/**"
+  - "cursor/**"
+  - "jetbrains/**"
+  - "macos/**"
+  - "chrome/**"
+  - "scripts/**"
+  - "*.sh"
+  - "Makefile"
+  - "Brewfile"
+  - "Dockerfile"
+  - ".github/workflows/**"
+---
+
 # Config comments
 
-**Always-loaded rule.** The default is **no comment**. Config is read far more than written, it is
+The default is **no comment**. Config is read far more than written, it is
 the source of truth, and every comment is read-cost the reader pays whether or not it pays off — and
 an agent acts on a stale comment with full confidence, so a bad comment is worse than none. Earn each
 one. Comment the **WHY**; let the config state the WHAT. (Same family as

@@ -2,38 +2,17 @@
 description: Validate the stack's config files (Ghostty, Zellij, Neovim, zsh) and report failures
 ---
 
-**Canonical form:** the validators are codified in [`scripts/check.sh`](../../scripts/check.sh) —
-the same script `make check` and CI run, so there is no drift. Prefer running it directly
-(`bash scripts/check.sh`, or `make check` for the Linux-accurate sandbox run); the steps below
-document what it does and how to interpret a failure. The Docker sandbox is in
-[`docs/sandbox.md`](../../docs/sandbox.md).
+Run `bash scripts/check.sh` from the repo root and report its result concisely. The script is the
+one list of validators — the same one `make check`, `make check-local` and CI run — so don't run
+the validators one by one, and don't add steps here; a new validator goes into the script.
 
-Run the available config validators and report results concisely. This stack has **no compiler** —
-"check" means *does each config actually load?* Run every validator whose tool is installed; **skip
-and note** any whose tool is missing (degrade gracefully — never fail the whole run because a tool
-isn't on this machine).
+- Report each section's **PASS / FAIL / SKIP** line as the script prints it. A SKIP means the tool
+  isn't installed on this machine; it is not a failure.
+- On FAIL, show the specific error (file:line + message) and stop — do not attempt fixes unless
+  asked.
+- A style warning (`stylua`, `shfmt`) is a soft fail: name the fix command the script prints.
+- When you touched one Neovim module and want a faster signal than the full load, also run
+  `nvim --headless -c 'luafile <file>' -c qa`.
+- If everything passes (or is cleanly skipped), say so in one line.
 
-For each step, first confirm the tool exists (e.g. `command -v ghostty`); if absent, report
-`SKIP — <tool> not installed` and move on.
-
-1. **Ghostty** — `ghostty +show-config` (parses `ghostty/config`; any unknown key or syntax error
-   surfaces here). Report PASS/FAIL + the offending key on failure.
-2. **Zellij** — `zellij setup --check` (verifies the config/layout files load).
-3. **Neovim health** — `nvim --headless "+checkhealth" +qa` for a full health report; and/or, to
-   prove a specific Lua file loads, `nvim --headless -c 'luafile <file>' -c qa` (non-zero exit / Lua
-   error = FAIL). Run health for broad checks, `luafile` when you touched one module.
-4. **zsh** — `zsh -n <file>` syntax-checks a shell file without executing it. Run it over each
-   touched `zsh/*.zsh` / `.zshrc` (so a typo can't break login shells).
-5. **Theme** — `python3 scripts/theme-audit.py` checks every hand-transcribed colour in the Zellij /
-   lazygit / Claude Code / fzf themes against the Primer primitives. Those tools accept a
-   wrong colour silently, so this is their only load check. SKIP if `github-theme` isn't installed.
-6. **Formatters (if present)** — `stylua --check nvim/` for Lua and `shfmt -d zsh/` for shell. These
-   are style gates, not load checks; report them separately and treat a diff as a soft FAIL (run
-   `stylua` / `shfmt -w` to fix).
-
-For each step report **PASS / FAIL / SKIP**. On FAIL, show the specific error (file:line + message)
-and stop — do not attempt fixes unless asked. If everything passes (or is cleanly skipped), say so
-in one line.
-
-> Install the validators via Homebrew: `brew install ghostty zellij neovim stylua shfmt`
-> (`zsh` ships with macOS). See `@.claude/rules/tooling.md`.
+For the Linux-accurate run inside the sandbox image, use `make check` (`docs/sandbox.md`).

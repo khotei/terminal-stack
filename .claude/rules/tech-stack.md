@@ -1,3 +1,19 @@
+---
+paths:
+  - "ghostty/**"
+  - "zellij/**"
+  - "nvim/**"
+  - "zsh/**"
+  - "git/**"
+  - "lazygit/**"
+  - "claude/**"
+  - "cursor/**"
+  - "jetbrains/**"
+  - "macos/**"
+  - "chrome/**"
+  - "Brewfile"
+---
+
 # Tech stack
 
 A terminal-first dev environment. Each tool owns one layer; the configs wire them into a coherent

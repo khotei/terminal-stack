@@ -1,33 +1,29 @@
+---
+paths:
+  - "scripts/**"
+  - "*.sh"
+  - "Makefile"
+  - "Brewfile"
+  - "Dockerfile"
+  - ".github/workflows/**"
+---
+
 # Tooling
 
-The stack installs and validates through a small, standard set of CLIs. Everything is available via
-**Homebrew** on macOS.
+The stack installs and validates through a small, standard set of CLIs, all from **Homebrew**.
 
-## Install (Homebrew)
+## Install
 
-```sh
-brew install ghostty zellij neovim starship zoxide atuin fzf fd ripgrep lazygit yazi stylua shfmt
-```
-
-`zsh` ships with macOS. `ghostty` is also available as a cask depending on the channel. The
-validators below come from `ghostty`, `zellij`, `neovim`, `stylua`, `shfmt`; the rest are the
-runtime tools the configs wire together (see `@.claude/rules/tech-stack.md`).
+The `Brewfile` is the one list of what the stack needs: `brew bundle` installs it, `make bootstrap`
+takes a fresh Mac there. `zsh` ships with macOS. A tool the configs start to rely on goes into the
+`Brewfile` in the same commit.
 
 ## Validators
 
-| Command | Validates | Where it runs |
-|---|---|---|
-| `ghostty +show-config` | Ghostty `config` (parses; unknown keys surface) | `/check`, `/sdd:implement`, `/sdd:verify` |
-| `zellij setup --check` | Zellij config + layouts | same |
-| `nvim --headless "+checkhealth" +qa` | Neovim health (plugins, providers, deps) | same |
-| `nvim --headless -c 'luafile <file>' -c qa` | a single Lua module loads | same |
-| `zsh -n <file>` | shell file syntax (no execution) | same |
-| `python3 scripts/theme-audit.py` | every transcribed theme colour is a real Primer token | `/check` |
-| `stylua --check nvim/` | Lua formatting (style gate) | `/check` |
-| `shfmt -d zsh/` | shell formatting (style gate) | `/check` |
-
-All of these run through **`/check`** (`@.claude/commands/check.md`), which **skips and notes** any
-validator whose tool isn't installed rather than failing the whole run.
+`scripts/check.sh` is the one list of validators and what each proves; `make check-local`, `make
+check` (the Linux sandbox), CI and `/check` all run it. It **skips and notes** a validator whose
+tool isn't installed rather than failing the whole run. A new validator goes into the script, not
+into a doc.
 
 ## Formatters
 
@@ -36,10 +32,9 @@ validator whose tool isn't installed rather than failing the whole run.
 - **`shfmt`** formats zsh / shell. `shfmt -d` diffs, `shfmt -w` writes.
 
 These are **style** gates, not load checks — a formatting diff is a soft fail. The load validators
-above are the hard gate.
+are the hard gate.
 
-## No commit hook (yet)
+## No commit hook
 
-There is no Husky/lefthook commit hook running validators on `git commit` — `/check` is run manually
-(and by the SDD loop before a task is `Done`). If a future feature adds a hook, wire it to `/check`
-and record the decision here.
+No hook runs the validators on `git commit`: CI runs `scripts/check.sh` on every PR and every push
+to `main`, and locally it is run by hand (and by the SDD loop before a task is `Done`).

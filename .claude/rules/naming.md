@@ -1,3 +1,19 @@
+---
+paths:
+  - "ghostty/**"
+  - "zellij/**"
+  - "nvim/**"
+  - "zsh/**"
+  - "git/**"
+  - "lazygit/**"
+  - "claude/**"
+  - "cursor/**"
+  - "jetbrains/**"
+  - "macos/**"
+  - "chrome/**"
+  - "docs/**"
+---
+
 # Naming & file layout conventions
 
 The repo is organised **by tool**, one top-level folder each, mirroring where the tool reads its

@@ -1,6 +1,11 @@
+---
+paths:
+  - ".github/**"
+---
+
 # Pull requests
 
-**Always-loaded rule.** This project's PRs have a **signature requirement**: every PR is written as
+This project's PRs have a **signature requirement**: every PR is written as
 a **self-contained reference guide**. A reader who has never seen this repo should finish the PR
 description understanding *what the change is for*, *what each config key does and why*, *how to try
 it themselves*, and *how it maps back to its Feature and ACs* — without opening another file.

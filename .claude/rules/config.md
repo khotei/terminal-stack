@@ -1,6 +1,22 @@
+---
+paths:
+  - "ghostty/**"
+  - "zellij/**"
+  - "nvim/**"
+  - "zsh/**"
+  - "git/**"
+  - "lazygit/**"
+  - "claude/**"
+  - "cursor/**"
+  - "jetbrains/**"
+  - "macos/**"
+  - "chrome/**"
+  - "install.sh"
+---
+
 # Config conventions
 
-**Always-loaded rule.** This repo *is* config — these are the cross-tool conventions every config
+This repo *is* config — these are the cross-tool conventions every config
 file follows so the stack stays coherent and validatable.
 
 ## Never invent a config key
@@ -10,6 +26,12 @@ docs** (ghostty.org / zellij.dev / lazyvim.org / neovim.io / starship.rs). A gue
 single most likely way to break a config silently — Ghostty rejects unknown keys, but a typo'd Lua
 option or KDL node can fail quietly. If you can't cite it, don't write it: mark it `[TBD]` in the
 spec and confirm it first. This is the discipline the whole SDD loop enforces (`@.claude/rules/sdd.md`).
+
+The website documents the latest release, which may be ahead of (or behind) what Homebrew
+installed, so confirm a key against the **installed** version before writing it:
+`ghostty +show-config --default --docs`, `zellij setup --dump-config`,
+`starship print-config --default`, `:h <option>` in nvim, and a plugin's source under
+`~/.local/share/nvim/lazy/<plugin>/` for its options and defaults.
 
 ## One file owns one concern
 
