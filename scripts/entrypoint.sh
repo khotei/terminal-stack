@@ -2,7 +2,7 @@
 # Sandbox entrypoint: symlink whatever config layers the mounted repo (/work)
 # actually contains into the container's ~/.config, then exec the command.
 # Absent layers are skipped — the sandbox lands before the configs it tests and
-# grows as features merge (F-META-001, AC-3).
+# grows as features merge.
 set -euo pipefail
 
 REPO="${REPO:-/work}"

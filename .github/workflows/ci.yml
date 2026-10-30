@@ -1,7 +1,7 @@
 name: check
 
 # Validate every PR and every push to main with the SAME script used locally
-# (scripts/check.sh) — no drift between CI and `make check`. F-META-001 · AC-5.
+# (scripts/check.sh) — no drift between CI and `make check`.
 on:
   pull_request:
   push:

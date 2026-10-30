@@ -3,7 +3,7 @@
 # Shared verbatim by `make check`, GitHub Actions CI, and the /check command
 # (@.claude/commands/check.md) so there is no drift between local and CI.
 #
-# Contract (F-META-001, AC-4): run each tool's validator IFF both the config and
+# Contract: run each tool's validator IFF both the config and
 # the tool are present; otherwise print a SKIP note. Exit non-zero only on a real
 # validation FAILURE. Style gates (stylua/shfmt) are soft — they warn, never fail.
 set -uo pipefail
@@ -74,6 +74,14 @@ if [ -n "$sh_scripts" ]; then
     if bash -n "$f" 2>/dev/null; then pass "bash -n $f"; else fault "bash -n $f — syntax error"; fi
   done
 else skip "no shell scripts"; fi
+
+# ── Provenance ids (feature/AC/task ids belong in Notion and Refs:) ───
+# -w, not \b: git grep -E on macOS ignores \b, so the check would never fail.
+head "Provenance ids"
+if have git && git rev-parse --git-dir >/dev/null 2>&1; then
+  out=$(git grep --untracked -nwE 'F-[A-Z]+-[0-9]{3}|AC-[0-9]+|T0[0-9]' -- . ':!*.md' ':!.claude/')
+  if [ -z "$out" ]; then pass "no feature/AC/task ids in config or scripts"; else fault "feature/AC/task ids in config or scripts — move them to the commit's Refs:"; printf '%s\n' "$out" | sed 's/^/    /'; fi
+else skip "not a git checkout"; fi
 
 # ── Theme (the one thing the tools themselves never validate) ─────────
 # Zellij, lazygit and Claude Code all accept a wrong colour in silence, so a
