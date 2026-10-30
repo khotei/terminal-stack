@@ -24,12 +24,14 @@ spec and confirm it first. This is the discipline the whole SDD loop enforces (`
 The three keyboard layers must not fight:
 
 - **Ghostty** owns the terminal-level keys (splits/tabs *of the terminal*, font, copy/paste).
-- **Zellij** owns the multiplexer prefix (e.g. `ctrl+a`) and everything under it.
-- **Neovim** owns its leader (e.g. `<space>`) and editor maps.
+- **Zellij** owns the keys that enter its modes and every key inside a mode. There is no tmux-style
+  prefix: each mode has its own entry key.
+- **Neovim** owns its leader and editor maps.
 
-A new bind in any layer must not shadow the layer below it (a Ghostty key must not eat Zellij's
-prefix; an nvim map must not eat the multiplexer prefix). Record the chosen prefix/leader as an
-invariant in the relevant `CLAUDE.md`.
+A key reaches the layer below only if every layer above leaves it free. So a Ghostty bind must not
+take a Zellij mode key, and a Zellij mode key must not take a key that nvim or Claude Code uses
+daily (free it, as `zellij/config.kdl` does). Each tool's keymap file is the record of which keys
+are taken; never copy them into a rule.
 
 ## Validate every change
 

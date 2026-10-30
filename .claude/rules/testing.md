@@ -34,7 +34,7 @@ typo can't break login shells.
 1. **The keypress actually does the thing.** `ghostty +show-config` proves the bind *parses*, not
    that pressing it spawns a tab. For a behavior only a keypress can show, the verifier reproduces it
    and observes the result (`@.claude/agents/verifier.md`).
-2. **No collision across layers.** A bind can be valid in isolation yet shadow the multiplexer prefix
+2. **No collision across layers.** A bind can be valid in isolation yet shadow a Zellij mode key
    or the editor leader. Collisions are caught by reading the keymap, not by a validator — see the
    invariant in `@.claude/rules/config.md`.
 

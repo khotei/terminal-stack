@@ -68,15 +68,15 @@ it, but prefer including it.
 ## Worked example (feat — the full shape)
 
 ```
-:sparkles: feat(zellij): Add ctrl+a>n to spawn a new tab
+:sparkles: feat(nvim): Pair <leader>bu/bU for buffer reload from disk
 
-Bind the new-tab action under the existing ctrl+a prefix so tab
-creation matches the pane keys already on that prefix.
+Reload every listed buffer from disk, so files an agent rewrote outside
+the editor stop showing stale text: bu re-reads changed buffers and
+spares unsaved edits, bU forces every buffer to re-read.
 
-Decision: Put new-tab on the ctrl+a prefix rather than a bare ctrl+t —
-ctrl+t is claimed by fzf's file widget in the shell, and routing every
-multiplexer action through one prefix keeps Ghostty's keymap free for
-the terminal itself.
+Decision: Two keys rather than one — :checktime is safe to press any
+time, :bufdo e! discards edits, so the forceful one gets the capital
+letter, as LazyVim does with bd/bD.
 
 Refs: https://app.notion.com/p/<task-url>
 ```

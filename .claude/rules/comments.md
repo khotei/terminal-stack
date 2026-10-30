@@ -21,14 +21,13 @@ This rule has two gates: **(A)** should this comment exist at all (be strict —
 When reviewing existing config, **delete on sight** anything that fails (1). The only reasons to keep
 a comment:
 
-- **A non-obvious DECISION + the rejected alternative** — "`ctrl+a` prefix, not `ctrl+b` — tmux
-  muscle memory, and `ctrl+b` collides with the shell's backward-char." Stops an agent "fixing" it
-  back.
+- **A non-obvious DECISION + the rejected alternative** — "lock on `ctrl+q`, not `ctrl+space` —
+  macOS takes `ctrl+space` for the input-source switch." Stops an agent "fixing" it back.
 - **A GOTCHA or cross-tool coupling**, surprising from a distance — "leave this Ghostty key unbound:
-  it's Zellij's prefix"; "this nvim plugin needs `:Lazy sync` after edit"; "Ghostty hot-reloads but
-  this key needs a full restart."
-- **An INVARIANT the config can't express** — "all multiplexer actions live under one prefix; do not
-  add a bare top-level bind."
+  Zellij enters a mode with it"; "this nvim plugin needs `:Lazy sync` after edit"; "Ghostty
+  hot-reloads but this key needs a full restart."
+- **An INVARIANT the config can't express** — "rare modes ride behind one hub key; do not give one
+  a global `ctrl` key."
 - **A usage CONSTRAINT** — "source this file *after* the env block; it reads `$EDITOR`."
 
 If it isn't one of these, **delete it.** (A short *section header* comment — `# ── keybinds ──` — is
@@ -39,7 +38,7 @@ fine as structure, not narration.)
 Each **restates the line it sits on** — write none of them:
 
 ```
-keybind = ctrl+a>n=new_tab   # bind ctrl+a n to new tab      ← the line says it
+keybind = cmd+t=new_tab      # bind cmd+t to new tab          ← the line says it
 font-size = 14               # set the font size to 14        ← reads identically
 alias ll='ls -la'            # alias ll to ls -la             ← the alias IS the sentence
 -- require the plugin        ← narration above a require()

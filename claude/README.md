@@ -30,7 +30,7 @@ and slash command, the fast recipes, the parallel-agent workflow, and this repo'
 5. [Parallel agents — git worktrees](#5-parallel-agents--git-worktrees)
 6. [Advanced craft](#6-advanced-craft) — plan mode · rewind · memory · vim input
 7. [Anti-patterns](#7-anti-patterns)
-8. [Living in a Zellij pane](#8-living-in-a-zellij-pane) — the manual lock · `Ctrl+G` · `Alt+d` · voice
+8. [Living in a Zellij pane](#8-living-in-a-zellij-pane) — the manual lock · `Ctrl+G` · `Ctrl+q` · voice
 9. [The status line](#9-the-status-line) · [Settings, plugins & MCP](#10-settings-plugins--mcp) · [Global rules](#11-global-rules--rules)
 10. [Verify](#12-verify) · [Install](#13-install) · [Go deeper](#go-deeper)
 11. [Optional power-ups](#14-optional-power-ups-not-wired-here) — hooks · fast mode · routines · `/loop` · more
@@ -66,10 +66,10 @@ default (Manual) ──[ Shift+Tab ]──▶ acceptEdits ──▶ plan ──�
 
 **The one reflex the pane demands.** Claude Code runs *inside* a Zellij pane, and by default Zellij's
 own modal keys (`Ctrl+t`/`s`) win — so a Claude `Ctrl`-shortcut can be eaten. Press
-**`Alt+d`** to drop the pane into **Locked** mode: now every keystroke reaches Claude
+**`Ctrl+q`** to drop the pane into **Locked** mode: now every keystroke reaches Claude
 ([§8](#8-living-in-a-zellij-pane)). The cost: while locked, Zellij's own hotkeys are dormant. So two
-mirror-image reflexes: **a Claude `Ctrl`-key "didn't work"? You're not locked — press `Alt+d`.** And:
-**a Zellij key "didn't work"? You're still locked — `Alt+d` back.**
+mirror-image reflexes: **a Claude `Ctrl`-key "didn't work"? You're not locked — press `Ctrl+q`.** And:
+**a Zellij key "didn't work"? You're still locked — `Ctrl+q` back.**
 
 ---
 
@@ -88,7 +88,7 @@ Ten moves that cover ~90% of real use. (Exhaustive tables in [§3](#3-complete-r
 | Speak your prompt (hold to talk, release to send) | `Ctrl+F` ([§8](#8-living-in-a-zellij-pane)) |
 | Free context without losing the thread | `/compact` |
 | Fresh conversation, empty context | `/clear` |
-| Toggle the pane's Zellij lock (hand keys to Claude ⇄ back) | `Alt+d` |
+| Toggle the pane's Zellij lock (hand keys to Claude ⇄ back) | `Ctrl+q` |
 
 > `Esc` `Esc` is overloaded by design: with text in the box it **clears the draft** (recall with `Up`);
 > with the box **empty** it opens the **rewind menu** to restore code/conversation from earlier
@@ -311,7 +311,7 @@ in an isolated git worktree, no editor pane
 | Copy a command's output back in by hand | `!command` — output enters context automatically |
 | Let context creep to 100% then lose the thread | Watch `ctx %`, `/compact` early |
 | Run two agents in the same working tree | A worktree each — `cc-worktree.sh` / `claude -w` |
-| Fight a dead Claude `Ctrl`-key, or a dead Zellij hotkey | `Alt+d` toggles which layer gets the keys |
+| Fight a dead Claude `Ctrl`-key, or a dead Zellij hotkey | `Ctrl+q` toggles which layer gets the keys |
 | Wire in the GitHub MCP because it exists | `gh` + the plugins already cover it ([§10](#10-settings-plugins--mcp)) |
 
 ---
@@ -323,13 +323,13 @@ layout](../zellij/layouts/dev.kdl): `zellij --layout dev` (left: editor · right
 couplings make that cohabitation work — the exact behavior lives in the
 [Zellij README §8](../zellij/README.md#8-living-with-claude-code--neovim--manual-lock):
 
-- **`Alt+d` is the manual lock.** There's **no autolock** — you hand the pane its keys by choice. `Alt+d`
+- **`Ctrl+q` is the manual lock.** There's **no autolock** — you hand the pane its keys by choice. `Ctrl+q`
   drops Zellij into **Locked** mode so **every keystroke reaches Claude** (`Ctrl+o`/`t`/`r` and the rest);
-  `Alt+d` again takes the multiplexer back. The trade-off is [§1](#1-the-mental-model)'s reflex: enter
-  `claude` and its `Ctrl`-keys are eaten by Zellij until you press `Alt+d`.
+  `Ctrl+q` again takes the multiplexer back. The trade-off is [§1](#1-the-mental-model)'s reflex: enter
+  `claude` and its `Ctrl`-keys are eaten by Zellij until you press `Ctrl+q`.
 - **`Ctrl+G` is freed in Zellij** — it's normally Locked mode's default unlock, which would shadow
   Claude's `Ctrl+G` (*edit prompt in `$EDITOR`*). The Zellij config unbinds it so the keystroke reaches
-  Claude; leave Locked with `Alt+d` instead.
+  Claude; leave Locked with `Ctrl+q` instead.
 
 **Voice — why `Ctrl+F`, and hold-to-talk.** Voice dictation's push-to-talk key
 ([`voice:pushToTalk`](https://code.claude.com/docs/en/voice-dictation#rebind-the-dictation-key))

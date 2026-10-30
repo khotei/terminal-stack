@@ -32,7 +32,7 @@ project's Notion (data-source IDs: `@.claude/sdd/data-sources.md`).
 3. **Configs must validate.** A change isn't done until it loads — run `/check`
    (`@.claude/commands/check.md`): `ghostty +show-config`, `zellij setup --check`,
    `nvim --headless …`, `zsh -n`.
-4. **No keybinding collisions** across the three keyboard layers — Ghostty keys, Zellij prefix, nvim
+4. **No keybinding collisions** across the three keyboard layers — Ghostty keys, Zellij mode keys, nvim
    leader must not shadow each other.
 5. **Every PR is a reference guide** — annotated per-setting rationale, how to try it, the
    keybinding cheatsheet, and the Feature/AC mapping (`@.claude/rules/pull-requests.md`).

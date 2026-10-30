@@ -18,11 +18,11 @@ Sharp signal: **if a rebind/refactor forces a `CLAUDE.md` edit, the doc was hold
 
 ## Belongs (keep)
 
-- **Decisions + the rejected alternative** — the *why*, and the option not taken (this prefix over
+- **Decisions + the rejected alternative** — the *why*, and the option not taken (this key over
   that one; this plugin over its rival). Unrecoverable from config, which only shows the survivor.
 - **Invariants the config can't express**, and cross-tool coupling (e.g. "this Ghostty key must
-  stay unbound — `ctrl+a` is Zellij's prefix"; "nvim's leader must not collide with the multiplexer
-  prefix").
+  stay unbound — Zellij enters a mode with it"; "a Zellij mode key must not take a key nvim uses
+  daily").
 - **Non-obvious gotchas** — reload requirements, version quirks, a key that only works on macOS.
 - **Boundaries** — which file owns which concern, "this is the single source of the keymap".
 - **Pointers** — to the spec (Notion), `.claude/agent-patterns/*`, the upstream doc, or the file
