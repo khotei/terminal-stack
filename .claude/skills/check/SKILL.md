@@ -1,4 +1,5 @@
 ---
+name: check
 description: Validate the stack's config files (Ghostty, Zellij, Neovim, zsh) and report failures
 ---
 

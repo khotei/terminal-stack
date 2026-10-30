@@ -8,7 +8,7 @@
 |---|---|---|
 | S1 | ticket templates and the roadmap | done |
 | S2 | the four agents and the implementer's check gate | done |
-| S3 | the five phase skills, `/check` as a skill, the plugin settings | todo |
+| S3 | the five phase skills, `/check` as a skill, the plugin settings | done |
 | S4 | the guide, the SDD rule and `CLAUDE.md` for the new loop | todo |
 | S5 | commit, PR and doc rules speak of tickets, not Notion | todo |
 | S6 | the old toolkit and every Notion pointer removed | todo |
@@ -88,7 +88,8 @@
   .claude/settings.json` shows both entries; in a new session, typing `/ticket` lists the five
   skills and `/check` runs the script; `bash scripts/check.sh` green.
 - **Model:** `opus medium`
-- **Status:** todo
+- **Status:** done
+- **Findings:** `/ticket-plan` step 4 also runs every Verify and acceptance command on a probe that must fail it, and `/ticket-implement` refuses a stale or unclear word as approval — the two lessons `app-template` recorded (`architecture-audit` L1, `llm-providers` L4) but had not applied. `/check` keeps model invocation on, so agents can run it. The parallel-worktree section drops `app-template`'s ports, `.env` and `bun install`: this repo runs no services. The user confirmed the `/ticket` listing in a new session.
 
 #### S4 — Guide, SDD rule and `CLAUDE.md`
 
