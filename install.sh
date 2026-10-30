@@ -107,10 +107,10 @@ install_fonts() {
   return 0
 }
 
-# Fetch the zellij-choose-tree plugin wasm (best-effort) — it backs Ctrl+o f
+# Fetch the zellij-choose-tree plugin wasm (best-effort) — it backs Ctrl+t o f
 # (fuzzy-jump to any tab/pane). ~/.config/zellij is a symlink to the repo's
 # zellij/, so this lands in zellij/plugins/ (git-ignored, like every plugin wasm).
-# If it fails (offline), Ctrl+o f is a no-op until you re-run install; every other
+# If it fails (offline), Ctrl+t o f is a no-op until you re-run install; every other
 # key is unaffected. Skipped on --dry-run.
 install_zellij_plugins() {
   local dir="$CONFIG/zellij/plugins" f="$CONFIG/zellij/plugins/zellij-choose-tree.wasm"
@@ -119,9 +119,9 @@ install_zellij_plugins() {
   mkdir -p "$dir"
   if command -v curl >/dev/null 2>&1 && curl -fsSL -o "$f" \
       https://github.com/laperlej/zellij-choose-tree/releases/latest/download/zellij-choose-tree.wasm; then
-    note "fetched: zellij-choose-tree.wasm (Ctrl+o f enabled)"
+    note "fetched: zellij-choose-tree.wasm (Ctrl+t o f enabled)"
   else
-    note "skipped: zellij-choose-tree.wasm fetch failed (Ctrl+o f is a no-op until re-run; harmless)"
+    note "skipped: zellij-choose-tree.wasm fetch failed (Ctrl+t o f is a no-op until re-run; harmless)"
   fi
 }
 

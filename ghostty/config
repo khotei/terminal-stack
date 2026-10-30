@@ -39,7 +39,7 @@ macos-option-as-alt = true
 # ── keybinds — TERMINAL LAYER ONLY ────────────────────────────────────
 # Invariant: Ghostty binds only terminal-scoped actions, never a multiplexer
 # or editor key. Leave ctrl-combos free so they reach the layers below —
-# Zellij is modal (Ctrl+p/t/n/s/o…) and nvim's leader is <space>.
+# Zellij is modal (Ctrl+t/s/q…) and nvim's leader is <space>.
 # (@.claude/rules/config.md — keyboard-layer contract)
 keybind = cmd+shift+r=reload_config
 keybind = global:cmd+backquote=toggle_quick_terminal

@@ -65,7 +65,7 @@ default (Manual) ──[ Shift+Tab ]──▶ acceptEdits ──▶ plan ──�
 | `!` | **shell mode** — run the command yourself; its output enters context and Claude responds to it |
 
 **The one reflex the pane demands.** Claude Code runs *inside* a Zellij pane, and by default Zellij's
-own modal keys (`Ctrl+p`/`t`/`n`/`s`/`o`) win — so a Claude `Ctrl`-shortcut can be eaten. Press
+own modal keys (`Ctrl+t`/`s`) win — so a Claude `Ctrl`-shortcut can be eaten. Press
 **`Alt+d`** to drop the pane into **Locked** mode: now every keystroke reaches Claude
 ([§8](#8-living-in-a-zellij-pane)). The cost: while locked, Zellij's own hotkeys are dormant. So two
 mirror-image reflexes: **a Claude `Ctrl`-key "didn't work"? You're not locked — press `Alt+d`.** And:

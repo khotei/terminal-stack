@@ -34,7 +34,7 @@ the entire `ctrl`-layer untouched.
 **Why leave keys unbound is the *feature*.** Three tools compete for every keystroke — Ghostty, Zellij,
 Neovim — and only one can win each one ([keyboard-layer contract](../.claude/rules/config.md)). Ghostty
 sits on top, so anything it grabs never reaches the layers below. Keeping its keymap nearly empty is
-what lets Zellij's modal prefix (`Ctrl+p/t/n/s/o…`) and Neovim's `<space>` leader arrive **intact**.
+what lets Zellij's modal prefix (`Ctrl+t/s/q…`) and Neovim's `<space>` leader arrive **intact**.
 
 ```
     keypress
@@ -92,7 +92,7 @@ The entire surface. Ghostty binds **only terminal-scoped actions**, never a mult
 [keybind reference](https://ghostty.org/docs/config/keybind/reference).
 
 > **The invariant — do not break it.** Never add a `keybind` here whose trigger is a Zellij mode key
-> (`ctrl+p/t/n/s/o…`) or the nvim `<space>` leader. Ghostty is on top of the stack; a bind here
+> (`ctrl+t/s/q…`) or the nvim `<space>` leader. Ghostty is on top of the stack; a bind here
 > *shadows* the layer below and it vanishes silently. This is [§1](#1-the-one-idea-a-terminal-that-stays-out-of-the-way)
 > made enforceable.
 

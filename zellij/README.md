@@ -40,9 +40,9 @@ The **status bar always lists the active mode's keys** — it is the live cheats
 are the offline copy (Zellij 0.44.x defaults; this config keeps them, so **no prefix**).
 
 **The one reflex that outranks every hotkey.** Zellij and the app inside a pane both want the
-keyboard, and they clash on `Ctrl` keys — Zellij's `Ctrl+t`/`Ctrl+s`/`Ctrl+p` against Claude Code's
-`Ctrl+t`/`Ctrl+r` and nvim's `Ctrl+p`. (`Ctrl+h`/`Ctrl+o`/`Ctrl+n` are unbound here so the app gets
-them even unlocked — their modes live behind `Ctrl+p`.) This config gives you **one manual switch** to
+keyboard, and they clash on `Ctrl` keys — Zellij's `Ctrl+t`/`Ctrl+s` against Claude Code's
+`Ctrl+t`/`Ctrl+r`. (`Ctrl+p`/`Ctrl+h`/`Ctrl+o`/`Ctrl+n` are unbound here so the app gets them even
+unlocked — their modes live behind `Ctrl+t`.) This config gives you **one manual switch** to
 decide who wins ([§8](#8-living-with-claude-code--neovim--manual-lock)):
 
 > **`Ctrl+q`** — toggle **Locked** ⇄ Normal. In Locked, Zellij hands the pane *every* keystroke (the app
@@ -66,12 +66,12 @@ per-mode tables are in [§3](#3-complete-keybinding-reference).)
 | Toggle to the last tab (A↔B) | `Ctrl+t` then `Tab` |
 | Glide focus across panes *and* tabs | `Alt+h` / `Alt+l` (rolls into the next tab at the edge) |
 | Focus a pane up / down | `Alt+k` / `Alt+j` |
-| Zoom the focused pane full-screen | `Ctrl+p` then `f` (again to un-zoom) |
+| Zoom the focused pane full-screen | `Ctrl+t p` then `f` (again to un-zoom) |
 | Throwaway popup pane over your work | `Alt+f` (toggle floating) |
 | New split | `Alt+n` |
 | Name this tab (so `Ctrl+t N` means something) | `Ctrl+t` then `r` |
-| See / switch / resurrect sessions | `Ctrl+p o` then `w` |
-| Fuzzy-jump to any tab / pane (even in another session) | `Ctrl+p o` then `f` |
+| See / switch / resurrect sessions | `Ctrl+t o` then `w` |
+| Fuzzy-jump to any tab / pane (even in another session) | `Ctrl+t o` then `f` |
 
 > `Alt+i` / `Alt+o` **move** (reorder) the tab — they don't switch to it. Mnemonic: `h/l` = go,
 > `i/o` = shove.
@@ -85,14 +85,14 @@ Scroll/Search):
 
 | Key | Mode | For |
 |---|---|---|
-| `Ctrl+p` | **Pane** | split · focus · close · fullscreen · float · pin · rename |
+| `Ctrl+t` `p` | **Pane** | split · focus · close · fullscreen · float · pin · rename *(repo — default `Ctrl+p` freed for nvim's completion-prev)* |
 | `Ctrl+t` | **Tab** | new · close · switch · jump-to-number · break out |
-| `Ctrl+p` `R` | **Resize** | grow / shrink the focused pane *(repo — default `Ctrl+n` freed for nvim's completion-next)* |
-| `Ctrl+p` `m` | **Move** | relocate a pane within the layout *(repo — default `Ctrl+h` freed for nvim's window-left)* |
+| `Ctrl+t` `R` | **Resize** | grow / shrink the focused pane *(repo — default `Ctrl+n` freed for nvim's completion-next)* |
+| `Ctrl+t` `m` | **Move** | relocate a pane within the layout *(repo — default `Ctrl+h` freed for nvim's window-left)* |
 | `Ctrl+s` | **Scroll** | scrollback · search · edit-scrollback in nvim |
-| `Ctrl+p` `o` | **Session** | detach · session / plugin manager · config *(repo — default `Ctrl+o` freed for nvim's jumplist-back + Claude Code)* |
+| `Ctrl+t` `o` | **Session** | detach · session / plugin manager · config *(repo — default `Ctrl+o` freed for nvim's jumplist-back + Claude Code)* |
 
-**Pane** (`Ctrl+p`) — move focus with `h/j/k/l` or arrows:
+**Pane** (`Ctrl+t` `p`) — move focus with `h/j/k/l` or arrows:
 
 | Key | Action | Key | Action |
 |---|---|---|---|
@@ -124,7 +124,7 @@ Scroll/Search):
 > Mirror image of the `Alt+…` shortcuts, which fire *one* hop from Normal: the modes are for
 > *repeating* — hunting, sizing, sculpting.
 
-**Resize** (`Ctrl+p` `R`) — grow / shrink the focused pane in steps (sticky: keep tapping). *(repo:
+**Resize** (`Ctrl+t` `R`) — grow / shrink the focused pane in steps (sticky: keep tapping). *(repo:
 the default `Ctrl+n` entry is unbound so `<C-n>` always reaches nvim, lock or no lock.)*
 
 | Key | Action |
@@ -133,7 +133,7 @@ the default `Ctrl+n` entry is unbound so `<C-n>` always reaches nvim, lock or no
 | `H/J/K/L` | shrink from that side |
 | `=` / `-` | grow / shrink on **all** sides at once |
 
-**Move** (`Ctrl+p` `m`) — relocate the *pane itself* (not the focus) within the layout. *(repo:
+**Move** (`Ctrl+t` `m`) — relocate the *pane itself* (not the focus) within the layout. *(repo:
 the default `Ctrl+h` entry is unbound so `<C-h>` always reaches nvim, lock or no lock.)*
 
 | Key | Action |
@@ -164,7 +164,7 @@ the default `Ctrl+h` entry is unbound so `<C-h>` always reaches nvim, lock or no
 | `o` | toggle whole-word |
 | `Ctrl+c` | exit to the bottom |
 
-**Session** (`Ctrl+p` `o`) — the session and the tree beneath it. *(repo: the default `Ctrl+o`
+**Session** (`Ctrl+t` `o`) — the session and the tree beneath it. *(repo: the default `Ctrl+o`
 entry is unbound so `<C-o>` always reaches nvim and Claude Code, lock or no lock.)*
 
 | Key | Action |
@@ -204,7 +204,7 @@ bottom bar always shows the tab list, and with `mouse_mode true` a **click on a 
 
 **Peek at something without wrecking your layout.** `Alt+f` floats a pane on top; do the quick thing;
 `Alt+f` hides it again (it keeps its state). Want it to stay up while you work underneath? **Pin it:**
-`Ctrl+p` `i` (or click the `PIN` badge) makes a floating pane always-on-top
+`Ctrl+t p` `i` (or click the `PIN` badge) makes a floating pane always-on-top
 ([pinned panes, 0.42](https://zellij.dev/news/stacked-resize-pinned-panes/)).
 
 **Type one command into every pane at once.** `Ctrl+t` `s` toggles **tab sync** — keystrokes broadcast
@@ -214,11 +214,11 @@ The bar shows a `SYNC` marker; `Ctrl+t` `s` again stops it
 per-*tab*, so corral the panes you want yoked into their own tab first — then break them back out with
 `Ctrl+t` `b`.
 
-**Ping-pong between two panes without aiming.** `Ctrl+p` `p` snaps to the **previously focused** pane —
+**Ping-pong between two panes without aiming.** `Ctrl+t p` `p` snaps to the **previously focused** pane —
 the pane-level twin of `Ctrl+t` `Tab` for tabs. When you're bouncing editor↔shell it beats aiming
 `Alt+h/j/k/l` at a moving target.
 
-**Strip the chrome for a clean copy (or two more columns).** `Ctrl+p` `z` toggles **pane frames** off:
+**Strip the chrome for a clean copy (or two more columns).** `Ctrl+t p` `z` toggles **pane frames** off:
 no border glyphs to snag in a mouse-drag selection, and the content reclaims the frame's cells for wide
 output (a 180-col diff, a table). Toggle back the same way — it's global, not per-pane.
 
@@ -284,25 +284,25 @@ layout (compare the deliberately minimal `dev.kdl`). Validate with `zellij setup
 Think of a **session per project**, not one giant session. This is where Zellij out-classes a pile of
 terminal tabs.
 
-- **Detach, don't kill.** `Ctrl+p o` `d` detaches: the session (and every running process — builds,
+- **Detach, don't kill.** `Ctrl+t o` `d` detaches: the session (and every running process — builds,
   `claude`, servers) keeps living in the background. Re-enter with `zellij attach <name>` (`zellij a`);
   `zellij ls` lists them ([session tutorial](https://zellij.dev/tutorials/session-management/)).
 - **Survive a reboot — resurrection.** Zellij stores each session's *metadata*: the pane/tab layout
-  **and** the command each pane ran. After a crash or restart, `Ctrl+p o` `w` → pick an **exited**
+  **and** the command each pane ran. After a crash or restart, `Ctrl+t o` `w` → pick an **exited**
   session → it rebuilds the workspace. Rename an exited one with `Ctrl+r` in the manager to label it
   before resurrecting.
-- **Switch projects.** `Ctrl+p o` `w` is a fuzzy, type-to-filter picker over all sessions — the fast path
+- **Switch projects.** `Ctrl+t o` `w` is a fuzzy, type-to-filter picker over all sessions — the fast path
   between repos without leaving Zellij.
 
 > *Resurrection* = rebuilding a session from saved layout metadata, not from a live process. The
 > processes are gone; the shape (and the commands to relaunch them) comes back.
 
-### Fuzzy-jump anywhere — `Ctrl+p o f` (choose-tree)
+### Fuzzy-jump anywhere — `Ctrl+t o f` (choose-tree)
 
-The built-in manager (`Ctrl+p o w`) stops at the **session** level. To jump *inside* — to a named tab or
+The built-in manager (`Ctrl+t o w`) stops at the **session** level. To jump *inside* — to a named tab or
 pane, or across sessions in one motion — this stack adds **choose-tree**
 ([laperlej/zellij-choose-tree](https://github.com/laperlej/zellij-choose-tree), a clone of tmux's
-`choose-tree`) on **`Ctrl+p o f`**. It opens a floating **tree of every session → its tabs → their
+`choose-tree`) on **`Ctrl+t o f`**. It opens a floating **tree of every session → its tabs → their
 panes**:
 
 | In the finder | Does |
@@ -314,8 +314,8 @@ panes**:
 | `Enter` | switch to the selection — session, tab, **or pane** |
 | `x` | kill the selected session |
 
-Name your tabs (`Ctrl+t` `r`) and panes (`Ctrl+p` `c`) so the filter has something to match — then
-`Ctrl+p o f` → type `db` → `Enter` drops you on the `db` pane wherever it lives.
+Name your tabs (`Ctrl+t` `r`) and panes (`Ctrl+t p` `c`) so the filter has something to match — then
+`Ctrl+t o f` → type `db` → `Enter` drops you on the `db` pane wherever it lives.
 
 > **It is a picker, not a literal `display-panes` overlay.** tmux flashes a number *on each pane*; a
 > Zellij plugin can only paint its own pane, so it can't — native support is
@@ -352,7 +352,7 @@ this stack: **`zja`** = `zellij attach`, **`zjd`** = `zellij --layout dev` (zsh)
 | Permanently delete one · all *exited* (resurrectable) sessions | `zellij delete-session <name>` (`d`) · `zellij delete-all-sessions` (`da`) |
 
 > **Kill vs delete.** `kill-*` stops a *running* session (its resurrectable metadata survives — you can
-> still bring it back via `Ctrl+p o` `w`). `delete-*` erases an already-exited session's saved metadata for
+> still bring it back via `Ctrl+t o` `w`). `delete-*` erases an already-exited session's saved metadata for
 > good ([session resurrection](https://zellij.dev/documentation/session-resurrection.html)).
 
 **Run a command / open a file in a pane** — the fast path from a shell or script (recipe form in
@@ -395,7 +395,7 @@ this stack: **`zja`** = `zellij attach`, **`zjd`** = `zellij --layout dev` (zsh)
 ## 6. Advanced pane craft
 
 - **Stacked panes** — layer panes in one slot, each keeping its title bar so you can navigate the
-  stack. Open with `Ctrl+p` `s`; move through the stack with `Alt+↑`/`Alt+↓`
+  stack. Open with `Ctrl+t p` `s`; move through the stack with `Alt+↑`/`Alt+↓`
   ([stacked panes](https://zellij.dev/news/stacked-panes-swap-layouts/)). Since 0.42, **resize is
   stacked by default**: `Alt+=` grows the focused pane ~30% and tucks neighbors into a stack instead of
   squeezing everything ([stacked resize](https://zellij.dev/tutorials/stacked-resize/)).
@@ -407,16 +407,16 @@ this stack: **`zja`** = `zellij attach`, **`zjd`** = `zellij --layout dev` (zsh)
   right of the status bar (`VERTICAL`, `HORIZONTAL`, …) names the active template. Hand-resize or
   `Move` a pane and you drift *off-template* — the next `Alt+]` snaps everything back into a template,
   which is why a hand-tuned layout can seem to "jump".
-- **Embed ↔ float** — `Ctrl+p` `e` turns a floating pane into a tiled one (or back); `Ctrl+p` `w`
+- **Embed ↔ float** — `Ctrl+t p` `e` turns a floating pane into a tiled one (or back); `Ctrl+t p` `w`
   toggles the whole floating layer.
 - **Break a pane out** — `Ctrl+t` `b` moves the focused pane into its own tab; `Ctrl+t` `[` / `]` sends
   it to the previous/next tab.
-- **Resize — usually *without* the mode.** `Ctrl+p` `R` opens Resize (`h/j/k/l` grow a side · `H/J/K/L`
+- **Resize — usually *without* the mode.** `Ctrl+t` `R` opens Resize (`h/j/k/l` grow a side · `H/J/K/L`
   shrink · `=`/`-` all sides), but the fast paths skip it: `Alt+=` / `Alt+-` nudge straight from Normal,
   and `Alt+[` / `Alt+]` reflow the *whole* tab via swap-layouts. Reserve the mode for fine, one-side
   tuning; reach for `Alt+=` / swap-layouts for everything else.
 - **Move the pane, not the focus** — two verbs people conflate. `Alt+h/j/k/l` moves *focus* (which pane
-  you're in); `Ctrl+p` `m` (**Move** mode) relocates the *pane itself* — `h/j/k/l` shoves it, `n` / `Tab`
+  you're in); `Ctrl+t` `m` (**Move** mode) relocates the *pane itself* — `h/j/k/l` shoves it, `n` / `Tab`
   cycles it through the layout's slots (`p` backwards). Use Move to reshuffle a mosaic without closing
   and reopening anything.
 
@@ -428,16 +428,16 @@ this stack: **`zja`** = `zellij attach`, **`zjd`** = `zellij --layout dev` (zsh)
 |---|---|
 | Arrow through tabs `→ → →` to find one | Name tabs, `Ctrl+t N` or `go-to-tab-name` |
 | Fight a locked pane when a hotkey "won't work" | `Ctrl+q` to unlock (or lock) |
-| Rebuild your layout by hand every morning | `zellij --layout dev`, or resurrect via `Ctrl+p o w` |
+| Rebuild your layout by hand every morning | `zellij --layout dev`, or resurrect via `Ctrl+t o w` |
 | Cram 12 panes into one tab | Split across named tabs / a session per project |
-| `exit` a session you'll want back | `Ctrl+p o d` detach — processes keep running |
+| `exit` a session you'll want back | `Ctrl+t o d` detach — processes keep running |
 
 ---
 
 ## 8. Living with Claude Code / Neovim — manual lock
 
-Zellij's modal keys (`Ctrl+p`/`Ctrl+t`/`Ctrl+s`) sit on the same `Ctrl` chords that
-the app *inside* a pane wants — Claude Code's `Ctrl+t`/`Ctrl+r`, nvim's `Ctrl+p`. (`Ctrl+h`/`Ctrl+o`/
+Zellij's modal keys (`Ctrl+t`/`Ctrl+s`) sit on the same `Ctrl` chords that
+the app *inside* a pane wants — Claude Code's `Ctrl+t`/`Ctrl+r`. (`Ctrl+p`/`Ctrl+h`/`Ctrl+o`/
 `Ctrl+n` are already unbound — those reach the app even unlocked.)
 Whoever isn't locked out wins. You arbitrate with **one manual switch** — there is **no** auto-locking
 plugin (a deliberate choice: predictable control over convenience):
@@ -538,7 +538,7 @@ built-in names and delete the local file.
 - Every possible action → [keybindings-possible-actions](https://zellij.dev/documentation/keybindings-possible-actions.html)
 - Write your own layouts → [creating a layout](https://zellij.dev/documentation/creating-a-layout.html)
 - CLI / scripting Zellij → [cli-actions](https://zellij.dev/documentation/cli-actions)
-- Plugins & aliases → [plugin manager `Ctrl+p o p`](https://zellij.dev/documentation/plugin-aliases)
+- Plugins & aliases → [plugin manager `Ctrl+t o p`](https://zellij.dev/documentation/plugin-aliases)
 
 ---
 
