@@ -34,10 +34,10 @@ terminal that you couldn't before, and why it was worth a config change. -->
 - Related Feature / Research pages.
 
 <!--
-Author self-check (stripped at merge):
+Author self-check (left out at merge — see .claude/rules/pull-requests.md):
 - [ ] Every new config key cited upstream — none invented
 - [ ] `/check` green for every touched tool
-- [ ] No keybinding collision with the multiplexer prefix / editor leader
+- [ ] No keybinding collision with a Zellij mode key / the editor leader
 - [ ] Cheatsheet / README updated
 - [ ] Feature `PR` field set to this URL
 Screenshots / asciinema (optional):
