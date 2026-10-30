@@ -7,7 +7,7 @@
 | Step | Delivers | Status |
 |---|---|---|
 | S1 | ticket templates and the roadmap | done |
-| S2 | the four agents and the implementer's check gate | todo |
+| S2 | the four agents and the implementer's check gate | done |
 | S3 | the five phase skills, `/check` as a skill, the plugin settings | todo |
 | S4 | the guide, the SDD rule and `CLAUDE.md` for the new loop | todo |
 | S5 | commit, PR and doc rules speak of tickets, not Notion | todo |
@@ -66,7 +66,8 @@
     .claude/agents/{implementer,verifier,researcher,reviewer}.md` prints 0 for each;
   - `bash scripts/check.sh` green, probe deleted.
 - **Model:** `opus high`
-- **Status:** todo
+- **Status:** done
+- **Findings:** `implementer` does not preload `mattpocock-skills:tdd`, unlike `app-template`'s: that skill drives toward unit tests, while a step here proves itself with a validator, a probe or a keypress, which the agent's own *Evidence first* line states. The hook passes all five cases: probe → 2, `BLOCKED:` → 0, lost `cwd` → 2, clean → 0, a sub-folder `cwd` → 0.
 
 #### S3 — Phase skills, `/check` and plugin settings
 
