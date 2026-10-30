@@ -6,7 +6,7 @@
 
 | Step | Delivers | Status |
 |---|---|---|
-| S1 | ticket templates and the roadmap | todo |
+| S1 | ticket templates and the roadmap | done |
 | S2 | the four agents and the implementer's check gate | todo |
 | S3 | the five phase skills, `/check` as a skill, the plugin settings | todo |
 | S4 | the guide, the SDD rule and `CLAUDE.md` for the new loop | todo |
@@ -42,7 +42,8 @@
   `grep -n '2026-10-30-2031_sdd-in-git' docs/knowledge/roadmap.md` finds the link;
   `bash scripts/check.sh` green.
 - **Model:** `opus medium`
-- **Status:** todo
+- **Status:** done
+- **Findings:** the plan template's *Files* also asks for every README and cheatsheet that names a changed key — this repo's usual drift (a rebind leaves the README behind).
 
 #### S2 — Agents and the check gate
 
