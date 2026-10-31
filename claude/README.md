@@ -358,18 +358,19 @@ is on by default; the first `/voice` run asks for microphone permission. Rebindi
 ([schema](https://code.claude.com/docs/en/statusline)):
 
 ```
-N · feat/x* · 🌳 fix-parser · ⚡ high · Opus 4.8 · 🧠 23% ❄ · 🔋 93%        󰚰  17:05 · ⏳ 3 hrs 21 mins
-vim¹ git²      worktree³      effort⁶   model⁷     ctx⁴        usage⁵         refill⁵  wakatime⁸
+N · feat/x* · 󰘬  fix-parser · 󰡵  23% 󰜗  · 󰊘  93%      Opus 4.8 · ⚡ high    󰚰  17:05 · 󰔛  3 hrs 21 mins
+vim¹ git²      worktree³       ctx⁴           usage⁵        model⁷     effort⁶    refill⁵  wakatime⁸
 ```
 ¹ **vim mode** as one letter — `N`, `I`, `V`, `VL` — the same badge as the nvim statusline;
 `hideVimModeIndicator` in `settings.json` drops the built-in `-- INSERT --`, so the mode shows once.
 ² branch of the session's directory, `*` = uncommitted changes; the directory's own name is left out — the branch says which project it is. ³ **git worktree** name — shown *only* inside a linked worktree,
 silent in the main tree, so you never lose track of which tree you're editing. ⁴ context-window
-**used**: green below 50 %, yellow below 80 %, red above — near the auto-compact. ❄ once the prompt
+**used**, as a gauge whose needle rises with the fill — `󰡵` green below 50 %, `󰊚` yellow below
+80 %, `󰡴` red above, near the auto-compact. `󰜗` once the prompt
 cache has gone cold (its TTL passed): the next message re-reads the whole context into the cache,
-which costs usage-window budget. Claude Code re-runs the line when the cache expires, so ❄ appears on
+which costs usage-window budget. Claude Code re-runs the line when the cache expires, so `󰜗` appears on
 its own. ⁵ **usage-window headroom** — the percent of your plan's **5-hour** rate-limit budget still
-*remaining*; at the right edge, `󰚰` (`nf-md-update`) and the clock time it refills — two spaces after the icon, as Ghostty draws a Nerd Font icon followed by a space over two cells. 🔋 green > 40 %, yellow > 15 %, 🪫 red below. A
+*remaining*, after a fuel pump `󰊘`: green > 40 %, yellow > 15 %, red below; at the right edge, `󰚰` and the clock time it refills. A
 clock time, not a countdown: the line re-renders on events only, so a countdown would go stale between
 messages. Max/Pro only and only after the first API response — dropped otherwise. ⁶ **reasoning
 effort** (`low`…`max`, live with `/effort`; absent when the model has no effort parameter), beside
@@ -379,7 +380,7 @@ coding time across every editor and Claude Code, from `wakatime-cli --today`. Th
 background at most once a minute; dropped when `~/.wakatime/wakatime-cli` is absent (the WakaTime
 plugin for Claude Code or nvim installs it).
 
-The refill time and WakaTime sit **flush right**, padded to `COLUMNS` less four cells for Claude Code's margin; Claude Code's own notifications share that row and may cover them for a moment. A **narrow pane** drops segments until the line fits — model first, then effort — instead
+Model and effort, then the refill time and WakaTime, sit **flush right**, the two groups held apart by four spaces instead of a `·`; padded to `COLUMNS` less four cells for Claude Code's margin; Claude Code's own notifications share that row and may cover them for a moment. A **narrow pane** drops segments until the line fits — model first, then effort — instead
 of Claude Code cutting it off on the right; the width comes from `COLUMNS`, which Claude Code sets for
 the script. Segments are joined by a dim `·` so they breathe. Colours are the terminal's 16 ANSI slots
 (no hardcoded palette), so the line follows the active theme — like the Starship prompt. Falls back
