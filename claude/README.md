@@ -358,8 +358,8 @@ is on by default; the first `/voice` run asks for microphone permission. Rebindi
 ([schema](https://code.claude.com/docs/en/statusline)):
 
 ```
-N · feat/x* · 󰘬  fix-parser · 󰡵  23% 󰜗  · 󰊘  93%      Opus 4.8 · ⚡ high    󰚰  17:05 · 󰔛  3 hrs 21 mins
-vim¹ git²      worktree³       ctx⁴           usage⁵        model⁷     effort⁶    refill⁵  wakatime⁸
+N · feat/x* · 󰘬  fix-parser · 󰡵  23% 󰜗  · 󰊘  93% · 󰨳  62%      Opus 4.8 · ⚡ high    󰚰  17:05 · 󰔛  3 hrs 21 mins
+vim¹ git²      worktree³       ctx⁴           usage⁵        week⁵         model⁷     effort⁶    refill⁵  wakatime⁸
 ```
 ¹ **vim mode** as one letter — `N`, `I`, `V`, `VL` — the same badge as the nvim statusline;
 `hideVimModeIndicator` in `settings.json` drops the built-in `-- INSERT --`, so the mode shows once.
@@ -369,10 +369,13 @@ silent in the main tree, so you never lose track of which tree you're editing. �
 80 %, `󰡴` red above, near the auto-compact. `󰜗` once the prompt
 cache has gone cold (its TTL passed): the next message re-reads the whole context into the cache,
 which costs usage-window budget. Claude Code re-runs the line when the cache expires, so `󰜗` appears on
-its own. ⁵ **usage-window headroom** — the percent of your plan's **5-hour** rate-limit budget still
-*remaining*, after a fuel pump `󰊘`: green > 40 %, yellow > 15 %, red below; at the right edge, `󰚰` and the clock time it refills. A
-clock time, not a countdown: the line re-renders on events only, so a countdown would go stale between
-messages. Max/Pro only and only after the first API response — dropped otherwise. ⁶ **reasoning
+its own. ⁵ **usage-window headroom** — the percent of your plan's rate-limit budget still
+*remaining*: `󰊘` for the **5-hour** window, `󰨳` for the **week**; green > 40 %, yellow > 15 %, red
+below. At the right edge, `󰚰` and a refill time — only once a window is down to 15 %: the week's
+first, with its weekday (`Tue 11:00`), since the 5-hour refill can't help while the week is spent;
+else the 5-hour one (`19:20`). A clock time, not a countdown: the line re-renders on events only, so
+a countdown would go stale between messages. Pro, Max and Ultra only, and only after the first API
+response — each window dropped while absent; Ultra has no 5-hour window, so there `󰊘` is left out. Fable's cap (half the week) has no field of its own. ⁶ **reasoning
 effort** (`low`…`max`, live with `/effort`; absent when the model has no effort parameter), beside
 the model it tunes. ⁷ **model**, dimmed — the least load-bearing segment. ⁸ **WakaTime** — today's
 coding time across every editor and Claude Code, from `wakatime-cli --today`. The CLI asks the server
@@ -386,7 +389,7 @@ the script. Segments are joined by a dim `·` so they breathe. Colours are the t
 (no hardcoded palette), so the line follows the active theme — like the Starship prompt. Falls back
 from `jq` to `grep` if `jq` is absent. Fields consumed: `.model.display_name`,
 `.workspace.current_dir`, `.workspace.git_worktree`, `.context_window.used_percentage`,
-`.effort.level`, `.rate_limits.five_hour.used_percentage`, `.rate_limits.five_hour.resets_at`,
+`.effort.level`, `.rate_limits.five_hour.used_percentage`, `.rate_limits.five_hour.resets_at`, `.rate_limits.seven_day.used_percentage`, `.rate_limits.seven_day.resets_at`,
 `.prompt_cache.caching_observed`, `.prompt_cache.warm`, `.vim.mode`.
 
 ### The theme

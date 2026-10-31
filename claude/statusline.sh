@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Claude Code status line for terminal-stack — installs to ~/.claude/statusline.sh.
 # Reads session JSON on stdin and prints one line: vim mode · git · worktree ·
-# reasoning effort · model · context% · 5-hour usage-window headroom · WakaTime today.
+# reasoning effort · model · context% · 5-hour and weekly usage headroom · WakaTime today.
 # Schema: https://code.claude.com/docs/en/statusline
 # Wire it up via ~/.claude/settings.json (see ./README.md).
 set -euo pipefail
@@ -17,12 +17,14 @@ if command -v jq >/dev/null 2>&1; then
   eff=$(jq -r '.effort.level // empty' <<<"$input")
   rl5=$(jq -r 'if .rate_limits.five_hour.used_percentage != null then (100 - .rate_limits.five_hour.used_percentage | floor) else empty end' <<<"$input")
   rl5_reset=$(jq -r '.rate_limits.five_hour.resets_at // empty | floor' <<<"$input")
+  rl7=$(jq -r 'if .rate_limits.seven_day.used_percentage != null then (100 - .rate_limits.seven_day.used_percentage | floor) else empty end' <<<"$input")
+  rl7_reset=$(jq -r '.rate_limits.seven_day.resets_at // empty | floor' <<<"$input")
   cold=$(jq -r 'if .prompt_cache.caching_observed == true and .prompt_cache.warm == false then "1" else empty end' <<<"$input")
   vim_mode=$(jq -r '.vim.mode // empty' <<<"$input")
 else
   model=$(grep -o '"display_name":"[^"]*"' <<<"$input" | head -1 | cut -d'"' -f4)
   dir=$(grep -o '"current_dir":"[^"]*"' <<<"$input" | head -1 | cut -d'"' -f4)
-  wt="" ; ctx="" ; eff="" ; rl5="" ; rl5_reset="" ; cold="" ; vim_mode=""
+  wt="" ; ctx="" ; eff="" ; rl5="" ; rl5_reset="" ; rl7="" ; rl7_reset="" ; cold="" ; vim_mode=""
 fi
 
 dir=${dir:-$PWD}
@@ -80,21 +82,27 @@ if [ -n "${ctx:-}" ]; then
   add ctx "$t" "$s"
 fi
 
-# 5-hour usage window — % of the plan's rate-limit budget still REMAINING (not
-# used), then the time it refills. Max/Pro only, and only after the session's first
-# API response (else omitted). A clock time, not a countdown: the line re-renders on
-# events only, so a countdown would go stale between messages.
-if [ -n "${rl5:-}" ]; then
-  if   [ "$rl5" -gt 40 ]; then c=$g
-  elif [ "$rl5" -gt 15 ]; then c=$y
-  else                         c=$rd
-  fi
-  t="󰊘  ${rl5}%" ; s="${c}${t}${r}"
-  reset=""
-  if [ -n "${rl5_reset:-}" ]; then
-    reset=$(date -r "$rl5_reset" +%H:%M 2>/dev/null || date -d "@$rl5_reset" +%H:%M 2>/dev/null || true)
-  fi
-  add usage "$t" "$s"
+# Usage windows — % of the plan's rate-limit budget still REMAINING (not used), for the
+# 5 hours and for the week. Each comes only after the session's first API response and is
+# left out while absent (Ultra has no 5-hour window). A refill time shows only once a window
+# is down to 15 % — the week's first, with its weekday, as the 5-hour refill can't help
+# while the week is spent. A clock time, not a countdown: the line re-renders on events
+# only, so a countdown would go stale between messages.
+headroom() { # $1: key, $2: icon, $3: % left
+  local c=$rd
+  if [ "$3" -gt 40 ]; then c=$g; elif [ "$3" -gt 15 ]; then c=$y; fi
+  add "$1" "$2  $3%" "${c}$2  $3%${r}"
+}
+[ -n "${rl5:-}" ] && headroom usage 󰊘 "$rl5"
+[ -n "${rl7:-}" ] && headroom week 󰨳 "$rl7"
+reset_at="" ; fmt=%H:%M
+if [ -n "${rl7:-}" ] && [ "$rl7" -le 15 ]; then
+  reset_at=${rl7_reset:-} ; fmt="%a %H:%M"
+elif [ -n "${rl5:-}" ] && [ "$rl5" -le 15 ]; then
+  reset_at=${rl5_reset:-}
+fi
+if [ -n "$reset_at" ]; then
+  reset=$(date -r "$reset_at" +"$fmt" 2>/dev/null || date -d "@$reset_at" +"$fmt" 2>/dev/null || true)
   [ -n "$reset" ] && add reset "󰚰  ${reset}" "${p}󰚰${r}  ${dim}${reset}${r}"
 fi
 
