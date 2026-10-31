@@ -9,32 +9,29 @@ application code**; the "code" is config files for five tools that wire into one
 - **Shell** — zsh + Starship (`zsh/.zshrc`, `*.zsh`, `starship.toml`)
 - **Agent** — Claude Code (`.claude/`), running in a multiplexer pane
 
-Layout is by tool, mirroring `~/.config` (`@.claude/rules/naming.md`). `specs/` is **not** on disk —
-feature/task state is Notion-only.
+Layout is by tool, mirroring `~/.config` (`@.claude/rules/naming.md`).
 
-## How work happens — the SDD loop
+## How work happens — the ticket loop
 
-Every change runs through Spec-Driven Development against Notion:
-
-`research?` → **specify → clarify → plan → tasks → implement → verify**
-
-The `/sdd:*` commands live in `@.claude/commands/` (index: `@.claude/commands/README.md`); the build
-contract is `@.claude/rules/sdd.md`. The live Feature/Task rows and Research pages are in this
-project's Notion (data-source IDs: `@.claude/sdd/data-sources.md`).
+A change of substance is a ticket: one folder in `docs/tickets/` holding its feature, architecture,
+plan and verification, written by five skills the user types in order —
+**`/ticket-feature` → `/ticket-architecture` → `/ticket-plan` → `/ticket-implement`** (once per
+step) **→ `/ticket-verify`**. A ticket not started yet is only an entry in
+`docs/knowledge/roadmap.md`; a typo, a version bump or a doc fix needs no ticket. The gates are in
+`.claude/rules/sdd.md`; the guide, with the dependency map and troubleshooting, is
+`docs/knowledge/sdd.md`.
 
 ## Golden rules
 
-1. **Notion MCP must be connected** — the SDD commands read/write Notion. No `.mcp.json` is committed
-   (public repo, per-machine connector); connect your own.
-2. **Never invent a config key.** Every key/keybind/Lua option/shell setting must be citable upstream
+1. **Never invent a config key.** Every key/keybind/Lua option/shell setting must be citable upstream
    (ghostty.org · zellij.dev · lazyvim.org · neovim.io · starship.rs) and present in the installed
    version. If you can't cite it, it's a `[TBD]`, not a guess. (`@.claude/rules/config.md`)
-3. **Configs must validate.** A change isn't done until it loads — run `/check`, which runs
+2. **Configs must validate.** A change isn't done until it loads — run `/check`, which runs
    `scripts/check.sh`, the one list of validators.
-4. **No keybinding collisions** across the three keyboard layers — Ghostty keys, Zellij mode keys, nvim
+3. **No keybinding collisions** across the three keyboard layers — Ghostty keys, Zellij mode keys, nvim
    leader must not shadow each other.
-5. **Every PR is a reference guide** — annotated per-setting rationale, how to try it, the
-   keybinding cheatsheet, and the Feature/AC mapping (`@.claude/rules/pull-requests.md`).
+4. **Every PR is a reference guide** — annotated per-setting rationale, how to try it, the
+   keybinding cheatsheet, and the ticket's requirement mapping (`@.claude/rules/pull-requests.md`).
 
 ## Rules
 
@@ -48,7 +45,7 @@ Open the one a task needs when no matching file is read yet (a PR touches no `.g
 - `@.claude/rules/naming.md` — folder/file layout per tool.
 - `@.claude/rules/commits.md` · `@.claude/rules/pull-requests.md` — commit + PR format.
 - `@.claude/rules/comments.md` · `@.claude/rules/claude-md.md` — what earns a comment / a doc line.
-- `@.claude/rules/sdd.md` — the SDD toolkit build contract (fork map, no-config agent model).
+- `@.claude/rules/sdd.md` — the ticket loop's gates: artifacts, evidence at the Seams, rounds, approval.
 
 ## Maintaining these docs
 

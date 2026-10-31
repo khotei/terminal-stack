@@ -1,141 +1,53 @@
 ---
 paths:
-  - ".claude/commands/**"
-  - ".claude/agents/**"
-  - ".claude/sdd/**"
+  - "docs/tickets/**"
+  - "docs/knowledge/roadmap.md"
+  - ".claude/skills/**"
 ---
 
-# SDD command & agent toolkit — conventions
+# Spec-driven development
 
-The `/sdd:*` slash commands + their subagents are the **compiled, runnable form** of the
-[Terminal Stack SDD hub](https://app.notion.com/p/385fb28bd5f1810d91ddd69ea4c49243) (the authored
-source). This file is the build contract every `commands/sdd:*.md` + `agents/*.md` follows. It is
-loaded **on demand** (referenced when authoring or running the toolkit), not in the always-loaded
-block — keep it that way so unrelated sessions don't pay for it.
+Every change of substance runs **feature → architecture → plan → implement → verify** through the
+`/ticket-*` skills. The procedures live in the skills; this file holds the constraints they share.
+The guide for people is `docs/knowledge/sdd.md`.
 
-> **The hub stays canonical; the commands are generated from it.** Any `/sdd:` change is two steps:
-> edit the hub §6/§7/§8, then regenerate the affected command(s). Do not let a command's content
-> drift from its source section.
+## Artifacts
 
-## File layout & naming
+`docs/tickets/<YYYY-MM-DD-HHmm>_<slug>/`, started from `docs/tickets/_template/`:
 
-- **Commands are flat** in `.claude/commands/` with **literal-colon filenames** —
-  `sdd:specify.md` → invokes as `/sdd:specify` (command name = filename without extension; the
-  colon is just a character). Creatable on macOS APFS; macOS/Linux only, which is fine for this
-  project. **Never nest** under `commands/<dir>/` — subdirectory namespacing is undocumented for
-  commands.
-- **Agents are flat** in `.claude/agents/` — `spec-author.md`, `planner.md`, etc.
-- **Shared contract bundle** lives in `.claude/sdd/` — a **non-command** folder, so its files
-  never register as slash commands: `feature-template.md` (§6.1), `task-template.md` (§6.2),
-  `plan-template.md` (§6.3), `property-contract.md` (§4), `data-sources.md` (the `collection://`
-  IDs).
-
-## The re-sync header (every command + bundle file)
-
-Each generated file begins with:
-
-```
-<!-- Generated from the Terminal Stack SDD hub §X — https://app.notion.com/p/385fb28bd5f1810d91ddd69ea4c49243. Re-sync on change. -->
-```
-
-It points a future reader back at the authored source so a hand-edit can be reconciled.
-
-## Anti-drift: `@`-reference the bundle, never inline
-
-The §6.1 template, the §4 property contract, and the `collection://` IDs live in **one** place —
-`.claude/sdd/`. Every command `@`-references those files (`@.claude/sdd/feature-template.md`)
-instead of copy-pasting them into seven commands. **The single shared file is the real drift
-defense**; the re-sync header just points back at the hub.
-
-## Tool boundaries live on the AGENT, never the command
-
-- A command's **`allowed-tools` GRANTS / pre-approves** permission — it does **not restrict**
-  which tools are available (Claude Code docs: *"It does not restrict which tools are available"*).
-  So never lean on a command's `allowed-tools` for a "refuses to X" guarantee.
-- The **only** hard tool boundary is the **subagent**. Two mechanisms, per the current Claude Code
-  docs:
-  - **`tools:`** — an *allowlist*: the agent may use **only** those tools. Anything unlisted
-    (including connected MCP tools) is denied.
-  - **`disallowedTools:`** — a *denylist*: the agent inherits everything from the main session
-    **except** the named tools.
-- **This project uses `disallowedTools` for the "refuses to write config" agents** (spec-author,
-  planner, task-splitter, researcher, verifier): e.g. `disallowedTools: Edit, Write, NotebookEdit`
-  (add `Bash` for the non-implementer agents). **Decision — why denylist, not an allowlist:** the
-  hard boundary we care about is "cannot touch config." A denylist expresses exactly that **and**
-  lets the agent **inherit the connected Notion MCP under whatever name it has** — so no agent file
-  hardcodes the per-connection server id. An allowlist would force us to *name* every kept tool,
-  including `mcp__<server>__*`, which only has a stable name behind a committed `.mcp.json`. We
-  deliberately **do not** commit a `.mcp.json` (this is a public dotfiles repo — the Notion connector
-  is per-machine, not portable). Agents stay portable by never naming the Notion server. The
-  implementer (which legitimately writes config) gets no code denial, only the scope discipline in
-  its prompt.
-
-## The fork map (which phases fork, which run in the main context)
-
-A phase command runs in a forked subagent by setting, in frontmatter, **`context: fork`** +
-**`agent: <subagent>`** — the command body becomes the subagent's prompt in a **fresh context**.
-Forking is what gives `/sdd:verify` its fresh-context verifier (no memory of how the feature was
-built) and what enforces a no-config agent's tool restriction.
-
-**But forking is not universal — interactive phases cannot fork.** Verified against the current
-Claude Code docs: **`AskUserQuestion` is unavailable to subagents** (so are `Agent`,
-`EnterPlanMode`, `ExitPlanMode`, `ScheduleWakeup`, `WaitForMcpServers`), and a forked subagent runs
-to completion — it structurally cannot pause mid-run for the user's input. So any phase that must
-ask the user something while it runs has to live in the **main context**.
-
-| Phase command | Runs in | Why |
+| File | Holds | Written by |
 |---|---|---|
-| `/sdd:research` | **fork** → `researcher` | autonomous; clean tool-restricted context |
-| `/sdd:specify` | **fork** → `spec-author` | autonomous draft; enforce no-config |
-| `/sdd:clarify` | **main context** | grill-me `AskUserQuestion` loop — can't fork |
-| `/sdd:plan` | **fork** → `planner` | autonomous; enforce no-config |
-| `/sdd:tasks` | **main context** | presents the breakdown and iterates to *approval* |
-| `/sdd:implement` | **main context** | HITL gate + spec-gap STOP both pause for the human |
-| `/sdd:verify` | **fork** → `verifier` | fresh context is the whole point |
+| `feature.md` | problem, goal, context, scope, out of scope, requirements `R…` in EARS, acceptance per requirement, open questions | `/ticket-feature` |
+| `architecture.md` | structure, contracts, **Seams**, decisions `D…` with the rejected alternative, risks | `/ticket-architecture` |
+| `plan.md` | a status table; steps with `Delivers`, `Goal`, `Blocked by`, `Files`, `Test first`, `Verify`, `Model`, `Status`, findings; a coverage table | `/ticket-plan`, `/ticket-implement` |
+| `verification.md` | verdict per requirement with its evidence, review, simplifications, **Lessons** | `/ticket-verify` |
 
-**Main-context phases still adopt their agent's discipline** by `@`-referencing the agent file
-(`@.claude/agents/<agent>.md`) for the recipe + stated boundaries — they just can't get the *hard*
-tool-lock a fork gives. That's acceptable: these are the human-in-the-loop phases where the user is
-actively supervising. (`/sdd:implement` is the config-writer anyway, so it has no "no-config" lock
-to lose.)
+- **A ticket that has not started exists only as an entry in `docs/knowledge/roadmap.md`.**
+  `/ticket-feature <slug>` starts from that entry when one exists and replaces its status with a
+  link to the ticket folder.
+- `docs/knowledge/` holds the living how-it-works docs. Update them in the commit that changes the
+  behaviour they describe.
 
-## Notion-at-runtime degradation
+## Gates
 
-The commands fetch live content from the Notion MCP. If it is not connected, the fetch fails and
-Claude says so — connect Notion, then re-run. Each command should also degrade gracefully: if
-Notion is unavailable, fall back to "paste the spec/task body" and still run from its embedded
-recipe. (Connecting Notion needs no repo config — there is no committed `.mcp.json`; see above.)
-
-## Portability decision: Notion-bound, no committed `.mcp.json`
-
-This is a **public** dotfiles repo. The SDD loop is **Notion-bound** — the live feature/task state
-lives in Notion, not in the repo. We deliberately **do not** commit a `.mcp.json`: the Notion
-connector is per-machine (and may carry private workspace tokens), so committing one would either
-leak credentials or pin a server name that doesn't exist on a fresh clone. Each user connects their
-own Notion MCP; the data-source IDs in `@.claude/sdd/data-sources.md` are the only Notion identity
-the repo carries, and they point at *this* project's databases.
-
-## Artifacts are Notion-only
-
-The Feature row, Research page, Task rows on the board, and Verify-report toggle live **only** in
-Notion — there is no local `specs/F-NNN-slug/` mirror (`spec.md` / `plan.md` / `tasks.md`). Recorded
-so a future reader doesn't "restore" the folder. The **config** the loop produces, of course, lives
-in the repo (`ghostty/`, `zellij/`, `nvim/`, `zsh/`).
-
-## AC notation: EARS only
-
-Specs/feature ACs use **EARS** — *WHEN \<event\> THE SYSTEM SHALL \<behavior\>* (also WHILE /
-WHERE / IF–THEN). Do **not** mix in Gherkin's *Given/When/Then* — it is a different system.
-Standardise on EARS across `/sdd:specify` and the feature template.
-
-## Command ↔ agent ↔ source map
-
-| Command | Agent | Restriction | Hub source |
-|---|---|---|---|
-| `/sdd:research` | `researcher` | denylist: no config writes | §1.5 (grounding) |
-| `/sdd:specify` | `spec-author` | denylist: no config writes | §6.1, §7.2, §4 |
-| `/sdd:clarify` | `spec-author` (reused) | denylist: no config writes | §7.3 |
-| `/sdd:plan` | `planner` | denylist: no config writes | §6.3, §7.4 |
-| `/sdd:tasks` | `task-splitter` | denylist: no config writes | §6.2, §7.5, §4 |
-| `/sdd:implement` | `implementer` | full tools (writes config) | §7.6 |
-| `/sdd:verify` | `verifier` | denylist: no config writes; fresh ctx | §7.7, §8, §5 |
+- **Requirements are EARS** (`WHEN … THE SYSTEM SHALL …`; also `WHILE`, `WHERE`, `IF … THEN`) and
+  name behaviour (what a keypress does, what a command prints, what loads), not keys or paths.
+- **Evidence sits at the Seams** agreed in `architecture.md`. A step's *Test first* names one: a
+  validator in `scripts/check.sh` and the input that turns it red, a probe that fails before the
+  step and passes after, a keypress with the result expected, or `config only`, which then rests
+  on its *Verify* commands.
+- **Evidence is observed, never asserted:** a command and its output, `path:line`, or
+  *keypress → observed result*. A keypress is pressed by the user; an agent states the key and the
+  result to expect.
+- **The heavy review lands once, on the plan.** Steps then conform to it.
+- **One plan step = one commit**, of ≤ ~400 changed lines (whole-file deletions excluded), fitting
+  one fresh session, leaving `bash scripts/check.sh` green. A ticket is one branch `<type>/<slug>`
+  and one squash-merged PR.
+- **A step lands in rounds, one commit each.** The implementer's pass is round `S3.1`; before a
+  recommendation of the user's is applied, the main session offers to commit what stands, and the
+  recommendation lands as `S3.2`, so each diff is read alone. The commit body opens with the round
+  id and what it changed; `plan.md` is edited only at the last round.
+- **Approval gate.** After each step: the implementer's report, the two-axis review, then the
+  user's explicit OK before any commit or amend. Pushing or opening a PR needs its own OK.
+- **Deviations are recorded** in the same commit: `plan.md` findings, `architecture.md ›
+  Decisions` when it is a decision, and `feature.md` when it changes what a requirement asks.
