@@ -358,21 +358,35 @@ is on by default; the first `/voice` run asks for microphone permission. Rebindi
 ([schema](https://code.claude.com/docs/en/statusline)):
 
 ```
-terminal-stack · feat/x* · 🌳 fix-parser · 🧠 23% · ⚡ high · 🔋 93% · Opus 4.8
-     dir          git¹      worktree⁴      ctx²      effort⁵   usage³    model⁶
+N · feat/x* · 🌳 fix-parser · ⚡ high · Opus 4.8 · 🧠 23% ❄ · 🔋 93%        󰚰  17:05 · ⏳ 3 hrs 21 mins
+vim¹ git²      worktree³      effort⁶   model⁷     ctx⁴        usage⁵         refill⁵  wakatime⁸
 ```
-¹ branch, `*` = uncommitted changes · ² context-window **used** · ³ **usage-window headroom** — the
-percent of your plan's **5-hour** rate-limit budget still *remaining* (a fuel gauge, not a countdown:
-no reset clock by design — glance at `/usage` for the exact reset time). 🔋 green > 40 %, yellow > 15 %,
-🪫 red below. Max/Pro only and only after the first API response — dropped otherwise (API-key users,
-cold start). ⁴ **git worktree** name — shown *only* when you're inside a linked worktree, silent in the
-main tree, so you never lose track of which tree you're editing. ⁵ **reasoning effort** (`low`…`max`,
-live with `/effort`; absent when the model has no effort parameter). ⁶ **model** — trailing and dimmed,
-the least load-bearing segment, so it doesn't lead the eye. Segments are joined by a dim `·` so they
-breathe. Colours are the terminal's 16 ANSI slots (no hardcoded palette), so the line follows the
-active theme — like the Starship prompt. Falls back from `jq` to `grep` if `jq` is absent. Fields
-consumed: `.model.display_name`, `.workspace.current_dir`, `.workspace.git_worktree`,
-`.context_window.used_percentage`, `.effort.level`, `.rate_limits.five_hour.used_percentage`.
+¹ **vim mode** as one letter — `N`, `I`, `V`, `VL` — the same badge as the nvim statusline;
+`hideVimModeIndicator` in `settings.json` drops the built-in `-- INSERT --`, so the mode shows once.
+² branch of the session's directory, `*` = uncommitted changes; the directory's own name is left out — the branch says which project it is. ³ **git worktree** name — shown *only* inside a linked worktree,
+silent in the main tree, so you never lose track of which tree you're editing. ⁴ context-window
+**used**: green below 50 %, yellow below 80 %, red above — near the auto-compact. ❄ once the prompt
+cache has gone cold (its TTL passed): the next message re-reads the whole context into the cache,
+which costs usage-window budget. Claude Code re-runs the line when the cache expires, so ❄ appears on
+its own. ⁵ **usage-window headroom** — the percent of your plan's **5-hour** rate-limit budget still
+*remaining*; at the right edge, `󰚰` (`nf-md-update`) and the clock time it refills — two spaces after the icon, as Ghostty draws a Nerd Font icon followed by a space over two cells. 🔋 green > 40 %, yellow > 15 %, 🪫 red below. A
+clock time, not a countdown: the line re-renders on events only, so a countdown would go stale between
+messages. Max/Pro only and only after the first API response — dropped otherwise. ⁶ **reasoning
+effort** (`low`…`max`, live with `/effort`; absent when the model has no effort parameter), beside
+the model it tunes. ⁷ **model**, dimmed — the least load-bearing segment. ⁸ **WakaTime** — today's
+coding time across every editor and Claude Code, from `wakatime-cli --today`. The CLI asks the server
+(about a second), so the line shows the last answer, cached in `$TMPDIR`, and refreshes it in the
+background at most once a minute; dropped when `~/.wakatime/wakatime-cli` is absent (the WakaTime
+plugin for Claude Code or nvim installs it).
+
+The refill time and WakaTime sit **flush right**, padded to `COLUMNS` less four cells for Claude Code's margin; Claude Code's own notifications share that row and may cover them for a moment. A **narrow pane** drops segments until the line fits — model first, then effort — instead
+of Claude Code cutting it off on the right; the width comes from `COLUMNS`, which Claude Code sets for
+the script. Segments are joined by a dim `·` so they breathe. Colours are the terminal's 16 ANSI slots
+(no hardcoded palette), so the line follows the active theme — like the Starship prompt. Falls back
+from `jq` to `grep` if `jq` is absent. Fields consumed: `.model.display_name`,
+`.workspace.current_dir`, `.workspace.git_worktree`, `.context_window.used_percentage`,
+`.effort.level`, `.rate_limits.five_hour.used_percentage`, `.rate_limits.five_hour.resets_at`,
+`.prompt_cache.caching_observed`, `.prompt_cache.warm`, `.vim.mode`.
 
 ### The theme
 
@@ -407,7 +421,7 @@ The *why* behind each key — the file states the *what*
 
 | Key | Value | Why |
 |---|---|---|
-| `statusLine` | `command` → `~/.claude/statusline.sh` | dir · git · worktree · ctx% · effort · usage · model line ([§9](#9-the-status-line)). |
+| `statusLine` | `command` → `~/.claude/statusline.sh` | vim · git · worktree · effort · model · ctx% · usage · wakatime line; `hideVimModeIndicator` hides the built-in `-- INSERT --` ([§9](#9-the-status-line)). |
 | `editorMode` | `vim` | Vim motions in the prompt box — matches Neovim across the stack ([§6](#6-advanced-craft)). |
 | `vimInsertModeRemaps` | `{ "jk": "<Esc>" }` | `jk` in INSERT → NORMAL, no reach for `Esc` (Claude Code ≥ 2.1.208; user-settings only) ([§6](#6-advanced-craft)). |
 | `theme` | `auto` | Follows the OS light/dark appearance, like the rest of the stack. |

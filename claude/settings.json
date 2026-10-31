@@ -13,7 +13,8 @@
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline.sh",
-    "padding": 0
+    "padding": 0,
+    "hideVimModeIndicator": true
   },
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
