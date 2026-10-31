@@ -14,11 +14,9 @@ Layout is by tool, mirroring `~/.config` (`@.claude/rules/naming.md`).
 ## How work happens — the ticket loop
 
 A change of substance is a ticket: one folder in `docs/tickets/` holding its feature, architecture,
-plan and verification, written by five skills the user types in order —
-**`/ticket-feature` → `/ticket-architecture` → `/ticket-plan` → `/ticket-implement`** (once per
-step) **→ `/ticket-verify`**. A ticket not started yet is only an entry in
-`docs/knowledge/roadmap.md`; a typo, a version bump or a doc fix needs no ticket. The gates are in
-`.claude/rules/sdd.md`; the guide, with the dependency map and troubleshooting, is
+plan and verification. A ticket not started yet is only an entry in `docs/knowledge/roadmap.md`; a
+typo, a version bump or a doc fix needs no ticket. The gates are in `.claude/rules/sdd.md`. Which
+`/ticket-*` skill the user types when, the dependency map and troubleshooting are in
 `docs/knowledge/sdd.md`.
 
 ## Golden rules

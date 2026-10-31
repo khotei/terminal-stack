@@ -59,7 +59,7 @@ are referenced by name and never copied, so plugin updates arrive on their own.
 ### Dependency map
 
 What each skill and agent uses, read from their files. A commit that changes what a skill or agent
-uses updates this map too; the Standards review checks it against `.claude/rules/claude-md.md`.
+uses updates this map too.
 
 | Skill or agent | Plugin skills | Spawns | Hook | Writes |
 |---|---|---|---|---|
@@ -70,49 +70,11 @@ uses updates this map too; the Standards review checks it against `.claude/rules
 | `/ticket-verify` | `code-review` | `verifier`, `reviewer` | — | `verification.md` |
 | `/check` | — | — | — | nothing: runs `scripts/check.sh` |
 | `implementer` | — | — | `.claude/hooks/check.sh` on `Stop` (runs as `SubagentStop`) | the step's files |
-| `reviewer` | one axis of `code-review` | — | — | nothing: read-only |
+| `reviewer` | — (spawned by `code-review` for one axis) | — | — | nothing: read-only |
 | `verifier` | — | — | — | nothing: read-only |
 | `researcher` | — | — | — | nothing: read-only |
 
 Plugin skills are `mattpocock-skills:<name>`; ticket files are in `docs/tickets/<ticket>/`.
-
-```mermaid
-graph LR
-  subgraph ours [this repo]
-    feature["/ticket-feature"]
-    arch["/ticket-architecture"]
-    plan["/ticket-plan"]
-    impl["/ticket-implement"]
-    verify["/ticket-verify"]
-    check["/check"]
-    researcher([researcher])
-    implementer([implementer])
-    reviewer([reviewer])
-    verifier([verifier])
-    hook[/hooks/check.sh/]
-    script[/scripts/check.sh/]
-  end
-  subgraph plugin [mattpocock-skills]
-    grilling{{grilling}}
-    modeling{{domain-modeling}}
-    design{{codebase-design}}
-    review{{code-review}}
-  end
-  feature -.-> grilling & modeling
-  feature --> researcher
-  arch -.-> design & grilling
-  arch --> researcher
-  plan --> researcher
-  impl --> implementer & reviewer
-  impl -.-> review
-  implementer --> hook --> script
-  check --> script
-  verify --> verifier & reviewer
-  verify -.-> review
-  reviewer -.-> review
-```
-
-Solid arrows spawn an agent or run a hook or script; dotted arrows use a plugin skill.
 
 ### What the wrappers override, and why
 
@@ -122,25 +84,20 @@ Solid arrows spawn an agent or run a hook or script; dotted arrows use a plugin 
 | `to-spec` and `to-tickets` publish to an issue tracker or `.scratch/`, as user stories | `/ticket-feature` and `/ticket-plan` write EARS requirements and steps into the ticket folder | artifacts are reviewed and committed with the config |
 | `tdd` drives a change through unit tests at seams the user confirms | not used: the implementer proves its step at a Seam from `architecture.md › Seams` with a validator, a probe or a keypress | a config repo has no unit tests, and a subagent cannot ask; the Seams were agreed earlier |
 | `implement` commits on its own and reviews committed work | `/ticket-implement` reviews the uncommitted step and commits only after your OK | every commit is approved |
-| `code-review` diffs from a fixed point to `HEAD` and spawns generic sub-agents | for a step: `git diff HEAD` plus untracked files, reviewed by read-only `reviewer` agents; the Spec axis also flags a diff that changes what a requirement asks | the step is reviewed before it is committed, by agents that cannot edit, and `feature.md` changes with the requirement |
+| `code-review` diffs from a fixed point to `HEAD` and spawns generic sub-agents | for a step: `git diff HEAD` plus untracked files, reviewed by read-only `reviewer` agents; the Spec axis also flags a diff that changes what a requirement asks | the step is reviewed before it is committed, by agents without Edit or Write, told never to edit, and `feature.md` changes with the requirement |
 | `research` writes a notes file into the repo | `researcher` answers in its report | facts reach the conversation, not the tree |
 
 ## The approval gate
 
-A step runs through three stages before anything is committed:
+Nothing is committed until you say so. The stages, the rounds and what approval writes are in
+[.claude/rules/sdd.md](../../.claude/rules/sdd.md) and `/ticket-implement`; your part in each step:
 
-1. **`implementer`** builds the step evidence first at the agreed Seam: it makes the validator,
-   probe or command fail on the tree as it stands, then pass. A hook runs `bash scripts/check.sh`
-   when it tries to finish and sends it back while the check is red. Its only way out on red is a
-   final message starting with `BLOCKED:`, which reaches you unchanged. Keypresses it cannot
-   press come back in its report, each with the result to expect.
-2. **`code-review`** runs two `reviewer` agents in parallel, each in a fresh context: **Standards**
-   (the rules in `.claude/rules/` and `.claude/CLAUDE.md`: invented keys, keybinding collisions,
-   comments that restate config) and **Spec** (the step and its requirements). The two reports
-   stay separate, so one axis cannot hide the other.
-3. **You** press the keys the report lists, read the report and both reviews, then approve, send
-   feedback to the same implementer, or stop. Approval updates `plan.md`, records any decision,
-   and commits with the proposed message.
+- **Press the keys** the implementer's report lists and compare what happens with the result it
+  expects. No agent can press a key, so only you can show that a binding does what it should.
+- **Read the report and both reviews**, Standards and Spec, kept apart so one cannot hide the other.
+- **Decide:** approve, send feedback to the same implementer after the main session offers to
+  commit the current round, or stop. A report that starts with `BLOCKED:` is a question only you
+  can answer.
 
 Pushing and opening the PR each need their own OK.
 
@@ -158,11 +115,9 @@ into `docs/tickets/`.
 
 ## Lessons
 
-`/ticket-verify` ends with **Lessons**: mistakes that recurred in two or more steps, each turned into
-one proposed change. A mechanical mistake (a provenance id in config, a `\b` that macOS `grep`
-ignores) gets a check: a validator in `scripts/check.sh` or a hook. A judgement call gets one line
-in a named skill or rule. A `CLAUDE.md` never grows from a lesson, and nothing is applied without
-your OK.
+`/ticket-verify` ends with **Lessons**: mistakes that recurred in two or more steps, each with one
+proposed change to a skill, a rule or a check; the skill says how they are chosen. You decide which
+to apply, and nothing is applied without your OK.
 
 ## Periodically
 
@@ -190,7 +145,7 @@ The plugin updates itself, so its behaviour can shift under the wrappers. After 
 | `/ticket-*` is not offered when typing `/` | Claude Code was started outside the repository root | start it in the root; the skills live in `.claude/skills/` |
 | plugin skills are missing, or `superpowers` is active | the plugin is not installed, or the session predates `enabledPlugins` | install `mattpocock-skills` from `claude-plugins-official` and restart the session |
 | `implementer` never stops | `scripts/check.sh` stays red and the agent keeps fixing | stop it; resume with guidance, or let it report `BLOCKED:` |
-| the implementer waits minutes after its last edit | the hook's check runs the full Neovim load, which may bootstrap plugins | wait: the hook allows 600 s, and the check caps the load at 300 s and reports a timeout as a warning |
+| the implementer waits minutes after its last edit | the hook's check runs the full Neovim load, which may bootstrap plugins | wait: the hook's timeout is set in `.claude/agents/implementer.md`; `scripts/check.sh` caps the Neovim load only when `timeout` or `gtimeout` is installed |
 | the check hook never runs | the folder's workspace trust was never accepted (a `-p` session does not accept it) | open Claude Code interactively in the folder once and accept the trust dialog |
 | the check is green but a section says `skip` | that tool is not installed on this machine, so its config was not loaded | `brew bundle` (`docs/install.md`), then run `/check` again before trusting the step |
 | a `GLOSSARY.md` or `docs/adr/` appeared | a plugin skill fired outside `/ticket-feature` | move the terms into `docs/knowledge/glossary.md` and delete the file |

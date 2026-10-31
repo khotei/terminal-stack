@@ -40,9 +40,9 @@ The guide for people is `docs/knowledge/sdd.md`.
   *keypress → observed result*. A keypress is pressed by the user; an agent states the key and the
   result to expect.
 - **The heavy review lands once, on the plan.** Steps then conform to it.
-- **One plan step = one commit**, of ≤ ~400 changed lines (whole-file deletions excluded), fitting
-  one fresh session, leaving `bash scripts/check.sh` green. A ticket is one branch `<type>/<slug>`
-  and one squash-merged PR.
+- **One plan step = one approved commit per round**; the step is ≤ ~400 changed lines (whole-file
+  deletions excluded), fits one fresh session, and leaves `bash scripts/check.sh` green. A ticket
+  is one branch `<type>/<slug>` and one squash-merged PR.
 - **A step lands in rounds, one commit each.** The implementer's pass is round `S3.1`; before a
   recommendation of the user's is applied, the main session offers to commit what stands, and the
   recommendation lands as `S3.2`, so each diff is read alone. The commit body opens with the round
