@@ -201,6 +201,7 @@ one letter below. It finds the *next* object if you're not on one (so `ci(` work
 | `<leader>cr` | Rename the symbol everywhere, live preview *(inc-rename extra)* |
 | `<leader>cf` | Format the buffer or selection |
 | `<leader>cs` · `<leader>cd` | Outline — a symbol tree of the file *(outline extra)* · line diagnostics |
+| `<leader>;` | Open a **breadcrumb's menu** in the winbar: a letter marks each crumb, press one; in the menu `<CR>` jumps, `i` fuzzy-finds, `q` closes *(repo)* |
 | `]d` / `[d` · `]e` / `[e` | Next / prev diagnostic · next / prev error |
 
 **Git:**
@@ -318,7 +319,7 @@ back → mark the spot.** This is the ready-made key set for each step.
 | to **read** the definition without leaving | `gpd` — glance panel; `<CR>` jumps there after all |
 | to hop **use → use in this file** | `]]` / `[[` (next / prev reference; `<a-n>`/`<a-p>` cycle) |
 | its **type** · its **implementations** | `gy` · `gI` |
-| the file's **shape** | `<leader>cs` Outline (symbol tree); the **dropbar** winbar shows the path with no keypress |
+| the file's **shape** | `<leader>cs` Outline (symbol tree); the **dropbar** winbar shows the path, `<leader>;` opens a crumb's siblings |
 
 **3 · Jump around — and get back.**
 
@@ -786,6 +787,7 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/plugins/lualine.lua`](./lua/plugins/lualine.lua) | lualine `mode` component → `fmt` | The statusline's mode badge shows a letter, not a word: `N`, `I`, `V`, `C`, `R`, `T`. Two letters only where one would merge modes — `VL`/`VB` (visual line/block), `SL`/`SB`, `VR`, `O` for operator-pending — so a block selection still reads as one. Frees statusline width in a narrow Zellij pane · [lualine `fmt`](https://github.com/nvim-lualine/lualine.nvim#component-options). |
 | [`lua/plugins/lualine.lua`](./lua/plugins/lualine.lua) | `lualine_c`, `lualine_x`, `lualine_y`, `lualine_z` | The statusline drops what the winbar on top already shows: no file path, no symbol under the cursor, no `40% 67:1` block. WakaTime's coding time for today gets an hourglass icon, and the clock gets two spaces after its icon — Ghostty stretches an icon followed by a space over two cells, so one space would leave the icon touching the time. If a file has no winbar (no parser or LSP, e.g. a plain `.txt`), its name and position show nowhere, and the statusline no longer colours the name of an unsaved file. |
 | [`lua/plugins/dropbar.lua`](./lua/plugins/dropbar.lua) | add [`Bekaboo/dropbar.nvim`](https://github.com/Bekaboo/dropbar.nvim) | Breadcrumb winbar (the "Context Info" view). Requires **Neovim ≥ 0.11** — a version floor the stack now depends on. |
+| [`lua/plugins/dropbar.lua`](./lua/plugins/dropbar.lua) | `keys` `<leader>;` → `dropbar.api.pick`, `lazy = false` | dropbar's own suggested key, free in LazyVim. `lazy = false` because a `keys` entry would make lazy.nvim defer the plugin, and the winbar would stay empty until the first press. |
 | [`lua/plugins/dropbar.lua`](./lua/plugins/dropbar.lua) | `bar.enable` | The winbar ends with the cursor position flush right, `line:col/total` (`67:1/245`), in every window, so each split shows its own. dropbar has no option for text after its own, so `enable` sets the winbar itself where dropbar would attach. A path that fills the whole width loses a few characters on the left. |
 | [`lua/plugins/glance.lua`](./lua/plugins/glance.lua) | add [`DNLHC/glance.nvim`](https://github.com/DNLHC/glance.nvim) + `gpd`/`gpr`/`gpy`/`gpi`, a which-key `gp` → *peek* group | Read a definition or every reference **without leaving the buffer** — LazyVim's `gd`/`gr` always move you (or open a picker). Over `goto-preview` (stale, needs `logger.nvim`, overrides `vim.ui.input` that Snacks owns) and `lspsaga` (a kitchen sink for one feature). `gp…`, not glance's suggested `gD`/`gR`: the typescript extra owns those. |
 | [`lua/plugins/typescript.lua`](./lua/plugins/typescript.lua) | inlay hints **off by default** (`inlay_hints.enabled = false`) + max out the `vtsls` set (`variableTypes`, `parameterNames = "all"`) + noise suppressors | LazyVim ships inlay hints *on* globally — turn them off for a clean buffer. `lang.typescript` also ships variable-type hints off and parameter names at `"literals"` only, so all six categories are maxed (redundant ones suppressed) — one `<leader>uh` then reveals everything, JetBrains-style, on demand. |
