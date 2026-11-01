@@ -47,7 +47,9 @@ brew "pulumi/tap/pulumi"                # infra as code
 # ── fonts ─────────────────────────────────────────────────────────────
 cask "font-symbols-only-nerd-font"      # icon fallback for Ghostty / Starship / LazyVim
 cask "font-jetbrains-mono-nerd-font"    # a full Nerd Font (fallback / free alternative)
-# Dank Mono (the primary Ghostty font) is not on Homebrew — it's bundled under
+cask "font-maple-mono-nf"               # the primary Ghostty font
+cask "font-libron"                      # reading serif, not for Ghostty: proportional, no Cyrillic
+# Dank Mono (the former Ghostty font) is not on Homebrew — it's bundled under
 # fonts/ and installed by ./install.sh (see fonts/README.md for its license).
 
 # ══════════════════════════════════════════════════════════════════════

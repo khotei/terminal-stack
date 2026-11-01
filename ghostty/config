@@ -3,13 +3,11 @@
 # Reference + rationale for every key: ./README.md · upstream: https://ghostty.org/docs/config
 
 # ── font ──────────────────────────────────────────────────────────────
-# Dank Mono is primary; Symbols Nerd Font Mono is a fallback so LazyVim /
-# Starship glyphs render — Dank Mono carries no Nerd-Font icons of its own.
-font-family = "Dank Mono"
+# The NF build bundles Nerd-Font icons; Symbols Nerd Font Mono stays as the
+# fallback for any glyph it lacks.
+font-family = "Maple Mono NF"
 font-family = "Symbols Nerd Font Mono"
-font-size = 20
-# Thicken strokes on macOS — Dank Mono's thin glyphs (esp. Cyrillic) render
-# grainy at native weight; thickening restores solid, legible edges.
+font-size = 16
 font-thicken = true
 # Kill the dark fringing around glyph edges: blend in linear space, then
 # correct back so text matches macOS `native` but without the darkening

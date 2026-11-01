@@ -104,10 +104,10 @@ The *why* behind each key in [`config`](./config); the config file itself states
 
 | Key | Value | Why |
 |---|---|---|
-| [`font-family`](https://ghostty.org/docs/config/reference#font-family) | `Dank Mono` | Primary typeface — expressive italics. |
-| [`font-family`](https://ghostty.org/docs/config/reference#font-family) | `Symbols Nerd Font Mono` | **Fallback** for icon glyphs — Dank Mono carries none, so LazyVim / Starship icons need it. A repeated `font-family` builds a fallback chain (later = lower priority). |
-| [`font-size`](https://ghostty.org/docs/config/reference#font-size) | `20` | Comfortable default point size. |
-| [`font-thicken`](https://ghostty.org/docs/config/reference#font-thicken) | `true` | macOS-only stroke thickening — Dank Mono's thin glyphs (esp. Cyrillic) render grainy at native weight. |
+| [`font-family`](https://ghostty.org/docs/config/reference#font-family) | `Maple Mono NF` | Primary typeface: soft rounded letters, a handwritten italic, Cyrillic, free (OFL) and on Homebrew. The NF build bundles Nerd-Font icons. |
+| [`font-family`](https://ghostty.org/docs/config/reference#font-family) | `Symbols Nerd Font Mono` | **Fallback** for any icon glyph Maple Mono NF lacks. A repeated `font-family` builds a fallback chain (later = lower priority). |
+| [`font-size`](https://ghostty.org/docs/config/reference#font-size) | `16` | Comfortable default point size. |
+| [`font-thicken`](https://ghostty.org/docs/config/reference#font-thicken) | `true` | macOS-only stroke thickening — solid strokes on a dark background; Maple Mono was picked with it on. |
 | [`alpha-blending`](https://ghostty.org/docs/config/reference#alpha-blending) | `linear-corrected` | Blend text in linear space (kills the dark fringing around glyph edges), then correct back so it matches macOS `native`. A cleaner edge without the darkening artifacts of plain `linear`. |
 | [`theme`](https://ghostty.org/docs/config/reference#theme) | `light:<light>,dark:<dark>` | A light/dark pair. The `light:…,dark:…` form is the load-bearing part: Ghostty **follows the OS appearance** and swaps live — and reports the change to apps inside via **CSI 2031**, which is what lets [Zellij](../zellij/README.md), lazygit and [Neovim](../nvim/README.md) light/dark in lockstep. The config names the current pair, from [`themes/`](./themes/). |
 | [`window-padding-x`](https://ghostty.org/docs/config/reference#window-padding-x) | `8` | Horizontal breathing room between cells and the window edge. |
@@ -162,11 +162,10 @@ mkdir -p ~/.config/ghostty
 ln -sf "$PWD/ghostty/config" ~/.config/ghostty/config
 ```
 
-Fonts: **Dank Mono** ships in [`../fonts/`](../fonts/) (installed by `install.sh`); the Nerd Font
-fallback comes from the Brewfile:
+Fonts: **Maple Mono NF** and the Nerd Font fallback come from the Brewfile:
 
 ```sh
-brew install --cask font-symbols-only-nerd-font
+brew install --cask font-maple-mono-nf font-symbols-only-nerd-font
 ```
 
 ---
