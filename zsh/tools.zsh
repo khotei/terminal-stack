@@ -16,9 +16,11 @@ command -v fnm >/dev/null && eval "$(fnm env --use-on-cd --shell zsh)"
 # `fzf --zsh` ships the bindings in fzf ≥ 0.48 (Homebrew is current).
 if command -v fzf >/dev/null; then
   source <(fzf --zsh 2>/dev/null) 2>/dev/null
-  # Colours come from theme.zsh (FZF_DEFAULT_OPTS): fzf picks its `dark` scheme on any
-  # 256-colour terminal and never re-checks the background, so it needs the appearance
-  # handed to it.
+  # The base16 scheme paints in ANSI slots, so Ghostty's light/dark flip repaints an
+  # open fzf too (its default `dark` scheme is fixed 256-colour cells). Its current
+  # line is bright-white on bright-black — unreadable in both GitHub HC palettes — so
+  # that row keeps the terminal's own colours, bold. `man fzf` → COLOR SCHEME.
+  export FZF_DEFAULT_OPTS='--color=16,fg+:-1:bold,bg+:-1,gutter:-1'
 fi
 
 # bat — syntax-highlighted pager. Used as the man pager only; we do NOT alias `cat`

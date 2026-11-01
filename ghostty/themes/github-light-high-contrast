@@ -1,0 +1,26 @@
+# GitHub Light High Contrast (Ghostty's built-in theme) with one slot changed:
+# 15 is "bright white" by convention, and upstream's #88929d grey leaves nothing light
+# to write on a fill. Zellij's bar paints in slots only (zellij/themes/terminal.kdl),
+# so its fill and its tab text need a light slot here; #e7ecf0 is Primer canvas.subtle.
+palette = 0=#0e1116
+palette = 1=#a0111f
+palette = 2=#024c1a
+palette = 3=#3f2200
+palette = 4=#0349b4
+palette = 5=#622cbc
+palette = 6=#1b7c83
+palette = 7=#66707b
+palette = 8=#4b535d
+palette = 9=#86061d
+palette = 10=#055d20
+palette = 11=#4e2c00
+palette = 12=#1168e3
+palette = 13=#844ae7
+palette = 14=#3192aa
+palette = 15=#e7ecf0
+background = #ffffff
+foreground = #0e1116
+cursor-color = #0349b4
+cursor-text = #367ce7
+selection-background = #0e1116
+selection-foreground = #ffffff

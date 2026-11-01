@@ -1,7 +1,3 @@
-# The palette lives in ./theme-light.yml / ./theme-dark.yml, merged over this file by
-# LG_CONFIG_FILE (set in zsh/theme.zsh from the macOS appearance) — lazygit reads a
-# comma-separated list and merges left-to-right, which is the only light/dark hook it has.
-
 git:
   # `|` cycles these; the first is the default. Both are git's own output, no pager.
   diffRenderers:

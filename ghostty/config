@@ -17,13 +17,13 @@ font-thicken = true
 alpha-blending = linear-corrected
 
 # ── theme ─────────────────────────────────────────────────────────────
-# The stack's palette: bat, eza and Starship draw in ANSI slots and repaint from here
-# alone; everything that draws real UI chrome carries its own port of the same theme
-# (zsh/README.md §8 maps them). The light:…,dark:… pair auto-follows the macOS
-# appearance, which Ghostty then reports inward via CSI 2031.
+# The stack's only palette: every other tool paints in these 16 slots, so it repaints
+# when the light:…,dark:… pair follows the macOS appearance (reported inward via
+# CSI 2031). GitHub High Contrast, from ./themes/ — one slot each made a true
+# black/white so Zellij's bar has a fill to write on (see the theme files).
 # High Contrast over Default: Default leaves window separators and diagnostic hints
 # at ~1.1:1 contrast — effectively invisible. Verify: ghostty +list-themes
-theme = light:GitHub Light High Contrast,dark:GitHub Dark High Contrast
+theme = light:github-light-high-contrast,dark:github-dark-high-contrast
 
 # ── window ────────────────────────────────────────────────────────────
 # Opaque by choice (readability over glass). To enable translucency add

@@ -4,17 +4,12 @@
 // Validate: `zellij --config zellij/config.kdl setup --check` (run by /check + CI)
 
 // ── options ───────────────────────────────────────────────────────────
-// GitHub High Contrast, ported into ./themes/github-high-contrast.kdl from the very
-// palette Ghostty loads — the pair follows the macOS appearance automatically, because
-// Ghostty answers Zellij's DSR 997 / CSI 2031 theme query (zellij ≥ 0.44.2).
-// Not the built-in "ansi" theme: it hard-codes the bar's background to ANSI slot 0, and
-// in a GitHub HC palette slot 0 is a *text* colour (near-black in light, grey in dark),
-// never the terminal background — hence the black status bar under a white terminal.
-// `theme` is only the pre-handshake fallback; re-theme the stack in ghostty/config,
-// then mirror the two palettes in ./themes/.
-theme "github-light-hc"
-theme_light "github-light-hc"
-theme_dark "github-dark-hc"
+// Slot numbers from ./themes/terminal.kdl, so the bar takes Ghostty's palette; Zellij
+// swaps the pair live when Ghostty reports the appearance over CSI 2031 (zellij ≥ 0.44.2).
+// `theme` is only the pre-handshake fallback.
+theme "terminal-light"
+theme_light "terminal-light"
+theme_dark "terminal-dark"
 default_layout "compact-top"    // ./layouts/compact-top.kdl — built-in compact with the bar on top
 pane_frames true                // on so the rounded corners below can draw; frame = 1-cell content breathing room
 copy_on_select true             // select = copy, tmux-like

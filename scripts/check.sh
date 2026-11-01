@@ -83,17 +83,6 @@ if have git && git rev-parse --git-dir >/dev/null 2>&1; then
   if [ -z "$out" ]; then pass "no feature/AC/task ids in config or scripts"; else fault "feature/AC/task ids in config or scripts — move them to the commit's Refs:"; printf '%s\n' "$out" | sed 's/^/    /'; fi
 else skip "not a git checkout"; fi
 
-# ── Theme (the one thing the tools themselves never validate) ─────────
-# Zellij, lazygit and Claude Code all accept a wrong colour in silence, so a
-# transcribed hex is checked against the Primer primitives instead.
-head "Theme"
-if [ -f scripts/theme-audit.py ]; then
-  if have python3; then
-    out=$(python3 scripts/theme-audit.py 2>&1)
-    if [ $? -eq 0 ]; then pass "theme-audit: every colour is a Primer token"; else fault "theme-audit: a colour is not a Primer token"; printf '%s\n' "$out" | grep 'not a Primer' | sed 's/^/    /'; fi
-  else skip "python3 not installed"; fi
-else skip "no scripts/theme-audit.py"; fi
-
 # ── Style gates (soft — warn, never fail the run) ─────────────────────
 head "Style (soft)"
 if [ -d nvim ] && [ -n "$(find nvim -name '*.lua' 2>/dev/null | head -1)" ]; then

@@ -43,17 +43,16 @@ rationale. Nothing to hunt across other files or upstream manuals.
 | `↑ ↑ ↑` hunting for a command | `Ctrl-R` — full-text fuzzy search over every command you've ever run |
 | `ls`, eyeball, `cd`, repeat | `Ctrl-T` (paste a fuzzy-picked path) · `Alt-C` (fuzzy-`cd`) |
 
-**The one load-bearing invariant: source order.** [`.zshrc`](./.zshrc) sources seven role files in a
+**The one load-bearing invariant: source order.** [`.zshrc`](./.zshrc) sources six role files in a
 fixed sequence, and the order is *not* cosmetic — three couplings depend on it:
 
 ```
-env → theme → vi-mode → aliases → tools → prompt → plugins
+env → vi-mode → aliases → tools → prompt → plugins
 ```
 
 | Boundary | Why it must be there |
 |---|---|
 | `env` **first** | Sets `$EDITOR`, `$XDG_*`, history *before* anything reads them. |
-| `theme` **before** `tools` | Exports the appearance-dependent colours (`FZF_DEFAULT_OPTS`, `LG_CONFIG_FILE`, `CLAUDE_THEME`) that the integrations in `tools.zsh` launch with — see [§8](#8-one-theme-across-the-stack). |
 | `vi-mode` **before** `tools` | [zsh-vi-mode](#55-zsh-vi-mode--vim-on-the-command-line) *overwrites* keymaps on init, so fzf's `Ctrl-T`/`Ctrl-R` and atuin's `Ctrl-R` must bind **after** it or they're clobbered. This is why it runs `ZVM_INIT_MODE=sourcing`. |
 | `plugins` **last**, highlighting **within it last** | [zsh-syntax-highlighting must be sourced after every other widget](https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md) so it can wrap them. |
 
@@ -182,11 +181,13 @@ the linked upstream doc — you shouldn't need to for daily use.
 The general-purpose fuzzy finder; the shell integration (`source <(fzf --zsh)`, [`tools.zsh`](./tools.zsh))
 adds keybindings. Docs: <https://github.com/junegunn/fzf>.
 
-**It does not follow the terminal.** fzf picks its `dark` scheme on any 256-colour terminal and never
-re-checks the background, so under a light palette the current line and the left gutter arrive as dark
-256-colour blocks. [`theme.zsh`](./theme.zsh) exports the matching GitHub High Contrast palette as
-`FZF_DEFAULT_OPTS` instead ([§8](#8-one-theme-across-the-stack)); `man fzf` → *COLOR SCHEME* documents
-the spec.
+**It paints in the terminal's 16 colours.** Left alone, fzf picks its `dark` scheme on any
+256-colour terminal — fixed 256-colour cells that never follow the palette, so under a light one the
+current line and the left gutter arrive as dark blocks. [`tools.zsh`](./tools.zsh) sets
+`FZF_DEFAULT_OPTS='--color=16,…'` instead: the base16 scheme, with the current line kept in the
+terminal's own colours (base16 draws it bright-white on bright-black, unreadable in both GitHub HC
+palettes). Ghostty then repaints an open fzf on a light/dark flip ([§8](#8-one-theme-across-the-stack));
+`man fzf` → *COLOR SCHEME* documents the spec.
 
 **Shell keys:** `Ctrl-T` paste a picked path · `Alt-C` fuzzy-`cd` · (`Ctrl-R` is
 [atuin's](#54-atuin--history-as-a-database) here, not fzf's).
@@ -483,8 +484,8 @@ Fast, ergonomic file finder, `.gitignore`-aware. Also a runtime dependency (not 
 A full terminal UI for git — stage, commit, rebase, and cherry-pick without leaving the keyboard.
 Aliased `lg` when installed ([`aliases.zsh`](./aliases.zsh)). Every key below is verified against the
 [upstream keybindings](https://github.com/jesseduffield/lazygit/blob/master/docs/keybindings/Keybindings_en.md).
-Its colours (panel borders, the selected row) are GitHub High Contrast, delivered through
-`LG_CONFIG_FILE` at launch — [§8](#8-one-theme-across-the-stack).
+It keeps its built-in colours: named terminal slots, plus a selected-row fill it computes from the
+terminal's background and recomputes on a light/dark flip — [§8](#8-one-theme-across-the-stack).
 
 **Global** (any panel):
 
@@ -692,38 +693,23 @@ Nerd Font (the stack assumes one).
 
 ## 8. One theme across the stack
 
-The whole stack wears **GitHub High Contrast**, light or dark, following the macOS appearance. Tools
-reach it two different ways, and the split is worth knowing when something looks out of place:
+The whole stack wears **GitHub High Contrast**, light or dark, following the macOS appearance — and
+the palette lives in **one place**, [`ghostty/themes/`](../ghostty/themes/). Every other tool paints in
+Ghostty's 16 slots by number, so when Ghostty swaps the pair it repaints them, open processes included:
 
-**They listen themselves.** Ghostty repaints on the OS appearance and announces it to the programs
-inside over `CSI 2031`; [Zellij](../zellij/README.md) (`theme_light`/`theme_dark`) and
-[Neovim](../nvim/README.md) (`auto-dark-mode.nvim`) act on that signal live. Anything that draws in the
-16 ANSI slots — Starship, `bat`, `eza`, the Claude Code status line — repaints with the palette for
-free.
+| Tool | How it stays on Ghostty's slots |
+|---|---|
+| Starship, `eza`, the Claude Code status line | ANSI colours only |
+| `bat` | `BAT_THEME=ansi` ([`tools.zsh`](./tools.zsh)) |
+| fzf | `--color=16`, current line in the terminal's own colours ([§5.1](#51-fzf--fuzzy-everything)) |
+| lazygit | no theme: named slots + a row fill it recomputes from the terminal's background (lazygit ≥ 0.66) |
+| [Zellij](../zellij/README.md) | [`themes/terminal.kdl`](../zellij/themes/terminal.kdl) — slot numbers only, a light and a dark half swapped on Ghostty's `CSI 2031` report |
+| [Neovim](../nvim/README.md) | built-in `default` scheme with `notermguicolors`; slot numbers for what it leaves plain |
+| Claude Code | the built-in `auto` theme — not Ghostty's slots, but it follows the terminal's light/dark live |
 
-**They have to be told.** fzf, lazygit and Claude Code each read their colours once, at process
-start, and none of them can pair a light and a dark theme. [`theme.zsh`](./theme.zsh) resolves the
-appearance (one `defaults read`, throttled to 5 s) and exports it, so the *next* launch of each is
-already right:
-
-| Tool | Carrier | Points at |
-|---|---|---|
-| fzf | `FZF_DEFAULT_OPTS` | [projekt0n's GitHub fzf theme](https://github.com/projekt0n/github-theme-contrib/tree/main/themes/fzf), with `hl`/`header` fixed — upstream sets them to the background colour |
-| lazygit | `LG_CONFIG_FILE` (comma-separated, merged left-to-right) | [`lazygit/theme-{light,dark}.yml`](../lazygit/) |
-| Claude Code | `CLAUDE_THEME` → a `claude()` wrapper passing `--settings` | [`claude/themes/*.json`](../claude/themes/) |
-
-Every palette traces to the same source: Primer's high-contrast primitives, the ones
-[github-nvim-theme](https://github.com/projekt0n/github-nvim-theme) is generated from. **Re-theming the
-stack** therefore means editing `ghostty/config` *and* mirroring the palette in the three places above —
-the price of tools that cannot switch themselves.
-
-That mirroring is hand-transcribed, and Zellij, lazygit and Claude Code all swallow a wrong colour
-without a word — so `/check` re-derives it: [`scripts/theme-audit.py`](../scripts/theme-audit.py) walks
-every hex in those files and fails if one isn't a Primer token (a single wrong digit is caught).
-
-> **A change lands on the next launch, not the running process.** Flip the macOS appearance and the
-> already-open lazygit keeps its old colours; quit and reopen it. The shell exports the new values
-> within 5 s (one prompt).
+**Re-theming the stack** is therefore a change to `ghostty/config` alone — with one condition: Zellij
+writes text on fills, so the palette needs a dark slot 0 and a light slot 15 (what the two local theme
+files fix in GitHub HC). A pair that keeps that convention needs nothing else.
 
 ---
 

@@ -25,8 +25,7 @@ require("lazy").setup({
     lazy = false,
     version = false, -- always use the latest git commit
   },
-  -- The stack's shared palette is named in lua/plugins/colorscheme.lua
-  install = { colorscheme = { "github_dark_high_contrast", "habamax" } },
+  install = { colorscheme = { "default" } },
   checker = {
     enabled = true, -- check for plugin updates periodically
     notify = false,

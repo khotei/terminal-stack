@@ -5,6 +5,9 @@
 
 local opt = vim.opt
 
+opt.termguicolors = false -- paint in Ghostty's ANSI palette, not 24-bit hex (plugins/colorscheme.lua)
+opt.cursorline = false -- 16 colours have no faint fill; CursorLine is a solid bar kept for lists
+
 opt.number = false -- off by default; toggle on demand with <leader>ul / uL
 opt.relativenumber = false -- both number columns off; LazyVim turns both on by default
 opt.wrap = true -- soft-wrap long lines by default; LazyVim ships it off

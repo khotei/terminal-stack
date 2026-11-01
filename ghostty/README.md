@@ -109,22 +109,21 @@ The *why* behind each key in [`config`](./config); the config file itself states
 | [`font-size`](https://ghostty.org/docs/config/reference#font-size) | `20` | Comfortable default point size. |
 | [`font-thicken`](https://ghostty.org/docs/config/reference#font-thicken) | `true` | macOS-only stroke thickening — Dank Mono's thin glyphs (esp. Cyrillic) render grainy at native weight. |
 | [`alpha-blending`](https://ghostty.org/docs/config/reference#alpha-blending) | `linear-corrected` | Blend text in linear space (kills the dark fringing around glyph edges), then correct back so it matches macOS `native`. A cleaner edge without the darkening artifacts of plain `linear`. |
-| [`theme`](https://ghostty.org/docs/config/reference#theme) | `light:<light>,dark:<dark>` | A bundled light/dark pair. The `light:…,dark:…` form is the load-bearing part: Ghostty **follows the OS appearance** and swaps live — and reports the change to apps inside via **CSI 2031**, which is what lets [Zellij](../zellij/README.md) and [Neovim](../nvim/README.md) light/dark in lockstep. Pick any pair from `ghostty +list-themes`; the config names the current one. |
+| [`theme`](https://ghostty.org/docs/config/reference#theme) | `light:<light>,dark:<dark>` | A light/dark pair. The `light:…,dark:…` form is the load-bearing part: Ghostty **follows the OS appearance** and swaps live — and reports the change to apps inside via **CSI 2031**, which is what lets [Zellij](../zellij/README.md), lazygit and [Neovim](../nvim/README.md) light/dark in lockstep. The config names the current pair, from [`themes/`](./themes/). |
 | [`window-padding-x`](https://ghostty.org/docs/config/reference#window-padding-x) | `8` | Horizontal breathing room between cells and the window edge. |
 | [`window-padding-y`](https://ghostty.org/docs/config/reference#window-padding-y) | `8` | Same, vertical. |
 | [`macos-option-as-alt`](https://ghostty.org/docs/config/reference#macos-option-as-alt) | `true` | Send **Alt** on Option (vs. composing accents) so Alt-binds in Zellij / nvim / zsh fire — see [§1](#1-the-one-idea-a-terminal-that-stays-out-of-the-way). |
 
-The chosen palettes ship **bundled with Ghostty** (browse them with `ghostty +list-themes`), so there's
-no theme file to install — hence `theme` names them directly rather than pointing at a path.
+The pair is GitHub High Contrast from [`themes/`](./themes/) — Ghostty's bundled themes with one slot
+each changed: a dark slot 0 and a light slot 15, which Zellij's bar needs to write text on a fill
+([`zellij/README.md`](../zellij/README.md#slot-numbers-not-a-palette)). `install.sh` links the folder to
+`~/.config/ghostty/themes/`, the first place Ghostty looks up a theme name.
 
-**This line re-themes part of the stack on its own.** Starship, `bat`, `eza` and the Claude Code status
-line paint in ANSI slot indices, so they take their colours from whatever palette Ghostty has loaded —
-including the live light/dark swap. Everything that draws real UI chrome needs its own port of the same
-theme, because the 16 slots hold no background shades: [Neovim](../nvim/README.md) and
-[Zellij](../zellij/README.md) get theirs from the CSI 2031 report, while fzf, lazygit and Claude
-Code are handed the appearance through the environment
-([`zsh/README.md` §8](../zsh/README.md#8-one-theme-across-the-stack)). Change the pair here → mirror it
-in those six.
+**This line themes the whole stack.** Everything else paints in Ghostty's 16 slots by number —
+Starship, `bat`, `eza`, fzf, lazygit, Zellij, Neovim, the Claude Code status line — so it takes its
+colours from whatever palette is loaded here, including the live light/dark swap
+([`zsh/README.md` §8](../zsh/README.md#8-one-theme-across-the-stack)). To re-theme, change the pair here;
+keep a dark slot 0 and a light slot 15, or Zellij's tabs lose their contrast.
 
 ---
 

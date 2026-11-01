@@ -1,0 +1,26 @@
+# GitHub Dark High Contrast (Ghostty's built-in theme) with one slot changed:
+# 0 is "black" by convention, and upstream's #7a828e grey leaves nothing dark to write
+# on a fill. Zellij's bar paints in slots only (zellij/themes/terminal.kdl), so its
+# fill and its tab text need a dark slot here; #272b33 is Primer canvas.subtle.
+palette = 0=#272b33
+palette = 1=#ff9492
+palette = 2=#26cd4d
+palette = 3=#f0b72f
+palette = 4=#71b7ff
+palette = 5=#cb9eff
+palette = 6=#39c5cf
+palette = 7=#d9dee3
+palette = 8=#9ea7b3
+palette = 9=#ffb1af
+palette = 10=#4ae168
+palette = 11=#f7c843
+palette = 12=#91cbff
+palette = 13=#dbb7ff
+palette = 14=#56d4dd
+palette = 15=#ffffff
+background = #0a0c10
+foreground = #f0f3f6
+cursor-color = #71b7ff
+cursor-text = #b1f7ff
+selection-background = #f0f3f6
+selection-foreground = #0a0c10

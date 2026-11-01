@@ -150,6 +150,7 @@ echo "terminal-stack → installing from $REPO"
 $DRY_RUN && echo "(dry run — no changes)"
 
 echo "• Ghostty";    link "$REPO/ghostty/config"     "$CONFIG/ghostty/config"
+                     link "$REPO/ghostty/themes"     "$CONFIG/ghostty/themes"
 echo "• Zellij";     link "$REPO/zellij"             "$CONFIG/zellij"; install_zellij_plugins
 echo "• Neovim";     link "$REPO/nvim"               "$CONFIG/nvim"
 echo "• Shell";      link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
@@ -157,15 +158,11 @@ echo "• Shell";      link "$REPO/zsh/.zshrc"         "$HOME/.zshrc"
                      for f in "$REPO"/zsh/*.zsh; do link "$f" "$CONFIG/zsh/$(basename "$f")"; done
 echo "• Git";        link "$REPO/git/config"          "$CONFIG/git/config"
 echo "• Lazygit";    link "$REPO/lazygit/config.yml"  "$CONFIG/lazygit/config.yml"
-                     # the light/dark halves are merged over config.yml via LG_CONFIG_FILE (zsh/theme.zsh)
-                     for f in "$REPO"/lazygit/theme-*.yml; do link "$f" "$CONFIG/lazygit/$(basename "$f")"; done
 echo "• Claude Code"; link "$REPO/claude/statusline.sh" "$HOME/.claude/statusline.sh"
                       link "$REPO/claude/settings.json"  "$HOME/.claude/settings.json"
                       link "$REPO/claude/cc-worktree.sh" "$HOME/.local/bin/cc-worktree"
                       # each rule links on its own (like zsh/*.zsh) so machine-local rules can coexist
                       for f in "$REPO"/claude/rules/*.md; do link "$f" "$HOME/.claude/rules/$(basename "$f")"; done
-                      # custom themes; the claude() wrapper in zsh/theme.zsh selects the matching one
-                      for f in "$REPO"/claude/themes/*.json; do link "$f" "$HOME/.claude/themes/$(basename "$f")"; done
 
 install_fonts
 install_claude_plugins

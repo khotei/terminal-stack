@@ -769,11 +769,12 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 
 | File | Change | Why |
 |---|---|---|
-| [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | swap LazyVim's default colorscheme for the stack's shared palette + point the `colorscheme` opt at it | One palette across the stack, auto light/dark — the colorscheme reads `vim.o.background`. Which palette (plugin + options) lives in [`colorscheme.lua`](./lua/plugins/colorscheme.lua); the [LazyVim-documented](https://www.lazyvim.org/configuration/general) way to theme. |
-| [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | add [`f-person/auto-dark-mode.nvim`](https://github.com/f-person/auto-dark-mode.nvim) | Polls the macOS appearance, flips `vim.o.background`, and re-applies the colorscheme so it recompiles for the new mode. Works **inside Zellij**, where the terminal's CSI 2031 signal may not reach the editor. |
-| [`lua/config/lazy.lua`](./lua/config/lazy.lua) | point `install.colorscheme` at the stack's palette | Use the real theme during install, not the default tokyonight. |
-| [`lua/config/options.lua`](./lua/config/options.lua) | `number`/`relativenumber` off, `wrap` on, `scrolloff=8`, `confirm` | Small comfort defaults on top of LazyVim's. |
-| [`lua/plugins/bufferline.lua`](./lua/plugins/bufferline.lua) | `bufferline.nvim` → `mode = "tabs"` | Top bar shows **tabpages**, not buffers — one entry per tab, styled in the stack palette. Buffers stay hidden (never buffer mode). LazyVim's `always_show_bufferline = false` keeps the bar out until ≥2 tabs, so a new tab (`:tabnew`, `:DiffviewOpen`) appears on its own. Switch: `gt`/`gT` or `<leader><tab>]`/`[`; rename a tab with `:BufferLineTabRename`. Buffer cycling stays on native `<S-h>`/`<S-l>`, `[b`/`]b`. |
+| [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | Neovim's built-in `default` scheme instead of tokyonight (tokyonight + catppuccin disabled), with slot numbers for the groups it leaves plain | No palette of the editor's own: with `termguicolors` off ([`options.lua`](./lua/config/options.lua)) everything paints in Ghostty's 16 slots, so the editor repaints with Ghostty. `default` leaves comments, keywords, types, hints and many plugin groups in the text colour in 16 colours — they get slot numbers; fills are a slot *reversed*, since no slot is the background in both palettes. |
+| [`lua/plugins/colorscheme.lua`](./lua/plugins/colorscheme.lua) | add [`f-person/auto-dark-mode.nvim`](https://github.com/f-person/auto-dark-mode.nvim), no callbacks | Neovim reads the terminal's background only at startup; this polls the macOS appearance and flips `vim.o.background`, so `default` reloads its light or dark half. |
+| [`lua/plugins/lualine.lua`](./lua/plugins/lualine.lua) · [`bufferline.lua`](./lua/plugins/bufferline.lua) | colours as slot numbers | lualine's `auto` theme and bufferline both derive 24-bit colours, which round to fixed 256-colour cells or vanish without `termguicolors`. |
+| [`lua/config/lazy.lua`](./lua/config/lazy.lua) | `install.colorscheme = { "default" }` | Install under the same scheme the editor runs. |
+| [`lua/config/options.lua`](./lua/config/options.lua) | `termguicolors`/`cursorline` off, `number`/`relativenumber` off, `wrap` on, `scrolloff=8`, `confirm` | Small comfort defaults on top of LazyVim's. |
+| [`lua/plugins/bufferline.lua`](./lua/plugins/bufferline.lua) | `bufferline.nvim` → `mode = "tabs"` | Top bar shows **tabpages**, not buffers — one entry per tab, coloured in Ghostty's slots. Buffers stay hidden (never buffer mode). LazyVim's `always_show_bufferline = false` keeps the bar out until ≥2 tabs, so a new tab (`:tabnew`, `:DiffviewOpen`) appears on its own. Switch: `gt`/`gT` or `<leader><tab>]`/`[`; rename a tab with `:BufferLineTabRename`. Buffer cycling stays on native `<S-h>`/`<S-l>`, `[b`/`]b`. |
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `jk` → `<Esc>` | One universal comfort bind; this file is where you port IdeaVim maps. |
 | [`lua/config/keymaps.lua`](./lua/config/keymaps.lua) | `<leader>E` → focus / return the neo-tree sidebar | Stock `<leader>e` only *toggles* the tree (closes it from the editor); this **focuses** it from any split in one key — no `<C-h>` hop across splits — and a second press returns to the origin window (`<C-w>p`). Overrides LazyVim's `<leader>E` (cwd explorer, still on `<leader>fE`). |
 | [`lazyvim.json`](./lazyvim.json) | enable `lang.markdown` + `lang.typescript` + `editor.inc-rename` + `editor.outline` + `coding.mini-surround` + `dap.core` + `test.core` extras | In-buffer Markdown render (`<leader>um`), TS LSP (`gd`/`gr`/`K`), live rename (`<leader>cr`), outline (`<leader>cs`), surround (`gs*`), debugger (`<leader>d…`), test runner (`<leader>t…`). See [§7](#7-advanced-craft--lsp-refactor-debug-test). |
@@ -800,7 +801,7 @@ nvim/
 │   ├── keymaps.lua               # editor maps — the one place to port IdeaVim habits
 │   └── autocmds.lua              # autocmds (stub)
 ├── lua/plugins/
-│   ├── colorscheme.lua           # shared palette (auto light/dark via vim.o.background) + auto-dark-mode.nvim
+│   ├── colorscheme.lua           # built-in `default` in Ghostty's slots + auto-dark-mode.nvim
 │   ├── diffview.lua              # side-by-side diff + file history
 │   ├── dropbar.lua               # breadcrumb winbar
 │   ├── glance.lua                # peek definition / references in a panel (gp…)
@@ -824,8 +825,10 @@ The *why* behind the non-obvious choices — the files state the *what*.
 | `options.lua` | `wrap = true` | Soft-wrap long lines by default so nothing runs off-screen; LazyVim ships wrap off. Toggle with `<leader>uw`. |
 | `options.lua` | `scrolloff = 8` | Keep 8 lines of context above/below the cursor — never edit at the screen edge. |
 | `options.lua` | `confirm = true` | `:q` with unsaved changes *asks* instead of erroring — one keystroke to save/discard. |
-| `lazy.lua` | `install.colorscheme = { <palette>, "habamax" }` | First launch installs plugins under the *real* theme, not the stock tokyonight flash. |
-| `colorscheme.lua` | the palette + its own options | The one place the theme is named; it reads `vim.o.background`, which `auto-dark-mode.nvim` flips on macOS appearance change, so the editor tracks the OS **even inside Zellij**. Swap the palette here to re-theme. |
+| `options.lua` | `termguicolors = false` | Paint in Ghostty's 16 slots, so the editor follows its palette and its live light/dark swap. |
+| `options.lua` | `cursorline = false` | 16 colours have no faint fill; `CursorLine` is a solid bar, kept for list selection (pickers, explorer). |
+| `lazy.lua` | `install.colorscheme = { "default" }` | First launch installs plugins under the scheme the editor runs. |
+| `colorscheme.lua` | `default` + slot-number overrides | The one place editor colours are set — as slot numbers, so re-theming happens in Ghostty. `auto-dark-mode.nvim` flips `vim.o.background` on a macOS appearance change, **even inside Zellij**. |
 | `stylua.toml` | 2-space, 120-col | Matches the LazyVim starter — `stylua --check nvim/` is the style gate. |
 
 Extras enabled in `lazyvim.json` are the LazyVim [extras manifest](https://www.lazyvim.org/extras); each
