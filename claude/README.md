@@ -358,8 +358,8 @@ is on by default; the first `/voice` run asks for microphone permission. Rebindi
 ([schema](https://code.claude.com/docs/en/statusline)):
 
 ```
-N · feat/x* · 󰘬  fix-parser · 󰡵  23% 󰜗  · 󰊘  93% · 󰨳  62%      Opus 4.8 · ⚡ high    󰚰  17:05 · 󰔛  3 hrs 21 mins
-vim¹ git²      worktree³       ctx⁴           usage⁵        week⁵         model⁷     effort⁶    refill⁵  wakatime⁸
+N · feat/x* · 󰘬 fix-parser · 󰡵 23% 󰜗 · 󰊘 93% · 󰨳 62%      Opus 4.8 · 󱐋 high    󰚰 17:05 · 󰔛 3 hrs 21 mins
+vim¹ git²     worktree³      ctx⁴      usage⁵  week⁵      model⁷     effort⁶   refill⁵   wakatime⁸
 ```
 ¹ **vim mode** as one letter — `N`, `I`, `V`, `VL` — the same badge as the nvim statusline;
 `hideVimModeIndicator` in `settings.json` drops the built-in `-- INSERT --`, so the mode shows once.

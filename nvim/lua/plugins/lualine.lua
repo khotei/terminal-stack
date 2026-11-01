@@ -70,7 +70,7 @@ return {
       -- one carries the hourglass icon (nf-md-timer_sand).
       table.insert(opts.sections.lualine_x, 1, {
         function()
-          return "\u{f051f}  " .. require("wakatime").statusline()
+          return "\u{f051f} " .. require("wakatime").statusline()
         end,
         cond = function()
           return package.loaded["wakatime"] ~= nil and require("wakatime").statusline() ~= ""
@@ -81,9 +81,7 @@ return {
       opts.sections.lualine_y = {}
       opts.sections.lualine_z = {
         function()
-          -- Two spaces: Ghostty draws an icon followed by a space over two cells, so the
-          -- first space goes to the icon and the second stays a gap.
-          return "\u{f43a}  " .. os.date("%R")
+          return "\u{f43a} " .. os.date("%R")
         end,
       }
     end,

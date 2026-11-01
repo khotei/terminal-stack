@@ -46,9 +46,8 @@ sep=" ${dim}·${r} "
 
 # Segments in display order: a key, the text without colour (to measure the width), the
 # text as shown, and the extra cells an emoji takes (one char, two cells wide). Icons are
-# one-colour Nerd Font glyphs, so they take the theme's colours like the text. Two spaces
-# follow each: Ghostty draws a glyph followed by a space over two cells, so one space would
-# leave it touching the text.
+# one-colour Nerd Font glyphs, so they take the theme's colours like the text. One space
+# follows each: Maple Mono NF draws its icons in one cell, so a second space reads as a gap.
 keys=() ; plain=() ; shown=() ; extra=()
 add() { keys+=("$1"); plain+=("$2"); shown+=("$3"); extra+=("${4:-0}"); }
 
@@ -62,12 +61,12 @@ case "${vim_mode:-}" in
 esac
 
 [ -n "$branch" ] && add git "$branch" "${m}${branch}${r}"
-[ -n "${wt:-}" ] && add wt "󰘬  ${wt}" "${y}󰘬  ${wt}${r}"
+[ -n "${wt:-}" ] && add wt "󰘬 ${wt}" "${y}󰘬 ${wt}${r}"
 
 # Model dimmed — least load-bearing, so it doesn't lead the eye.
 add model "$model" "${dim}${model}${r}"
 
-[ -n "${eff:-}" ] && add eff "⚡ ${eff}" "${p}⚡ ${eff}${r}" 1
+[ -n "${eff:-}" ] && add eff "󱐋 ${eff}" "${p}󱐋 ${eff}${r}"
 
 # Context used: a gauge whose needle rises with the fill, yellow from half full, red near
 # the auto-compact. A snowflake once the prompt cache has gone cold — the next message
@@ -77,8 +76,8 @@ if [ -n "${ctx:-}" ]; then
   elif [ "$ctx" -lt 80 ]; then c=$y;  gauge="󰊚"
   else                         c=$rd; gauge="󰡴"
   fi
-  t="${gauge}  ${ctx}%" ; s="${c}${t}${r}"
-  [ -n "${cold:-}" ] && { t="${t} 󰜗 "; s="${s} ${p}󰜗${r} "; }
+  t="${gauge} ${ctx}%" ; s="${c}${t}${r}"
+  [ -n "${cold:-}" ] && { t="${t} 󰜗"; s="${s} ${p}󰜗${r}"; }
   add ctx "$t" "$s"
 fi
 
@@ -91,7 +90,7 @@ fi
 headroom() { # $1: key, $2: icon, $3: % left
   local c=$rd
   if [ "$3" -gt 40 ]; then c=$g; elif [ "$3" -gt 15 ]; then c=$y; fi
-  add "$1" "$2  $3%" "${c}$2  $3%${r}"
+  add "$1" "$2 $3%" "${c}$2 $3%${r}"
 }
 [ -n "${rl5:-}" ] && headroom usage 󰊘 "$rl5"
 [ -n "${rl7:-}" ] && headroom week 󰨳 "$rl7"
@@ -103,7 +102,7 @@ elif [ -n "${rl5:-}" ] && [ "$rl5" -le 15 ]; then
 fi
 if [ -n "$reset_at" ]; then
   reset=$(date -r "$reset_at" +"$fmt" 2>/dev/null || date -d "@$reset_at" +"$fmt" 2>/dev/null || true)
-  [ -n "$reset" ] && add reset "󰚰  ${reset}" "${p}󰚰${r}  ${dim}${reset}${r}"
+  [ -n "$reset" ] && add reset "󰚰 ${reset}" "${p}󰚰${r} ${dim}${reset}${r}"
 fi
 
 # WakaTime's coding time today, all editors and Claude Code together. wakatime-cli asks the
@@ -120,7 +119,7 @@ if [ -x "$waka_cli" ]; then
         printf '%s' "$out" >"$waka_cache"
     ) </dev/null >/dev/null 2>&1 &
   fi
-  [ -n "$waka" ] && add waka "󰔛  ${waka}" "${p}󰔛${r}  ${waka}"
+  [ -n "$waka" ] && add waka "󰔛 ${waka}" "${p}󰔛${r} ${waka}"
 fi
 
 # Model and effort, then the refill time and WakaTime, sit flush right, the two groups held
