@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Claude Code status line for terminal-stack — installs to ~/.claude/statusline.sh.
 # Reads session JSON on stdin and prints one line: vim mode · git · worktree ·
-# reasoning effort · model · context% · 5-hour and weekly usage headroom · WakaTime today.
+# reasoning effort · model · context (tokens and %) · 5-hour and weekly usage headroom · WakaTime today.
 # Schema: https://code.claude.com/docs/en/statusline
 # Wire it up via ~/.claude/settings.json (see ./README.md).
 set -euo pipefail
@@ -14,6 +14,8 @@ if command -v jq >/dev/null 2>&1; then
   dir=$(jq -r '.workspace.current_dir // .cwd // ""' <<<"$input")
   wt=$(jq -r '.workspace.git_worktree // empty' <<<"$input")
   ctx=$(jq -r '.context_window.used_percentage // empty | floor' <<<"$input")
+  ctx_tok=$(jq -r '.context_window.total_input_tokens // 0 | floor' <<<"$input")
+  ctx_max=$(jq -r '.context_window.context_window_size // 0 | floor' <<<"$input")
   eff=$(jq -r '.effort.level // empty' <<<"$input")
   rl5=$(jq -r 'if .rate_limits.five_hour.used_percentage != null then (100 - .rate_limits.five_hour.used_percentage | floor) else empty end' <<<"$input")
   rl5_reset=$(jq -r '.rate_limits.five_hour.resets_at // empty | floor' <<<"$input")
@@ -24,7 +26,7 @@ if command -v jq >/dev/null 2>&1; then
 else
   model=$(grep -o '"display_name":"[^"]*"' <<<"$input" | head -1 | cut -d'"' -f4)
   dir=$(grep -o '"current_dir":"[^"]*"' <<<"$input" | head -1 | cut -d'"' -f4)
-  wt="" ; ctx="" ; eff="" ; rl5="" ; rl5_reset="" ; rl7="" ; rl7_reset="" ; cold="" ; vim_mode=""
+  wt="" ; ctx="" ; ctx_tok=0 ; ctx_max=0 ; eff="" ; rl5="" ; rl5_reset="" ; rl7="" ; rl7_reset="" ; cold="" ; vim_mode=""
 fi
 
 dir=${dir:-$PWD}
@@ -68,15 +70,29 @@ add model "$model" "${dim}${model}${r}"
 
 [ -n "${eff:-}" ] && add eff "󱐋 ${eff}" "${p}󱐋 ${eff}${r}"
 
-# Context used: a gauge whose needle rises with the fill, yellow from half full, red near
-# the auto-compact. A snowflake once the prompt cache has gone cold — the next message
+# Token count, short: 840, 84k, 1.2M.
+tokens() {
+  if [ "$1" -ge 999500 ]; then
+    local tenths=$((($1 + 50000) / 100000))
+    if [ $((tenths % 10)) -eq 0 ]; then echo "$((tenths / 10))M"; else echo "$((tenths / 10)).$((tenths % 10))M"; fi
+  elif [ "$1" -ge 1000 ]; then echo "$((($1 + 500) / 1000))k"
+  else echo "$1"
+  fi
+}
+
+# Context used: tokens in the window out of its size, then the percent, behind a gauge whose
+# needle rises with the fill, yellow from half full, red near the auto-compact. The tokens
+# wait for the first API response (0 before it). A snowflake once the prompt cache has gone cold — the next message
 # re-reads the whole context into the cache, which costs usage-window budget.
 if [ -n "${ctx:-}" ]; then
   if   [ "$ctx" -lt 50 ]; then c=$g;  gauge="󰡵"
   elif [ "$ctx" -lt 80 ]; then c=$y;  gauge="󰊚"
   else                         c=$rd; gauge="󰡴"
   fi
-  t="${gauge} ${ctx}%" ; s="${c}${t}${r}"
+  t="${gauge} ${ctx}%"
+  [ "${ctx_tok:-0}" -gt 0 ] && [ "${ctx_max:-0}" -gt 0 ] &&
+    t="${gauge} $(tokens "$ctx_tok")/$(tokens "$ctx_max") ${ctx}%"
+  s="${c}${t}${r}"
   [ -n "${cold:-}" ] && { t="${t} 󰜗"; s="${s} ${p}󰜗${r}"; }
   add ctx "$t" "$s"
 fi

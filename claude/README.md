@@ -33,7 +33,7 @@ and slash command, the fast recipes, the parallel-agent workflow, and this repo'
 8. [Living in a Zellij pane](#8-living-in-a-zellij-pane) — the manual lock · `Ctrl+G` · `Ctrl+q` · voice
 9. [The status line](#9-the-status-line) · [Settings, plugins & MCP](#10-settings-plugins--mcp) · [Global rules](#11-global-rules--rules)
 10. [Verify](#12-verify) · [Install](#13-install) · [Go deeper](#go-deeper)
-11. [Optional power-ups](#14-optional-power-ups-not-wired-here) — hooks · fast mode · routines · `/loop` · more
+11. [Optional power-ups](#14-optional-power-ups-not-wired-here) — hooks · routines · `/loop` · more
 
 ---
 
@@ -358,14 +358,15 @@ is on by default; the first `/voice` run asks for microphone permission. Rebindi
 ([schema](https://code.claude.com/docs/en/statusline)):
 
 ```
-N · feat/x* · 󰘬 fix-parser · 󰡵 23% 󰜗 · 󰊘 93% · 󰨳 62%      Opus 4.8 · 󱐋 high    󰚰 17:05 · 󰔛 3 hrs 21 mins
-vim¹ git²     worktree³      ctx⁴      usage⁵  week⁵      model⁷     effort⁶   refill⁵   wakatime⁸
+N · feat/x* · 󰘬 fix-parser · 󰡵 46k/200k 23% 󰜗 · 󰊘 93% · 󰨳 62%      Opus 4.8 · 󱐋 high    󰚰 17:05 · 󰔛 3 hrs 21 mins
+vim¹ git²     worktree³      ctx⁴               usage⁵  week⁵      model⁷     effort⁶   refill⁵   wakatime⁸
 ```
 ¹ **vim mode** as one letter — `N`, `I`, `V`, `VL` — the same badge as the nvim statusline;
 `hideVimModeIndicator` in `settings.json` drops the built-in `-- INSERT --`, so the mode shows once.
 ² branch of the session's directory, `*` = uncommitted changes; the directory's own name is left out — the branch says which project it is. ³ **git worktree** name — shown *only* inside a linked worktree,
 silent in the main tree, so you never lose track of which tree you're editing. ⁴ context-window
-**used**, as a gauge whose needle rises with the fill — `󰡵` green below 50 %, `󰊚` yellow below
+**used** — tokens in the window out of its size (`46k/200k`, `123k/1M`), then the percent; the
+tokens appear after the session's first API response — as a gauge whose needle rises with the fill — `󰡵` green below 50 %, `󰊚` yellow below
 80 %, `󰡴` red above, near the auto-compact. `󰜗` once the prompt
 cache has gone cold (its TTL passed): the next message re-reads the whole context into the cache,
 which costs usage-window budget. Claude Code re-runs the line when the cache expires, so `󰜗` appears on
@@ -388,7 +389,8 @@ of Claude Code cutting it off on the right; the width comes from `COLUMNS`, whic
 the script. Segments are joined by a dim `·` so they breathe. Colours are the terminal's 16 ANSI slots
 (no hardcoded palette), so the line follows the active theme — like the Starship prompt. Falls back
 from `jq` to `grep` if `jq` is absent. Fields consumed: `.model.display_name`,
-`.workspace.current_dir`, `.workspace.git_worktree`, `.context_window.used_percentage`,
+`.workspace.current_dir`, `.workspace.git_worktree`, `.context_window.used_percentage`, `.context_window.total_input_tokens`,
+`.context_window.context_window_size`,
 `.effort.level`, `.rate_limits.five_hour.used_percentage`, `.rate_limits.five_hour.resets_at`, `.rate_limits.seven_day.used_percentage`, `.rate_limits.seven_day.resets_at`,
 `.prompt_cache.caching_observed`, `.prompt_cache.warm`, `.vim.mode`.
 
@@ -419,9 +421,10 @@ The *why* behind each key — the file states the *what*
 
 | Key | Value | Why |
 |---|---|---|
-| `statusLine` | `command` → `~/.claude/statusline.sh` | vim · git · worktree · effort · model · ctx% · usage · wakatime line; `hideVimModeIndicator` hides the built-in `-- INSERT --` ([§9](#9-the-status-line)). |
+| `statusLine` | `command` → `~/.claude/statusline.sh` | vim · git · worktree · effort · model · ctx tokens/% · usage · wakatime line; `hideVimModeIndicator` hides the built-in `-- INSERT --` ([§9](#9-the-status-line)). |
 | `editorMode` | `vim` | Vim motions in the prompt box — matches Neovim across the stack ([§6](#6-advanced-craft)). |
 | `vimInsertModeRemaps` | `{ "jk": "<Esc>" }` | `jk` in INSERT → NORMAL, no reach for `Esc` (Claude Code ≥ 2.1.208; user-settings only) ([§6](#6-advanced-craft)). |
+| `fastMode` | `true` | Opus answers faster by default — same model, quicker output. Paid from usage credits on Pro/Max/Ultra; `/fast` toggles it and saves the choice back here ([fast-mode](https://code.claude.com/docs/en/fast-mode)). |
 | `theme` | `auto` | Follows the OS light/dark appearance, like the rest of the stack. |
 | `language` | `Русский` | Response **and voice-dictation** language ([voice-dictation](https://code.claude.com/docs/en/voice-dictation#change-the-dictation-language)). |
 | `voice` | `enabled: true, mode: hold` | Push-to-talk voice, on by default — `hold` is upstream's default mode ([§8](#8-living-in-a-zellij-pane)). |
@@ -513,13 +516,12 @@ Run `claude` once and log in ([overview](https://code.claude.com/docs/en/overvie
 ## 14. Optional power-ups (not wired here)
 
 Features worth knowing but **deliberately not wired** into this stack's config — reach for them when the
-need arises. All cited upstream; none are set in `settings.json` here (hooks and fast mode would need a
-config edit — ask and we'll wire them).
+need arises. All cited upstream; none are set in `settings.json` here (hooks would need a config edit —
+ask and we'll wire them). Fast mode, once listed here, is now on by default ([§10](#10-settings-plugins--mcp)).
 
 | Feature | What it gives you | How to reach it |
 |---|---|---|
 | **Hooks** | Deterministic automation on lifecycle events — auto-`stylua`/`shfmt` after an edit, a notification on `Stop`, or a guard blocking edits to protected paths. Fires regardless of what the model remembers | `hooks` block in `settings.json` · [hooks-guide](https://code.claude.com/docs/en/hooks-guide) |
-| **Fast mode** (`/fast`, `Option+O`) | Opus with **faster output** — the model is *not* downgraded; the interactive loop just feels snappier | toggle live · [fast-mode](https://code.claude.com/docs/en/fast-mode) |
 | **Prompt suggestions** | A grey next-step suggestion drawn from your git history / the conversation; `Tab` or `→` accepts it | on by default · [interactive-mode](https://code.claude.com/docs/en/interactive-mode#prompt-suggestions) |
 | `claude --from-pr <N>` | Resume the session linked to a GitHub PR — pairs with the `gh` review loop ([working-with-agents](../docs/working-with-agents.md)) | CLI flag · [common-workflows](https://code.claude.com/docs/en/common-workflows#create-pull-requests) |
 | **`/loop [interval] <cmd>`** | Repeat a prompt or slash-command on an interval **in this session** (polling; stops on `/clear`) | in-session · [scheduled-tasks](https://code.claude.com/docs/en/scheduled-tasks) |
