@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Register the user-scope MCP servers the agent layer relies on. Idempotent: a
 # server already present is left as-is. No secrets live here — Notion authenticates
-# over OAuth (run `/mcp` once; the token lands in the OS keychain) and Context7 is
-# keyless. A future token-based server reads ${VAR} from ~/.zshrc.local, never a
+# over OAuth (run `/mcp` once; the token lands in the OS keychain). A server a project
+# needs, such as Context7, lives in that project's .mcp.json. A future token-based server reads ${VAR} from ~/.zshrc.local, never a
 # committed file (see ../.claude/rules/config.md §Secrets · README "Settings, plugins & MCP").
 set -euo pipefail
 
@@ -18,11 +18,10 @@ add() { # add <name> <url>
   fi
 }
 
-add notion   https://mcp.notion.com/mcp
-add context7 https://mcp.context7.com/mcp
+add notion https://mcp.notion.com/mcp
 
 cat <<'DONE'
 
-MCP servers registered (user scope). Finish Notion auth once:
+MCP server registered (user scope). Finish Notion auth once:
   open `claude` → /mcp → notion → Authenticate (browser sign-in; token goes to the OS keychain).
 DONE

@@ -172,8 +172,7 @@ need it, run `/terminal-setup` to install the `Shift+Enter` binding.
 | `/export` | Export the conversation as text |
 | `/help` | List all commands |
 
-Plugins and MCP servers add more; `/code-review`, `/commit`, `/security-review`, `/schedule` etc. come
-from the plugins this repo enables ([§10](#10-settings-plugins--mcp)).
+Plugins and MCP servers add more; each project enables its own ([§10](#10-settings-plugins--mcp)).
 
 ### CLI flags — starting Claude
 
@@ -431,36 +430,36 @@ The *why* behind each key — the file states the *what*
 | `worktree.baseRef` | `head` | Native worktrees branch from *current* work, not the remote default ([§5](#5-parallel-agents--git-worktrees)). |
 | `permissions.defaultMode` | `default` | Start with the brakes on — ask before edits ([permission-modes](https://code.claude.com/docs/en/permission-modes)). |
 | `permissions.allow` | `WebFetch`, `WebSearch` | Pre-allow the two read-only web tools; everything else still prompts. |
-| `enabledPlugins` | see below | *Enables* the stack's plugins. The fetch is separate — [`plugins-setup.sh`](./plugins-setup.sh) does it; enabling alone doesn't install them on a fresh machine. |
+| `enabledPlugins` | `claude-code-wakatime` | The one plugin every project gets. The fetch is separate — [`plugins-setup.sh`](./plugins-setup.sh) does it; enabling alone doesn't install it on a fresh machine. |
 
-**Plugins** — [`plugins-setup.sh`](./plugins-setup.sh) installs these (user scope, idempotent) from the
-**preloaded** `claude-plugins-official` marketplace, and `install.sh` runs it best-effort. `enabledPlugins`
-only *enables* them: on a fresh machine an enabled-but-absent plugin is **silently skipped**
-([#32607](https://github.com/anthropics/claude-code/issues/32607)), so the install must be explicit
-([plugins](https://code.claude.com/docs/en/plugins)):
+**Plugins** — [`plugins-setup.sh`](./plugins-setup.sh) installs WakaTime (user scope, idempotent), and
+`install.sh` runs it best-effort. Every other plugin belongs to the project that needs it, so two
+projects never fight over one global set ([plugins](https://code.claude.com/docs/en/plugins)):
 
-| Plugin | What it adds |
-|---|---|
-| `typescript-lsp` | TS/JS go-to-definition, find-references, post-edit diagnostics — a **plugin**, not an MCP, so it costs no MCP slot |
-| `commit-commands` | `/commit`, `/push`, create-PR commands |
-| `pr-review-toolkit` | PR-review agents / `/code-review` |
-| `frontend-design` | Design-first skill for UI work — sets an aesthetic direction (typography, palette, motion) before generating React/Vue/Svelte/HTML, dodging generic "AI-slop" output |
+- **A plugin inside its marketplace** (a relative `source`, like `frontend-design` in
+  `claude-plugins-official`): the project's `.claude/settings.json` enables it, and it loads with no
+  install.
+- **A plugin from an outside source** (a `url` or `github` `source`, like `mattpocock-skills`): a
+  `true` in the committed project settings doesn't fetch it — the `/plugin` **Errors** tab only says
+  it isn't installed. The project's own setup runs
+  `claude plugin install <name>@<marketplace> --scope project`, which is safe to rerun.
 
 **Why no GitHub MCP.** `gh` is already installed and authed ([`Brewfile`](../Brewfile)); for a fluent
 `gh` user the GitHub MCP is heavier (more tokens, PR flakiness) for no gain. Git + GitHub run through
-`gh` via the shell; the plugins above add the ergonomic slash-commands on top. Add the GitHub MCP only
-if you later want typed cross-repo tooling.
+`gh` via the shell. Add the GitHub MCP only if you later want typed cross-repo tooling.
 
-**MCP servers.** [`mcp-setup.sh`](./mcp-setup.sh) registers two **user-scope** servers idempotently —
+**MCP servers.** [`mcp-setup.sh`](./mcp-setup.sh) registers one **user-scope** server idempotently —
 `install.sh` runs it best-effort (skipped if `claude` is absent), or run it yourself any time
 ([mcp](https://code.claude.com/docs/en/mcp)):
 
 | Server | Auth | For |
 |---|---|---|
 | `notion` (`https://mcp.notion.com/mcp`) | **OAuth** — `/mcp → notion → Authenticate` once; token in the OS keychain | the SDD knowledge base |
-| `context7` (`https://mcp.context7.com/mcp`) | **keyless** | up-to-date library docs in context |
 
-Neither server puts a secret in the repo (this repo is **public**). For any *future* token-based server,
+A server a project needs, such as `context7`, goes in that project's committed `.mcp.json`; Claude Code
+asks once to approve it on a fresh clone.
+
+No server puts a secret in the repo (this repo is **public**). For any *future* token-based server,
 reference it as `${VAR}` in the MCP config and keep the real value in the git-ignored `~/.zshrc.local` —
 never a committed file ([`config.md`](../.claude/rules/config.md) §Secrets). Don't also enable a
 `notion` *plugin* — it would double the hosted MCP's tools.

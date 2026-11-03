@@ -125,23 +125,23 @@ install_zellij_plugins() {
   fi
 }
 
-# Register the user-scope MCP servers (Notion, Context7) via claude/mcp-setup.sh.
+# Register the user-scope MCP server (Notion) via claude/mcp-setup.sh.
 # Best-effort: needs the claude CLI + network, so a missing CLI or an offline
 # machine just skips — the install never fails on it. Skipped on --dry-run. The
 # script is idempotent (a server already present is left as-is).
 install_claude_mcp() {
   echo "• Claude Code — MCP servers"
-  if $DRY_RUN; then note "would run: claude/mcp-setup.sh (register Notion + Context7, user scope)"; return 0; fi
+  if $DRY_RUN; then note "would run: claude/mcp-setup.sh (register Notion, user scope)"; return 0; fi
   if ! command -v claude >/dev/null 2>&1; then note "skipped: claude CLI not found (run after 'brew bundle')"; return 0; fi
   "$REPO/claude/mcp-setup.sh" || note "skipped: mcp-setup.sh did not complete (harmless; re-run later)"
 }
 
-# Install the user-scope plugins (enabled in settings.json) via claude/plugins-setup.sh.
+# Install the user-scope plugin (WakaTime, enabled in settings.json) via claude/plugins-setup.sh.
 # Same best-effort contract as install_claude_mcp: needs the claude CLI, idempotent,
 # skipped on --dry-run. enabledPlugins only *enables* — it does not fetch on a fresh machine.
 install_claude_plugins() {
   echo "• Claude Code — plugins"
-  if $DRY_RUN; then note "would run: claude/plugins-setup.sh (install 4 plugins, user scope)"; return 0; fi
+  if $DRY_RUN; then note "would run: claude/plugins-setup.sh (install WakaTime, user scope)"; return 0; fi
   if ! command -v claude >/dev/null 2>&1; then note "skipped: claude CLI not found (run after 'brew bundle')"; return 0; fi
   "$REPO/claude/plugins-setup.sh" || note "skipped: plugins-setup.sh did not complete (harmless; re-run later)"
 }
