@@ -537,10 +537,11 @@ letter differs per panel (`s` = stash in Files, squash in Commits).
   current branch. Mind the case — in Files, `C` means "commit with editor."
 - **Instant amend.** `A` in Files folds staged changes into `HEAD` with no prompt.
 
-### Diffview (`<leader>gv` · `<leader>gM` · `<leader>gm`) — the review loop *(repo)*
+### Diffview (`<leader>gv` · `<leader>gM` · `<leader>gc` · `<leader>gm`) — the review loop *(repo)*
 
 Side-by-side of every change with a file list you page through — `<leader>gv` for the working tree,
-`<leader>gM` for the whole branch vs main. Both use `--imply-local`, so the real file sits on the
+`<leader>gM` for the whole branch vs main, `<leader>gc` for the branch vs one you pick (`Enter` diffs,
+never checks out; `<Tab>` two branches to diff them against each other, like lazygit's `W`). All use `--imply-local`, so the real file sits on the
 right and **LSP is live in the diff** (`gd`/`gr`/`K`, diagnostics) — the review and the code, one view
 ([diffview.nvim](https://github.com/sindrets/diffview.nvim); `<leader>gV`/`gF` show history;
 [full guide](../docs/working-with-agents.md)). Its default keys, once a diffview panel is focused:
@@ -559,7 +560,7 @@ right and **LSP is live in the diff** (`gd`/`gr`/`K`, diagnostics) — the revie
 
 #### The commits picker (`<leader>gm`) — its hotkeys *(repo + Snacks)*
 
-`<leader>gm` opens Snacks' git-log picker (the same widget behind LazyVim's `<leader>gc` / `<leader>gl`).
+`<leader>gm` opens Snacks' git-log picker (the same widget behind LazyVim's `<leader>gl`).
 The title bar only hints a key or two (`… <c-d> git diff | <c-y> copy …`) and truncates the rest with
 `…` — **press `?` with the results list focused (`/` toggles input ⇄ list) for the full live key list.**
 The keys worth knowing:

@@ -43,6 +43,28 @@ local function pick_commit_diff()
   })
 end
 
+-- <leader>gc = gM against any branch. Enter here diffs and never checks out, unlike the stock
+-- branches picker; `all` lists remotes so origin/main is pickable as in gM. Two <Tab>-selected
+-- branches diff <first>...<second>, like lazygit's W.
+local function pick_branch_diff()
+  Snacks.picker.git_branches({
+    all = true,
+    confirm = function(picker)
+      local refs = vim.tbl_map(function(item)
+        return item.branch
+      end, picker:selected({ fallback = true }))
+      picker:close()
+      if #refs == 0 then
+        return
+      end
+      local range = #refs == 1 and refs[1] .. "...HEAD" or refs[1] .. "..." .. refs[2]
+      vim.schedule(function()
+        vim.cmd("DiffviewOpen " .. range)
+      end)
+    end,
+  })
+end
+
 return {
   {
     "sindrets/diffview.nvim",
@@ -53,6 +75,7 @@ return {
       -- the more-used entry). See open_commit_diff above for the picker's <c-o>/<c-x> keys.
       { "<leader>gM", "<cmd>DiffviewOpen origin/main...HEAD<cr>", desc = "Diff: branch vs main (review)" },
       { "<leader>gm", pick_commit_diff, desc = "Diff: commits picker (<c-o>/<c-x> → diffview)" },
+      { "<leader>gc", pick_branch_diff, desc = "Diff: branch vs picked (<Tab> two to compare)" },
       -- History on gV/gF, NOT gh/gH: <leader>gh is gitsigns' hunks-group prefix, so a
       -- standalone <leader>gh binding shadows it (which-key stalls on timeout). gf is taken
       -- by LazyVim (git_log_file), so the current-file view uses gF.
