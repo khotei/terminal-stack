@@ -24,8 +24,8 @@ ui {
 }
 
 // ── keybinds: native modal, manual lock ───────────────────────────────
-// Native modal Zellij (Ctrl+t tab · Ctrl+s scroll; Pane/Move/Session/Resize
-// behind Ctrl+t p/m/o/R), no tmux prefix. Nested apps do NOT auto-lock —
+// Native modal Zellij (Ctrl+t tab · Ctrl+s scroll · Ctrl+; pane; Pane/Move/Session/Resize
+// also behind Ctrl+t p/m/o/R), no tmux prefix. Nested apps do NOT auto-lock —
 // you hold the lock yourself, by choice (no zellij-autolock plugin):
 //   · Ctrl+q toggles Locked ⇄ Normal — the single manual switch, kept on the
 //     same Ctrl modifier as every other action so the hand never swaps to Alt
@@ -65,6 +65,19 @@ keybinds {
         bind "p" { SwitchToMode "Pane"; }
         bind "m" { SwitchToMode "Move"; }
         bind "o" { SwitchToMode "Session"; }
+        bind "R" { SwitchToMode "Resize"; }
+    }
+    // Pane gets one direct key, Ctrl+; — punctuation, so free in nvim, zsh and
+    // Claude Code, unlike every Ctrl letter. Not Ctrl+] — nvim's go-to-definition.
+    // GOTCHA: legacy terminal encoding can't send Ctrl+;, it arrives only over
+    // the kitty keyboard protocol (Ghostty ⇄ Zellij). Pane's own r is split-right,
+    // hence R for Resize, as in the tab hub.
+    shared_except "locked" "pane" {
+        bind "Ctrl ;" { SwitchToMode "Pane"; }
+    }
+    pane {
+        bind "Ctrl ;" { SwitchToMode "Normal"; }
+        bind "m" { SwitchToMode "Move"; }
         bind "R" { SwitchToMode "Resize"; }
     }
     // choose-tree (Ctrl+t o f) — tmux `choose-tree` analog: a fuzzy tree of

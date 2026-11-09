@@ -66,7 +66,7 @@ per-mode tables are in [§3](#3-complete-keybinding-reference).)
 | Toggle to the last tab (A↔B) | `Ctrl+t` then `Tab` |
 | Glide focus across panes *and* tabs | `Alt+h` / `Alt+l` (rolls into the next tab at the edge) |
 | Focus a pane up / down | `Alt+k` / `Alt+j` |
-| Zoom the focused pane full-screen | `Ctrl+t p` then `f` (again to un-zoom) |
+| Zoom the focused pane full-screen | `Ctrl+;` then `f` (again to un-zoom) |
 | Throwaway popup pane over your work | `Alt+f` (toggle floating) |
 | New split | `Alt+n` |
 | Name this tab (so `Ctrl+t N` means something) | `Ctrl+t` then `r` |
@@ -85,14 +85,14 @@ Scroll/Search):
 
 | Key | Mode | For |
 |---|---|---|
-| `Ctrl+t` `p` | **Pane** | split · focus · close · fullscreen · float · pin · rename *(repo — default `Ctrl+p` freed for nvim's completion-prev)* |
+| `Ctrl+;` or `Ctrl+t` `p` | **Pane** | split · focus · close · fullscreen · float · pin · rename · `m` → Move · `R` → Resize *(repo — default `Ctrl+p` freed for nvim's completion-prev; `Ctrl+;` again leaves)* |
 | `Ctrl+t` | **Tab** | new · close · switch · jump-to-number · break out |
 | `Ctrl+t` `R` | **Resize** | grow / shrink the focused pane *(repo — default `Ctrl+n` freed for nvim's completion-next)* |
 | `Ctrl+t` `m` | **Move** | relocate a pane within the layout *(repo — default `Ctrl+h` freed for nvim's window-left)* |
 | `Ctrl+s` | **Scroll** | scrollback · search · edit-scrollback in nvim |
 | `Ctrl+t` `o` | **Session** | detach · session / plugin manager · config *(repo — default `Ctrl+o` freed for nvim's jumplist-back + Claude Code)* |
 
-**Pane** (`Ctrl+t` `p`) — move focus with `h/j/k/l` or arrows:
+**Pane** (`Ctrl+;` or `Ctrl+t` `p`) — move focus with `h/j/k/l` or arrows:
 
 | Key | Action | Key | Action |
 |---|---|---|---|
@@ -101,7 +101,7 @@ Scroll/Search):
 | `s` | new **stacked** pane | `w` | floating panes toggle |
 | `e` | embed ↔ float | `i` | pin a floating pane (always-on-top) |
 | `c` | rename pane | `z` | toggle pane frames (declutter / +2 cols) |
-| `p` | focus the **previous** pane | | |
+| `p` | focus the **previous** pane | `m` / `R` | switch to **Move** / **Resize** *(repo)* |
 
 **Tab** (`Ctrl+t`):
 
