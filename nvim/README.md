@@ -188,7 +188,7 @@ one letter below. It finds the *next* object if you're not on one (so `ci(` work
 > [config](./lua/plugins/bufferline.lua)). Your project tabs — editor │ agent — are **Zellij's**
 > (`Ctrl+t`); see the [multiplexer doc](../zellij/README.md). Different layers, different keys — no collision.
 
-**Code / LSP** — active wherever a language server is attached (`.ts`/`.tsx` via vtsls, [§7](#7-advanced-craft--lsp-refactor-debug-test)):
+**Code / LSP** — active wherever a language server is attached (`.ts`/`.tsx` via vtsls or TypeScript 7's `tsc`, [§7](#7-advanced-craft--lsp-refactor-debug-test)):
 
 | Keys | What it does |
 |---|---|
@@ -372,8 +372,8 @@ with `]h` / `[h`. Need the full git TUI? `<leader>gg` floats **lazygit**.
 **Resync the editor after an agent rewrote many files.** Buffers refresh themselves: `autoread` plus
 LazyVim's `checktime`-on-`FocusGained` autocmd re-read every outside-changed buffer the moment you
 focus the nvim pane; `:checktime` does the same on demand (a buffer holding *your* unsaved edits is
-left alone — W12 warns instead). If *types* still lag — vtsls reporting stale diagnostics until you
-visit a file — `:LspRestart` (or `:LspRestart vtsls`, sparing the other clients) restarts the server
+left alone — W12 warns instead). If *types* still lag — the TS server reporting stale diagnostics until you
+visit a file — `:LspRestart` (or `:LspRestart vtsls` / `:LspRestart tsc`, sparing the other clients) restarts the server
 and re-indexes the project. The nuclear `:bufdo e!` re-reads everything but **discards** unsaved
 local edits — last resort only.
 
@@ -678,7 +678,11 @@ The stack turns LazyVim into a real IDE for **TypeScript/JavaScript** via four
 
 - **Language intelligence** — [`lang.typescript`](https://www.lazyvim.org/extras/lang/typescript) installs
   the **vtsls** server, so `gd`/`gr`/`K`/`gy` and `<leader>ca` work in `.ts`/`.tsx` (they were inert
-  before — no server was installed).
+  before — no server was installed). A project that pins TypeScript 7 gets its own `tsc --lsp`
+  instead (see `lua/plugins/typescript.lua` in [§10](#10-what-we-changed-vs-the-stock-starter)): with
+  the Effect patch it adds Effect diagnostics, and `<leader>ss` lists members of Effect services, which
+  vtsls's TypeScript 5 can't see. vtsls-only keys (`gR`, `<leader>cM`, `<leader>cD`, `<leader>cV`) are
+  absent there, and `gD` is LazyVim's plain go-to-declaration, not go-to-source.
 - **Structure & rename** — [`editor.outline`](https://www.lazyvim.org/extras/editor/outline) gives
   `<leader>cs` (symbol tree); [`editor.inc-rename`](https://www.lazyvim.org/extras/editor/inc-rename)
   upgrades `<leader>cr` to a live, previewed rename.
@@ -791,7 +795,7 @@ The config is the [official LazyVim starter](https://github.com/LazyVim/starter)
 | [`lua/plugins/dropbar.lua`](./lua/plugins/dropbar.lua) | `keys` `<leader>;` → `dropbar.api.pick`, `lazy = false` | dropbar's own suggested key, free in LazyVim. `lazy = false` because a `keys` entry would make lazy.nvim defer the plugin, and the winbar would stay empty until the first press. |
 | [`lua/plugins/dropbar.lua`](./lua/plugins/dropbar.lua) | `bar.enable` | The winbar ends with the cursor position flush right, `line:col/total` (`67:1/245`), in every window, so each split shows its own. dropbar has no option for text after its own, so `enable` sets the winbar itself where dropbar would attach. A path that fills the whole width loses a few characters on the left. |
 | [`lua/plugins/glance.lua`](./lua/plugins/glance.lua) | add [`DNLHC/glance.nvim`](https://github.com/DNLHC/glance.nvim) + `gpd`/`gpr`/`gpy`/`gpi`, a which-key `gp` → *peek* group | Read a definition or every reference **without leaving the buffer** — LazyVim's `gd`/`gr` always move you (or open a picker). Over `goto-preview` (stale, needs `logger.nvim`, overrides `vim.ui.input` that Snacks owns) and `lspsaga` (a kitchen sink for one feature). `gp…`, not glance's suggested `gD`/`gR`: the typescript extra owns those. |
-| [`lua/plugins/typescript.lua`](./lua/plugins/typescript.lua) | inlay hints **off by default** (`inlay_hints.enabled = false`) + max out the `vtsls` set (`variableTypes`, `parameterNames = "all"`) + noise suppressors | LazyVim ships inlay hints *on* globally — turn them off for a clean buffer. `lang.typescript` also ships variable-type hints off and parameter names at `"literals"` only, so all six categories are maxed (redundant ones suppressed) — one `<leader>uh` then reveals everything, JetBrains-style, on demand. |
+| [`lua/plugins/typescript.lua`](./lua/plugins/typescript.lua) | one TS server per project: `tsc` (`--lsp`, the project's own `node_modules/.bin/tsc`) where it is TypeScript 7+, `vtsls` elsewhere · inlay hints **off by default** (`inlay_hints.enabled = false`) + max out the hint set (`variableTypes`, `parameterNames = "all"`) + noise suppressors | `lang.typescript` runs one server for every project. A TS 7 project (app-template, oblik, desk-panel) patches its `tsc` with the Effect plugin, and only TS 7's symbol tree reaches members built inside `extends Context.Service<…>()(…)`, so `<leader>ss` shows a service's methods. `mason = false`: never a global TS 7 that would check TS 5 projects. LazyVim ships inlay hints *on* globally — turn them off for a clean buffer; `lang.typescript` also ships variable-type hints off and parameter names at `"literals"` only, so they are maxed — one `<leader>uh` then reveals everything, JetBrains-style, on demand. |
 
 ## 11. Layout
 
