@@ -6,7 +6,6 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "opus",
   "worktree": {
     "baseRef": "head"
   },
@@ -45,5 +44,6 @@
   "editorMode": "vim",
   "vimInsertModeRemaps": {
     "jk": "<Esc>"
-  }
+  },
+  "model": "claude-fable-5-1[1m]"
 }
